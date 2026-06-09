@@ -1,0 +1,10 @@
+{
+    "agents": [
+        "gemini"
+    ],
+    "cloud": true,
+    "skills": [
+        "laravel-best-practices",
+        "tailwindcss-development"
+    ]
+}
