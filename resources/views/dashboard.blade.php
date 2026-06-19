@@ -1,17 +1,50 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
-                </div>
-            </div>
+@section('title', 'Dashboard')
+
+@section('content')
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+
+        <div class="bg-white rounded-xl p-5 shadow">
+            <h3 class="text-sm text-gray-500">
+                Total Pemasukan
+            </h3>
+
+            <p class="text-2xl font-bold text-green-600">
+                Rp 0
+            </p>
+        </div>
+
+        <div class="bg-white rounded-xl p-5 shadow">
+            <h3 class="text-sm text-gray-500">
+                Total Pengeluaran
+            </h3>
+
+            <p class="text-2xl font-bold text-red-600">
+                Rp 0
+            </p>
+        </div>
+
+        <div class="bg-white rounded-xl p-5 shadow">
+            <h3 class="text-sm text-gray-500">
+                Saldo Bersih
+            </h3>
+
+            <p class="text-2xl font-bold text-blue-600">
+                Rp 0
+            </p>
+        </div>
+
+        <div class="bg-white rounded-xl p-5 shadow">
+            <h3 class="text-sm text-gray-500">
+                Saldo Akhir
+            </h3>
+
+            <p class="text-2xl font-bold text-indigo-600">
+                Rp 0
+            </p>
         </div>
     </div>
-</x-app-layout>
+
+@endsection
