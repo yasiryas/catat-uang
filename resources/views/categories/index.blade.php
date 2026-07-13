@@ -4,26 +4,32 @@
 
 @section('content')
 
-    <div class="flex items-center justify-between mb-6">
+    <div x-data="categoryPage()">
 
-        <div>
+        <div class="flex items-center justify-between mb-6">
 
-            <h1 class="text-2xl font-bold">
-                Data Kategori
-            </h1>
+            <div>
+                <h1 class="text-2xl font-bold">
+                    Data Kategori
+                </h1>
 
-            <p class="text-gray-500">
-                Kelola kategori pemasukan dan pengeluaran.
-            </p>
+                <p class="text-gray-500">
+                    Kelola kategori pemasukan dan pengeluaran.
+                </p>
+            </div>
+
+            <button @click="create()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                + Tambah
+            </button>
 
         </div>
 
-        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-            + Tambah
-        </button>
+        @include('categories.partials.table')
+
+        @include('categories.partials.modal-form')
+
+        @include('categories.partials.modal-delete')
 
     </div>
-
-    @include('categories.partials.table')
 
 @endsection

@@ -57,11 +57,11 @@
 
                     <td class="p-4 text-center">
 
-                        <button class="text-blue-600 hover:underline">
+                        <button @click='edit(@json($category))' class="text-blue-600 hover:underline">
                             Edit
                         </button>
 
-                        <button class="ml-3 text-red-600 hover:underline">
+                        <button @click='remove(@json($category))' class="ml-3 text-red-600 hover:underline">
                             Hapus
                         </button>
 
