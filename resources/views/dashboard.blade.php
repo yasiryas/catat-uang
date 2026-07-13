@@ -12,7 +12,7 @@
             </h3>
 
             <p class="text-2xl font-bold text-green-600">
-                Rp 0
+                Rp {{ number_format($totalIncome, 0, ',', '.') }}
             </p>
         </div>
 
@@ -22,7 +22,7 @@
             </h3>
 
             <p class="text-2xl font-bold text-red-600">
-                Rp 0
+                Rp {{ number_format($totalExpense, 0, ',', '.') }}
             </p>
         </div>
 
@@ -32,7 +32,7 @@
             </h3>
 
             <p class="text-2xl font-bold text-blue-600">
-                Rp 0
+                Rp {{ number_format($netBalance, 0, ',', '.') }}
             </p>
         </div>
 
@@ -42,7 +42,7 @@
             </h3>
 
             <p class="text-2xl font-bold text-indigo-600">
-                Rp 0
+                Rp {{ number_format($closingBalance, 0, ',', '.') }}
             </p>
         </div>
     </div>
