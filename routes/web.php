@@ -19,6 +19,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('categories', CategoryController::class);
+    Route::resource('periods', \App\Http\Controllers\PeriodController::class);
+    Route::resource('transactions', \App\Http\Controllers\TransactionController::class);
+    Route::resource('mutations', \App\Http\Controllers\MutationController::class);
+    Route::resource('adjustments', \App\Http\Controllers\AdjustmentLogController::class);
 });
+
 
 require __DIR__ . '/auth.php';

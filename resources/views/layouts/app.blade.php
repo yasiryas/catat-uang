@@ -24,7 +24,14 @@
             @include('partials.topbar')
 
             <main class="flex-1 overflow-y-auto p-6">
+                @if (session('success'))
+                    <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 3000)"
+                        class="mb-4 rounded-lg bg-green-100 border border-green-300 text-green-700 px-4 py-3">
 
+                        {{ session('success') }}
+
+                    </div>
+                @endif
                 @yield('content')
 
             </main>
