@@ -40,6 +40,8 @@
 
     </div>
 
+    <x-confirm-logout-modal />
+
     @stack('scripts')
 
 </body>
