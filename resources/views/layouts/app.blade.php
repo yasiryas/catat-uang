@@ -12,7 +12,10 @@
 
 <body class="bg-slate-100">
 
-    <div x-data="{ sidebar: false }" class="flex h-screen overflow-hidden">
+    <div x-data="{
+        sidebar: false,
+        collapse: false
+    }" class="flex h-screen overflow-hidden">
 
         @include('partials.sidebar')
 

@@ -1,4 +1,15 @@
 {{-- Overlay Mobile --}}
+@php
+    $menu = [
+        'dashboard' => request()->routeIs('dashboard'),
+        'category' => request()->routeIs('categories.*'),
+        'income' => request()->routeIs('income.*'),
+        'expense' => request()->routeIs('expense.*'),
+        'mutation' => request()->routeIs('mutation.*'),
+        'period' => request()->routeIs('periods.*'),
+        'adjustment' => request()->routeIs('adjustments.*'),
+    ];
+@endphp
 <div x-show="sidebar" x-transition.opacity @click="sidebar=false" class="fixed inset-0 bg-black/50 z-30 md:hidden"></div>
 
 <aside
@@ -44,12 +55,22 @@
 
     <nav class="flex-1 p-4 space-y-2">
 
-        <a href="{{ route('dashboard') }}" class="block px-4 py-3 rounded-lg hover:bg-blue-600">
-            Dashboard
+        <a href="{{ route('dashboard') }}"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $menu['dashboard'] ? 'bg-blue-800 shadow' : 'hover:bg-blue-600' }}">
+            <x-heroicon-o-home class="w-5 h-5 shrink-0" />
+            <span x-show="!collapse">Dashboard</span>
         </a>
 
-        <a href="{{ route('categories.index') }}" class="block px-4 py-3 rounded-lg hover:bg-blue-600">
-            Kategori
+        <a href="{{ route('categories.index') }}"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $menu['category'] ? 'bg-blue-800 shadow' : 'hover:bg-blue-600' }}">
+            <x-heroicon-o-folder class="w-5 h-5 shrink-0" />
+            <span x-show="!collapse">Kategori</span>
+        </a>
+
+        <a href="{{ route('categories.index') }}"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $menu['category'] ? 'bg-blue-800 shadow' : 'hover:bg-blue-600' }}">
+            <x-heroicon-o-folder class="w-5 h-5 shrink-0" />
+            <span x-show="!collapse">Kategori</span>
         </a>
 
         <a href="#" class="block px-4 py-3 rounded-lg hover:bg-blue-600">
