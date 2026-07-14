@@ -6,8 +6,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 
 Route::get('/', function () {
-    return view('welcome');
+    if (\Illuminate\Support\Facades\Auth::check()) {
+        return redirect()->route('dashboard');
+    }
+
+    return view('auth.landing');
 });
+
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
