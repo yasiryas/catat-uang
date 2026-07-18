@@ -132,6 +132,7 @@ window.categoryPage = function () {
 
                 const response = await fetch(url, {
                     method,
+                    credentials: 'same-origin',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
@@ -170,12 +171,13 @@ window.categoryPage = function () {
             }
         },
 
-        async delete() {
+async delete() {
             this.deleteModal.loading = true;
 
             try {
                 const response = await fetch(route('categories.destroy', this.deleteModal.category.id), {
                     method: 'DELETE',
+                    credentials: 'same-origin',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
@@ -266,6 +268,7 @@ window.transactionPage = function () {
 
             try {
                 const response = await fetch(`${route('transactions.index')}?${params}`, {
+                    credentials: 'same-origin',
                     headers: {
                         'Accept': 'application/json',
                         'X-Requested-With': 'XMLHttpRequest'
@@ -321,6 +324,7 @@ window.transactionPage = function () {
 
                 const response = await fetch(url, {
                     method,
+                    credentials: 'same-origin',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
@@ -352,12 +356,13 @@ window.transactionPage = function () {
             }
         },
 
-        async delete() {
+async delete() {
             this.deleteModal.loading = true;
 
             try {
                 const response = await fetch(route('transactions.destroy', this.deleteModal.transaction.id), {
                     method: 'DELETE',
+                    credentials: 'same-origin',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
