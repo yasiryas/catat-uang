@@ -67,31 +67,37 @@
             <span x-show="!collapse">Kategori</span>
         </a>
 
-        <a href="{{ route('categories.index') }}"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $menu['category'] ? 'bg-blue-800 shadow' : 'hover:bg-blue-600' }}">
-            <x-heroicon-o-folder class="w-5 h-5 shrink-0" />
-            <span x-show="!collapse">Kategori</span>
+
+        <a href="{{ route('transactions.index', ['type' => 'income']) }}"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $menu['income'] ? 'bg-blue-800 shadow' : 'hover:bg-blue-600' }}">
+            <x-heroicon-o-arrow-down-circle class="w-5 h-5 shrink-0" />
+            <span x-show="!collapse">Pemasukan</span>
         </a>
 
-        <a href="#" class="block px-4 py-3 rounded-lg hover:bg-blue-600">
-            Pemasukan
+        <a href="{{ route('transactions.index', ['type' => 'expense']) }}"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $menu['expense'] ? 'bg-blue-800 shadow' : 'hover:bg-blue-600' }}">
+            <x-heroicon-o-arrow-up-circle class="w-5 h-5 shrink-0" />
+            <span x-show="!collapse">Pengeluaran</span>
         </a>
 
-        <a href="#" class="block px-4 py-3 rounded-lg hover:bg-blue-600">
-            Pengeluaran
+        <a href="{{ route('mutations.index') }}"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $menu['mutation'] ? 'bg-blue-800 shadow' : 'hover:bg-blue-600' }}">
+            <x-heroicon-o-switch-horizontal class="w-5 h-5 shrink-0" />
+            <span x-show="!collapse">Mutasi</span>
         </a>
 
-        <a href="#" class="block px-4 py-3 rounded-lg hover:bg-blue-600">
-            Mutasi
+        <a href="{{ route('periods.index') }}"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $menu['period'] ? 'bg-blue-800 shadow' : 'hover:bg-blue-600' }}">
+            <x-heroicon-o-calendar-days class="w-5 h-5 shrink-0" />
+            <span x-show="!collapse">Periode</span>
         </a>
 
-        <a href="#" class="block px-4 py-3 rounded-lg hover:bg-blue-600">
-            Periode
+        <a href="{{ route('adjustments.index') }}"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $menu['adjustment'] ? 'bg-blue-800 shadow' : 'hover:bg-blue-600' }}">
+            <x-heroicon-o-adjustments-horizontal class="w-5 h-5 shrink-0" />
+            <span x-show="!collapse">Adjustment</span>
         </a>
 
-        <a href="#" class="block px-4 py-3 rounded-lg hover:bg-blue-600">
-            Adjustment
-        </a>
 
     </nav>
 

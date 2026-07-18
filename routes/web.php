@@ -6,8 +6,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 
 Route::get('/', function () {
-    return view('welcome');
+    if (\Illuminate\Support\Facades\Auth::check()) {
+        return redirect()->route('dashboard');
+    }
+
+    return view('auth.landing');
 });
+
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -19,6 +25,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('categories', CategoryController::class);
+    Route::resource('periods', \App\Http\Controllers\PeriodController::class);
+    Route::resource('transactions', \App\Http\Controllers\TransactionController::class);
+    Route::resource('mutations', \App\Http\Controllers\MutationController::class);
+    Route::resource('adjustments', \App\Http\Controllers\AdjustmentLogController::class);
 });
+
 
 require __DIR__ . '/auth.php';

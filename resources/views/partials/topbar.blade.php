@@ -46,17 +46,14 @@
         </div>
 
         {{-- Logout --}}
-        <form action="{{ route('logout') }}" method="POST">
+        <x-action-link href="#" class="hidden" />
+        <button x-on:click.prevent="$dispatch('open-modal', 'confirm-logout')"
+            class="p-2 rounded-lg hover:bg-red-100 text-red-600 transition" title="Logout">
 
-            @csrf
+            <x-heroicon-o-arrow-right-on-rectangle class="w-6 h-6" />
 
-            <button class="p-2 rounded-lg hover:bg-red-100 text-red-600 transition" title="Logout">
+        </button>
 
-                <x-heroicon-o-arrow-right-on-rectangle class="w-6 h-6" />
-
-            </button>
-
-        </form>
 
     </div>
 
