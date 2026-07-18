@@ -16,17 +16,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased min-h-screen bg-slate-50 flex items-center justify-center p-4">
+<body class="font-sans antialiased min-h-screen bg-blue-600 flex items-center justify-center p-4">
     <div class="w-full max-w-md">
-        {{-- Logo & Brand --}}
         <div class="text-center mb-8">
-            <a href="/" class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-blue-600 shadow-lg shadow-blue-600/25">
-                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.863 1.282a1.875 1.875 0 013.272 0l.863-1.282m-4.56 0l-.863 1.282a1.875 1.875 0 003.272 0l-.863-1.282m-3.272 0l-.863-1.282a1.875 1.875 0 013.272 0l-.863-1.282" />
-                </svg>
-            </a>
-            <h1 class="mt-5 text-2xl font-bold text-slate-900">{{ config('app.name', 'KeuanganApp') }}</h1>
-            <p class="mt-2 text-slate-500">Sistem Pencatatan Finansial Terpadu</p>
+            <h1 class="text-2xl font-bold text-white">{{ config('app.name', 'KeuanganApp') }}</h1>
+            <p class="mt-2 text-blue-100">Sistem Pencatatan Finansial Terpadu</p>
         </div>
 
         {{-- Card Form --}}
@@ -104,7 +98,6 @@
                     {{-- Submit Button --}}
                     <button type="submit"
                         class="w-full mt-2 py-3 px-4 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-sm shadow-blue-600/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 16l4-4m0 0l-4-4m4 4H7m0 0l4 4m-4-4l-4-4" /></svg>
                         Masuk
                     </button>
                 </form>

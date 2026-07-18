@@ -16,7 +16,7 @@ class StoreTransactionRequest extends FormRequest
         return [
             'period_id' => ['required', 'exists:periods,id'],
             'category_id' => ['required', 'exists:categories,id'],
-            'type' => ['required', 'in:income,expense,mutation,adjustment'],
+            'account_id' => ['nullable', 'exists:accounts,id'],
             'amount' => ['required', 'numeric', 'min:0'],
             'note' => ['nullable', 'string', 'max:1000'],
             'date' => ['required', 'date'],

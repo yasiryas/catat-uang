@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('transactions', function (Blueprint $table) {
+            $table->foreignId('account_id')->nullable()->constrained()->onDelete('set null')->after('category_id');
+        });
+
+        Schema::table('mutations', function (Blueprint $table) {
+            $table->foreignId('from_account_id')->nullable()->constrained('accounts')->onDelete('set null')->after('period_id');
+            $table->foreignId('to_account_id')->nullable()->constrained('accounts')->onDelete('set null')->after('from_account_id');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('mutations', function (Blueprint $table) {
+            $table->dropForeign(['from_account_id']);
+            $table->dropForeign(['to_account_id']);
+            $table->dropColumn(['from_account_id', 'to_account_id']);
+        });
+
+        Schema::table('transactions', function (Blueprint $table) {
+            $table->dropForeign(['account_id']);
+            $table->dropColumn('account_id');
+        });
+    }
+};

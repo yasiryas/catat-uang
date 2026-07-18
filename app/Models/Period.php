@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Period extends Model
 {
-    protected $fillable = ['user_id', 'year', 'month', 'opening_balance', 'closing_balance', 'is_closed'];
+    protected $fillable = ['user_id', 'name', 'start_date', 'end_date', 'year', 'month', 'opening_balance', 'closing_balance', 'is_closed'];
 
     public function transactions()
     {
@@ -20,6 +20,6 @@ class Period extends Model
 
     public function scopeCurrent($query)
     {
-        return $query->where('year', date('Y'))->where('month', date('m'))->first();
+        return $query->where('year', date('Y'))->where('month', date('m'));
     }
 }

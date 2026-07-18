@@ -1,20 +1,20 @@
-@extends('layouts.guest')
-
-@section('content')
-    <div class="min-h-screen flex items-center justify-center px-4">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>KeuanganApp</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="font-sans antialiased bg-blue-700">
+    <div class="min-h-screen flex items-center justify-center px-4 py-8">
         <div class="w-full max-w-5xl">
-            <div class="bg-white/80 backdrop-blur rounded-2xl shadow-xl overflow-hidden">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
                 <div class="grid grid-cols-1 lg:grid-cols-2">
                     <div class="p-8 md:p-12 bg-gradient-to-br from-blue-600 to-indigo-700 text-white">
-                        <div class="flex items-center gap-3 mb-6">
-                            <div
-                                class="w-10 h-10 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center">
-                                <span class="text-xl font-bold">K</span>
-                            </div>
-                            <div>
-                                <div class="text-sm opacity-90">KeuanganApp</div>
-                                <div class="text-2xl font-bold leading-tight">Kelola pemasukan & pengeluaran</div>
-                            </div>
+                        <div class="mb-6">
+                            <div class="text-2xl font-bold leading-tight">Kelola pemasukan & pengeluaran</div>
                         </div>
 
                         <p class="opacity-95 text-sm md:text-base leading-relaxed">
@@ -49,19 +49,17 @@
 
                     <div class="p-8 md:p-12">
                         <div class="mb-6">
-                            <h2 class="text-2xl font-bold text-gray-900">Selamat datang 👋</h2>
+                            <h2 class="text-2xl font-bold text-gray-900">Selamat datang</h2>
                             <p class="text-gray-600 mt-2 text-sm leading-relaxed">
                                 Untuk mengakses data keuangan, silakan login terlebih dahulu.
                             </p>
                         </div>
 
                         <div class="space-y-4">
-                            @if (Route::has('login'))
-                                <a href="{{ route('login') }}"
-                                    class="inline-flex w-full items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-white font-semibold hover:bg-blue-700 transition">
-                                    Login
-                                </a>
-                            @endif
+                            <a href="{{ route('login') }}"
+                                class="inline-flex w-full items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-white font-semibold hover:bg-blue-700 transition">
+                                Login
+                            </a>
 
                             @if (Route::has('register'))
                                 <a href="{{ route('register') }}"
@@ -88,4 +86,5 @@
             </div>
         </div>
     </div>
-@endsection
+</body>
+</html>

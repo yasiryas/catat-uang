@@ -3,46 +3,55 @@
 @section('title', 'Edit Periode')
 
 @section('content')
-    <div class="max-w-3xl mx-auto bg-white rounded-xl shadow p-6">
-        <h1 class="text-2xl font-bold mb-4">Edit Periode</h1>
+    <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h1 class="text-2xl font-bold">Edit Periode</h1>
+            <a href="{{ route('periods.index') }}" class="text-slate-400 hover:text-slate-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </a>
+        </div>
 
         <form method="POST" action="{{ route('periods.update', $period) }}" class="space-y-4">
             @csrf
             @method('PUT')
 
             <div>
-                <x-input-label for="name" :value="'Nama'" />
-                <x-text-input id="name" name="name" type="text" class="mt-1 block w-full"
-                    value="{{ old('name', $period->name) }}" required autofocus />
-                <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                <label class="block text-sm font-medium text-slate-700 mb-1">Nama</label>
+                <input type="text" name="name" value="{{ old('name', $period->name) }}" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" placeholder="Contoh: Januari 2026" required autofocus>
+                @error('name')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
             </div>
 
             <div>
-                <x-input-label for="start_date" :value="'Tanggal Mulai'" />
-                <x-text-input id="start_date" name="start_date" type="date" class="mt-1 block w-full"
-                    value="{{ old('start_date', $period->start_date) }}" required />
-                <x-input-error :messages="$errors->get('start_date')" class="mt-2" />
+                <label class="block text-sm font-medium text-slate-700 mb-1">Tanggal Mulai</label>
+                <input type="date" name="start_date" value="{{ old('start_date', $period->start_date) }}" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" required>
+                @error('start_date')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
             </div>
 
             <div>
-                <x-input-label for="end_date" :value="'Tanggal Akhir'" />
-                <x-text-input id="end_date" name="end_date" type="date" class="mt-1 block w-full"
-                    value="{{ old('end_date', $period->end_date) }}" required />
-                <x-input-error :messages="$errors->get('end_date')" class="mt-2" />
+                <label class="block text-sm font-medium text-slate-700 mb-1">Tanggal Akhir</label>
+                <input type="date" name="end_date" value="{{ old('end_date', $period->end_date) }}" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" required>
+                @error('end_date')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
             </div>
 
             <div>
                 <label class="flex items-center gap-2">
-                    <input type="checkbox" name="is_closed" value="1" class="rounded"
-                        {{ $period->is_closed ? 'checked' : '' }} />
-                    <span>Closed</span>
+                    <input type="checkbox" name="is_closed" value="1" class="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" {{ old('is_closed', $period->is_closed) ? 'checked' : '' }}>
+                    <span class="text-sm text-slate-700">Closed</span>
                 </label>
-                <x-input-error :messages="$errors->get('is_closed')" class="mt-2" />
+                @error('is_closed')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
             </div>
 
-            <div class="flex items-center justify-end gap-3 pt-4">
-                <a href="{{ route('periods.index') }}" class="px-4 py-2 rounded-lg border">Batal</a>
-                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg">Simpan</button>
+            <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
+                <a href="{{ route('periods.index') }}" class="px-4 py-2.5 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">Batal</a>
+                <button type="submit" class="px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">Perbarui</button>
             </div>
         </form>
     </div>

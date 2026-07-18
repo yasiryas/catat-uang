@@ -3,7 +3,7 @@
     'maxWidth' => '2xl',
 ])
 
-<x-modal :name="$name" :show="false" :maxWidth="$maxWidth">
+<x-modal :modal-name="$name" :show="false" :maxWidth="$maxWidth">
     <div class="p-6">
         <div class="flex items-start gap-3">
             <div class="mt-1 h-9 w-9 rounded-full bg-red-100 text-red-600 flex items-center justify-center">

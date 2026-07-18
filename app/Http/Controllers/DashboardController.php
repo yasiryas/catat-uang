@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Period;
 use App\Models\Transaction;
+use App\Services\PeriodService;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(PeriodService $periodService)
     {
-        $period = Period::current()->first();
+        $periodService->ensureAllMonthsThisYear(auth()->id());
+
+        $period = Period::where('user_id', auth()->id())->current()->first();
         $totalIncome = 0;
         $totalExpense = 0;
         $netBalance = 0;

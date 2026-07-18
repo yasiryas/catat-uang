@@ -15,8 +15,8 @@ class UpdateMutationRequest extends FormRequest
     {
         return [
             'period_id' => ['required', 'exists:periods,id'],
-            'from_account' => ['nullable', 'string', 'max:255'],
-            'to_account' => ['nullable', 'string', 'max:255'],
+            'from_account_id' => ['nullable', 'exists:accounts,id'],
+            'to_account_id' => ['nullable', 'exists:accounts,id'],
             'amount' => ['required', 'numeric', 'min:0'],
             'note' => ['nullable', 'string', 'max:1000'],
             'date' => ['required', 'date'],

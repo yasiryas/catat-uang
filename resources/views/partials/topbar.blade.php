@@ -10,11 +10,7 @@
 
         </button>
 
-        <h2 class="text-2xl font-bold text-gray-800">
 
-            @yield('title')
-
-        </h2>
 
     </div>
 

@@ -8,6 +8,7 @@
 
     <title>@yield('title') - KeuanganApp</title>
 
+    @routes
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 

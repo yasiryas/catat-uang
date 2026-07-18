@@ -25,11 +25,18 @@ $maxWidth = [
                     document.body.classList.remove('overflow-y-hidden');
                 }
             });
-            // Listen for external open/close events
-            this.$on('open-modal', name => name === '{{ $modalName }}' && (this.show = true));
-            this.$on('close-modal', name => name === '{{ $modalName }}' && (this.show = false));
+        },
+        handleOpen(detail) {
+            const name = typeof detail === 'string' ? detail : detail?.name;
+            if (name === '{{ $modalName }}') this.show = true;
+        },
+        handleClose(detail) {
+            const name = typeof detail === 'string' ? detail : detail?.name;
+            if (name === '{{ $modalName }}') this.show = false;
         }
     }"
+    x-on:open-modal.window="handleOpen($event.detail)"
+    x-on:close-modal.window="handleClose($event.detail)"
     x-on:keydown.escape.window="show = false"
     x-on:keydown.tab.prevent="$event.shiftKey ? \$refs.prev?.focus() : \$refs.next?.focus()"
     x-show="show"

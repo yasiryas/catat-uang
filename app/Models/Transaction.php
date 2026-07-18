@@ -10,6 +10,7 @@ class Transaction extends Model
         'user_id',
         'period_id',
         'category_id',
+        'account_id',
         'type',
         'amount',
         'note',
@@ -29,6 +30,11 @@ class Transaction extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
     }
 
     public function user()

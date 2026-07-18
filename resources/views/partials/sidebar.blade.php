@@ -2,10 +2,11 @@
 @php
     $menu = [
         'dashboard' => request()->routeIs('dashboard'),
+        'account' => request()->routeIs('accounts.*'),
         'category' => request()->routeIs('categories.*'),
-        'income' => request()->routeIs('income.*'),
-        'expense' => request()->routeIs('expense.*'),
-        'mutation' => request()->routeIs('mutation.*'),
+        'income' => request()->routeIs('transactions.income.*'),
+        'expense' => request()->routeIs('transactions.expense.*'),
+        'mutation' => request()->routeIs('mutations.*'),
         'period' => request()->routeIs('periods.*'),
         'adjustment' => request()->routeIs('adjustments.*'),
     ];
@@ -67,14 +68,19 @@
             <span x-show="!collapse">Kategori</span>
         </a>
 
+        <a href="{{ route('accounts.index') }}"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $menu['account'] ? 'bg-blue-800 shadow' : 'hover:bg-blue-600' }}">
+            <x-heroicon-o-wallet class="w-5 h-5 shrink-0" />
+            <span x-show="!collapse">Dompet</span>
+        </a>
 
-        <a href="{{ route('transactions.index', ['type' => 'income']) }}"
+        <a href="{{ route('transactions.income.index') }}"
             class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $menu['income'] ? 'bg-blue-800 shadow' : 'hover:bg-blue-600' }}">
             <x-heroicon-o-arrow-down-circle class="w-5 h-5 shrink-0" />
             <span x-show="!collapse">Pemasukan</span>
         </a>
 
-        <a href="{{ route('transactions.index', ['type' => 'expense']) }}"
+        <a href="{{ route('transactions.expense.index') }}"
             class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $menu['expense'] ? 'bg-blue-800 shadow' : 'hover:bg-blue-600' }}">
             <x-heroicon-o-arrow-up-circle class="w-5 h-5 shrink-0" />
             <span x-show="!collapse">Pengeluaran</span>
@@ -82,7 +88,7 @@
 
         <a href="{{ route('mutations.index') }}"
             class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $menu['mutation'] ? 'bg-blue-800 shadow' : 'hover:bg-blue-600' }}">
-            <x-heroicon-o-switch-horizontal class="w-5 h-5 shrink-0" />
+            <x-heroicon-o-arrows-right-left class="w-5 h-5 shrink-0" />
             <span x-show="!collapse">Mutasi</span>
         </a>
 
