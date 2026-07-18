@@ -14,7 +14,6 @@ class AdjustmentLog extends Model
         'reson',
     ];
 
-
     public function transaction()
     {
         return $this->belongsTo(Transaction::class);

@@ -52,11 +52,11 @@
             </div>
         </div>
 
-        <x-modal name="category-form" :show="modal.show" @close="modal.show = false" max-width="lg">
+        <x-modal modal-name="category-form" :show="false" max-width="lg">
             <div class="p-6">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold" x-text="modal.mode === 'create' ? 'Tambah Kategori' : 'Edit Kategori'"></h2>
-                    <button @click="modal.show = false" class="text-slate-400 hover:text-slate-600">
+                    <button @click="$dispatch('close-modal', { name: 'category-form' })" class="text-slate-400 hover:text-slate-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
                 </div>
@@ -95,7 +95,7 @@
                     </div>
 
                     <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200">
-                        <button type="button" @click="modal.show = false" class="px-4 py-2.5 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">
+                        <button type="button" @click="$dispatch('close-modal', { name: 'category-form' })" class="px-4 py-2.5 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">
                             Batal
                         </button>
                         <button type="submit" :disabled="modal.loading" class="px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
@@ -112,7 +112,7 @@
             </div>
         </x-modal>
 
-        <x-modal name="category-delete" :show="deleteModal.show" @close="deleteModal.show = false" max-width="md">
+        <x-modal modal-name="category-delete" :show="false" max-width="md">
             <div class="p-6 text-center">
                 <div class="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
                     <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
@@ -120,7 +120,7 @@
                 <h3 class="text-lg font-semibold mb-2">Hapus Kategori</h3>
                 <p class="text-slate-600 mb-6">Yakin ingin menghapus kategori <strong x-text="deleteModal.category?.name"></strong>? Tindakan ini tidak dapat dibatalkan.</p>
                 <div class="flex justify-center gap-3">
-                    <button @click="deleteModal.show = false" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">
+                    <button @click="$dispatch('close-modal', { name: 'category-delete' })" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">
                         Batal
                     </button>
                     <button @click="delete()" :disabled="deleteModal.loading" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">

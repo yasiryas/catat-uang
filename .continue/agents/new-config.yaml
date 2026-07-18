@@ -1,0 +1,49 @@
+name: Local Ollama
+version: 1.0.0
+schema: v1
+
+models:
+  - name: Gemma 3 1B
+    provider: ollama
+    model: gemma3:1b
+    roles:
+      - chat
+      - edit
+      - apply
+      - autocomplete
+
+context:
+  - provider: code
+  - provider: docs
+  - provider: diff
+  - provider: terminal
+  - provider: problems
+  - provider: folder
+
+slashCommands:
+  - name: share
+    description: Export the current chat session
+
+  - name: commit
+    description: Generate a Git commit message
+
+  - name: cmd
+    description: Generate a terminal command
+
+  - name: explain
+    description: Explain selected code
+
+  - name: test
+    description: Generate unit tests
+
+  - name: fix
+    description: Find and fix bugs
+
+  - name: optimize
+    description: Optimize code
+
+  - name: docs
+    description: Generate documentation
+
+  - name: refactor
+    description: Refactor selected code

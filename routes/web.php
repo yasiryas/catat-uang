@@ -1,19 +1,22 @@
 <?php
 
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdjustmentLogController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MutationController;
+use App\Http\Controllers\PeriodController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TransactionController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    if (\Illuminate\Support\Facades\Auth::check()) {
+    if (Auth::check()) {
         return redirect()->route('dashboard');
     }
 
     return view('auth.landing');
 });
-
-
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -25,11 +28,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('categories', CategoryController::class);
-    Route::resource('periods', \App\Http\Controllers\PeriodController::class);
-    Route::resource('transactions', \App\Http\Controllers\TransactionController::class);
-    Route::resource('mutations', \App\Http\Controllers\MutationController::class);
-    Route::resource('adjustments', \App\Http\Controllers\AdjustmentLogController::class);
+    Route::resource('periods', PeriodController::class);
+    Route::resource('transactions', TransactionController::class);
+    Route::resource('mutations', MutationController::class);
+    Route::resource('adjustments', AdjustmentLogController::class);
 });
 
-
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

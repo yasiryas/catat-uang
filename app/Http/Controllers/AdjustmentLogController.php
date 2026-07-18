@@ -11,6 +11,7 @@ class AdjustmentLogController extends Controller
     public function index()
     {
         $adjustments = AdjustmentLog::latest()->paginate(10);
+
         return view('adjustments.index', compact('adjustments'));
     }
 
@@ -19,10 +20,10 @@ class AdjustmentLogController extends Controller
         return view('adjustments.create');
     }
 
-
     public function store(StoreAdjustmentLogRequest $request)
     {
         AdjustmentLog::create($request->validated() + ['user_id' => auth()->id()]);
+
         return redirect()->route('adjustments.index')->with('success', 'Adjustment berhasil ditambahkan.');
     }
 
@@ -39,12 +40,14 @@ class AdjustmentLogController extends Controller
     public function update(UpdateAdjustmentLogRequest $request, AdjustmentLog $adjustment)
     {
         $adjustment->update($request->validated());
+
         return redirect()->route('adjustments.index')->with('success', 'Adjustment berhasil diperbarui.');
     }
 
     public function destroy(AdjustmentLog $adjustment)
     {
         $adjustment->delete();
+
         return redirect()->route('adjustments.index')->with('success', 'Adjustment berhasil dihapus.');
     }
 }

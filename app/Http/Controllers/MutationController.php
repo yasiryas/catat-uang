@@ -11,6 +11,7 @@ class MutationController extends Controller
     public function index()
     {
         $mutations = Mutation::latest()->paginate(10);
+
         return view('mutations.index', compact('mutations'));
     }
 
@@ -20,10 +21,10 @@ class MutationController extends Controller
         return view('mutations.create');
     }
 
-
     public function store(StoreMutationRequest $request)
     {
         Mutation::create($request->validated() + ['user_id' => auth()->id()]);
+
         return redirect()->route('mutations.index')->with('success', 'Mutasi berhasil ditambahkan.');
     }
 
@@ -40,12 +41,14 @@ class MutationController extends Controller
     public function update(UpdateMutationRequest $request, Mutation $mutation)
     {
         $mutation->update($request->validated());
+
         return redirect()->route('mutations.index')->with('success', 'Mutasi berhasil diperbarui.');
     }
 
     public function destroy(Mutation $mutation)
     {
         $mutation->delete();
+
         return redirect()->route('mutations.index')->with('success', 'Mutasi berhasil dihapus.');
     }
 }
