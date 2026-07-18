@@ -930,6 +930,100 @@ window.mutationPage = function () {
     }
 };
 
+window.userPage = function () {
+    return {
+        modal: { show: false, mode: 'create', loading: false, errors: {}, form: { id: null, name: '', email: '', password: '', password_confirmation: '', is_admin: false } },
+        deleteModal: { show: false, loading: false, user: null },
+        users: [],
+        pagination: { current_page: 1, last_page: 1, total: 0 },
+
+        async fetchUsers(page = 1) {
+            try {
+                const response = await fetch(`${route('users.index')}?page=${page}`, {
+                    credentials: 'same-origin',
+                    headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                const data = await response.json();
+                this.users = data.data;
+                this.pagination = data.pagination;
+            } catch (error) {
+                console.error('Failed to load users:', error);
+            }
+        },
+
+        create() {
+            this.modal.mode = 'create';
+            this.modal.form = { id: null, name: '', email: '', password: '', password_confirmation: '', is_admin: false };
+            this.modal.errors = {};
+            this.modal.show = true;
+        },
+
+        edit(user) {
+            this.modal.mode = 'edit';
+            this.modal.form = { id: user.id, name: user.name, email: user.email, password: '', password_confirmation: '', is_admin: user.is_admin };
+            this.modal.errors = {};
+            this.modal.show = true;
+        },
+
+        confirmDelete(user) {
+            this.deleteModal.user = user;
+            this.deleteModal.show = true;
+        },
+
+        async submit() {
+            this.modal.loading = true;
+            this.modal.errors = {};
+            try {
+                const url = this.modal.mode === 'create' ? route('users.store') : route('users.update', this.modal.form.id);
+                const method = this.modal.mode === 'create' ? 'POST' : 'PUT';
+
+                const body = {
+                    name: this.modal.form.name,
+                    email: this.modal.form.email,
+                    is_admin: this.modal.form.is_admin,
+                };
+                if (this.modal.form.password) {
+                    body.password = this.modal.form.password;
+                    body.password_confirmation = this.modal.form.password_confirmation;
+                }
+
+                const response = await fetch(url, {
+                    method, credentials: 'same-origin',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                    body: JSON.stringify(body)
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    if (response.status === 422 && data.errors) { this.modal.errors = data.errors; this.$toast.error('Validasi gagal', 'Error'); }
+                    else { throw new Error(data.message || 'Terjadi kesalahan'); }
+                    return;
+                }
+                this.modal.show = false;
+                this.$toast.success(data.message);
+                await this.fetchUsers(this.pagination.current_page);
+            } catch (error) { this.$toast.error(error.message); }
+            finally { this.modal.loading = false; }
+        },
+
+        async destroy() {
+            this.deleteModal.loading = true;
+            try {
+                const response = await fetch(route('users.destroy', this.deleteModal.user.id), {
+                    method: 'DELETE', credentials: 'same-origin',
+                    headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message || 'Gagal menghapus pengguna');
+                this.deleteModal.show = false;
+                this.$toast.success(data.message);
+                this.users = this.users.filter(u => u.id !== this.deleteModal.user.id);
+                this.pagination.total--;
+            } catch (error) { this.$toast.error(error.message); }
+            finally { this.deleteModal.loading = false; }
+        }
+    }
+};
+
 window.adjustmentPage = function () {
     return {
         modal: { show: false, mode: 'create', loading: false, errors: {}, form: { id: null, period_id: '', type: 'income', amount: '', note: '', date: nowDateTime() } },

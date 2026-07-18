@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
-use Illuminate\View\View;
 
 class UserController extends Controller
 {
@@ -21,18 +19,26 @@ class UserController extends Controller
         });
     }
 
-    public function index(): View
+    public function index(Request $request)
     {
         $users = User::latest()->paginate(10);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'data' => $users->items(),
+                'pagination' => [
+                    'current_page' => $users->currentPage(),
+                    'last_page' => $users->lastPage(),
+                    'per_page' => $users->perPage(),
+                    'total' => $users->total(),
+                ],
+            ]);
+        }
+
         return view('users.index', compact('users'));
     }
 
-    public function create(): View
-    {
-        return view('users.create');
-    }
-
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -41,22 +47,24 @@ class UserController extends Controller
             'is_admin' => ['boolean'],
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'is_admin' => $request->boolean('is_admin'),
         ]);
 
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'message' => 'Pengguna berhasil ditambahkan.',
+                'data' => $user,
+            ], 201);
+        }
+
         return redirect()->route('users.index')->with('success', 'Pengguna berhasil ditambahkan.');
     }
 
-    public function edit(User $user): View
-    {
-        return view('users.edit', compact('user'));
-    }
-
-    public function update(Request $request, User $user): RedirectResponse
+    public function update(Request $request, User $user)
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -77,16 +85,30 @@ class UserController extends Controller
 
         $user->save();
 
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'message' => 'Pengguna berhasil diperbarui.',
+                'data' => $user,
+            ]);
+        }
+
         return redirect()->route('users.index')->with('success', 'Pengguna berhasil diperbarui.');
     }
 
-    public function destroy(User $user): RedirectResponse
+    public function destroy(User $user, Request $request)
     {
         if ($user->id === auth()->id()) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['message' => 'Tidak dapat menghapus akun sendiri.'], 422);
+            }
             return back()->with('error', 'Tidak dapat menghapus akun sendiri.');
         }
 
         $user->delete();
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['message' => 'Pengguna berhasil dihapus.']);
+        }
 
         return redirect()->route('users.index')->with('success', 'Pengguna berhasil dihapus.');
     }

@@ -16,21 +16,15 @@ class EnsureCurrentPeriodExists
             $currentMonth = date('m');
             $userId = Auth::id();
 
-            $period = Period::where('year', $currentYear)
-                ->where('month', $currentMonth)
-                ->where('user_id', $userId)
-                ->first();
-
-            if (! $period) {
-                Period::create([
-                    'user_id' => $userId,
-                    'year' => $currentYear,
-                    'month' => $currentMonth,
-                    'opening_balance' => 0,
-                    'closing_balance' => 0,
-                    'is_closed' => false,
-                ]);
-            }
+            Period::firstOrCreate([
+                'user_id' => $userId,
+                'year' => $currentYear,
+                'month' => $currentMonth,
+            ], [
+                'opening_balance' => 0,
+                'closing_balance' => 0,
+                'is_closed' => false,
+            ]);
         }
 
         return $next($request);

@@ -7,10 +7,10 @@
     <title>KeuanganApp</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased min-h-screen bg-slate-100">
+<body class="font-sans antialiased min-h-screen bg-gray-100">
     <div class="min-h-screen flex items-center justify-center px-4 py-12">
         <div class="w-full max-w-5xl">
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <div class="grid grid-cols-1 lg:grid-cols-2">
                     <div class="p-8 md:p-12 bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex flex-col justify-between">
                         <div>
@@ -51,29 +51,29 @@
 
                     <div class="p-8 md:p-12 flex flex-col justify-center">
                         <div class="mb-6">
-                            <h2 class="text-2xl font-bold text-slate-900">Selamat Datang</h2>
-                            <p class="text-slate-500 mt-2 text-sm leading-relaxed">
+                            <h2 class="text-2xl font-bold text-gray-900">Selamat Datang</h2>
+                            <p class="text-gray-500 mt-2 text-sm leading-relaxed">
                                 Aplikasi pencatatan keuangan pribadi yang sederhana dan terstruktur.
                             </p>
                         </div>
 
                         <div class="space-y-3">
                             <a href="{{ route('login') }}"
-                                class="inline-flex w-full items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-white font-semibold hover:bg-blue-700 transition shadow-sm">
+                                class="inline-flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-3 text-white font-semibold hover:bg-blue-700 transition shadow-sm">
                                 Login
                             </a>
 
                             @if (Route::has('register'))
                                 <a href="{{ route('register') }}"
-                                    class="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 px-4 py-3 text-slate-700 font-semibold hover:bg-slate-50 transition">
+                                    class="inline-flex w-full items-center justify-center rounded-lg border border-gray-300 px-4 py-3 text-gray-700 font-semibold hover:bg-gray-50 transition">
                                     Buat Akun Baru
                                 </a>
                             @endif
                         </div>
 
-                        <div class="mt-6 bg-slate-50 rounded-xl border border-slate-100 p-4">
-                            <div class="text-xs font-semibold text-slate-700 uppercase tracking-wide">Cara Kerja</div>
-                            <ol class="mt-3 text-sm text-slate-600 space-y-2">
+                        <div class="mt-6 bg-gray-50 rounded-lg border border-gray-200 p-4">
+                            <div class="text-xs font-semibold text-gray-700 uppercase tracking-wide">Cara Kerja</div>
+                            <ol class="mt-3 text-sm text-gray-600 space-y-2">
                                 <li class="flex items-center gap-2">
                                     <span class="flex items-center justify-center w-5 h-5 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">1</span>
                                     Buat periode keuangan
@@ -92,7 +92,7 @@
                 </div>
             </div>
 
-            <p class="mt-6 text-center text-xs text-slate-400">
+            <p class="mt-6 text-center text-xs text-gray-400">
                 &copy; {{ date('Y') }} {{ config('app.name', 'KeuanganApp') }}
             </p>
         </div>
