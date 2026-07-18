@@ -33,17 +33,19 @@
                             <th class="text-left p-4 font-medium text-slate-700">Periode</th>
                             <th class="text-left p-4 font-medium text-slate-700">Dompet</th>
                             <th class="text-right p-4 font-medium text-slate-700">Jumlah</th>
+                            <th class="text-left p-4 font-medium text-slate-700">Keterangan</th>
                             <th class="text-center p-4 font-medium text-slate-700">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200">
                         <template x-for="transaction in transactions" :key="transaction.id">
                             <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="p-4 whitespace-nowrap" x-text="transaction.date"></td>
+                                <td class="p-4 whitespace-nowrap" x-text="formatDateTime(transaction.date)"></td>
                                 <td class="p-4" x-text="transaction.category?.name ?? '-'"></td>
                                 <td class="p-4" x-text="transaction.period?.name ?? '-'"></td>
                                 <td class="p-4" x-text="transaction.account?.name ?? '-'"></td>
-                                <td class="p-4 text-right font-medium text-emerald-600" x-text="formatCurrency(transaction.amount)"></td>
+                                <td class="p-4 text-right font-medium" :class="type === 'expense' ? 'text-red-600' : 'text-emerald-600'" x-text="formatCurrency(transaction.amount)"></td>
+                                <td class="p-4 text-slate-500 text-sm" x-text="transaction.note ?? '-'"></td>
                                 <td class="p-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
                                         <button @click="edit(transaction)" class="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">Edit</button>
@@ -53,7 +55,7 @@
                             </tr>
                         </template>
                         <tr x-show="transactions.length === 0">
-                            <td colspan="6" class="p-10 text-center text-slate-500" x-text="emptyMessage"></td>
+                            <td colspan="7" class="p-10 text-center text-slate-500" x-text="emptyMessage"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -92,7 +94,7 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Tanggal</label>
-                            <input type="date" x-model="modal.form.date" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" required>
+                            <input type="datetime-local" x-model="modal.form.date" class="select-input" required>
                             <template x-if="modal.errors.date">
                                 <p class="mt-1 text-sm text-red-600" x-text="modal.errors.date[0]"></p>
                             </template>
@@ -100,12 +102,10 @@
 
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Periode</label>
-                            <select x-model="modal.form.period_id" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" required>
-                                <option value="">Pilih Periode</option>
-                                <template x-for="period in periods" :key="period.id">
-                                    <option :value="period.id" x-text="period.name"></option>
-                                </template>
-                            </select>
+                            <x-custom-select xModel="modal.form.period_id" variant="input"
+                                placeholder="Pilih Periode"
+                                alpine-items="periods"
+                                value-key="id" label-key="name" />
                             <template x-if="modal.errors.period_id">
                                 <p class="mt-1 text-sm text-red-600" x-text="modal.errors.period_id[0]"></p>
                             </template>
@@ -113,12 +113,10 @@
 
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Kategori</label>
-                            <select x-model="modal.form.category_id" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" required>
-                                <option value="">Pilih Kategori</option>
-                                <template x-for="category in categories" :key="category.id">
-                                    <option :value="category.id" x-text="category.name"></option>
-                                </template>
-                            </select>
+                            <x-custom-select xModel="modal.form.category_id" variant="input"
+                                placeholder="Pilih Kategori"
+                                alpine-items="categories"
+                                value-key="id" label-key="name" />
                             <template x-if="modal.errors.category_id">
                                 <p class="mt-1 text-sm text-red-600" x-text="modal.errors.category_id[0]"></p>
                             </template>
@@ -126,12 +124,10 @@
 
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Dompet</label>
-                            <select x-model="modal.form.account_id" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow">
-                                <option value="">Pilih Dompet</option>
-                                <template x-for="account in accounts" :key="account.id">
-                                    <option :value="account.id" x-text="account.name"></option>
-                                </template>
-                            </select>
+                            <x-custom-select xModel="modal.form.account_id" variant="input"
+                                placeholder="Pilih Dompet"
+                                alpine-items="accounts"
+                                value-key="id" label-key="name" />
                             <template x-if="modal.errors.account_id">
                                 <p class="mt-1 text-sm text-red-600" x-text="modal.errors.account_id[0]"></p>
                             </template>
@@ -150,7 +146,7 @@
 
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Catatan (Opsional)</label>
-                            <textarea x-model="modal.form.note" rows="3" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" placeholder="Catatan tambahan..."></textarea>
+                            <textarea x-model="modal.form.note" rows="3" class="select-input" placeholder="Catatan tambahan..."></textarea>
                         </div>
                     </div>
 

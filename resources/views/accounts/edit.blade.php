@@ -17,7 +17,7 @@
 
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Nama Dompet</label>
-                <input type="text" name="name" value="{{ old('name', $account->name) }}" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" placeholder="Contoh: Mandiri, BCA, Cash" required autofocus>
+                <input type="text" name="name" value="{{ old('name', $account->name) }}" class="select-input" placeholder="Contoh: Mandiri, BCA, Cash" required autofocus>
                 @error('name')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
@@ -25,11 +25,13 @@
 
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Tipe</label>
-                <select name="type" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" required>
-                    <option value="bank" {{ old('type', $account->type) === 'bank' ? 'selected' : '' }}>Bank</option>
-                    <option value="cash" {{ old('type', $account->type) === 'cash' ? 'selected' : '' }}>Tunai</option>
-                    <option value="ewallet" {{ old('type', $account->type) === 'ewallet' ? 'selected' : '' }}>E-Wallet</option>
-                </select>
+                <x-custom-select name="type" variant="input"
+                    :items="[
+                        ['id' => 'bank', 'name' => 'Bank'],
+                        ['id' => 'cash', 'name' => 'Tunai'],
+                        ['id' => 'ewallet', 'name' => 'E-Wallet'],
+                    ]"
+                    value-key="id" label-key="name" value="{{ old('type', $account->type) }}" />
                 @error('type')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
@@ -37,7 +39,7 @@
 
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Keterangan (Opsional)</label>
-                <textarea name="description" rows="3" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" placeholder="Keterangan tambahan...">{{ old('description', $account->description) }}</textarea>
+                <textarea name="description" rows="3" class="select-input" placeholder="Keterangan tambahan...">{{ old('description', $account->description) }}</textarea>
                 @error('description')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror

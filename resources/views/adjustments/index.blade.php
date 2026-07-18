@@ -34,7 +34,7 @@
                     <tbody class="divide-y divide-slate-200">
                         @forelse($adjustments as $adjustment)
                             <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="p-4 whitespace-nowrap">{{ $adjustment->date }}</td>
+                                <td class="p-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($adjustment->date)->locale('id')->isoFormat('DD MMM YYYY, HH:mm') }}</td>
                                 <td class="p-4">{{ $adjustment->period?->name ?? '-' }}</td>
                                 <td class="p-4">
                                     @if ($adjustment->type === 'income')
@@ -83,12 +83,10 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Periode</label>
-                            <select x-model="modal.form.period_id" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" required>
-                                <option value="">Pilih Periode</option>
-                                <template x-for="period in periods" :key="period.id">
-                                    <option :value="period.id" x-text="period.name"></option>
-                                </template>
-                            </select>
+                            <x-custom-select xModel="modal.form.period_id" variant="input"
+                                placeholder="Pilih Periode"
+                                alpine-items="periods"
+                                value-key="id" label-key="name" />
                             <template x-if="modal.errors.period_id">
                                 <p class="mt-1 text-sm text-red-600" x-text="modal.errors.period_id[0]"></p>
                             </template>
@@ -96,10 +94,12 @@
 
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Jenis</label>
-                            <select x-model="modal.form.type" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" required>
-                                <option value="income">Pemasukan</option>
-                                <option value="expense">Pengeluaran</option>
-                            </select>
+                            <x-custom-select xModel="modal.form.type" variant="input"
+                                :items="[
+                                    ['id' => 'income', 'name' => 'Pemasukan'],
+                                    ['id' => 'expense', 'name' => 'Pengeluaran'],
+                                ]"
+                                value-key="id" label-key="name" />
                             <template x-if="modal.errors.type">
                                 <p class="mt-1 text-sm text-red-600" x-text="modal.errors.type[0]"></p>
                             </template>
@@ -118,7 +118,7 @@
 
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Tanggal</label>
-                            <input type="date" x-model="modal.form.date" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" required>
+                            <input type="datetime-local" x-model="modal.form.date" class="select-input" required>
                             <template x-if="modal.errors.date">
                                 <p class="mt-1 text-sm text-red-600" x-text="modal.errors.date[0]"></p>
                             </template>
@@ -126,7 +126,7 @@
 
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Catatan (Opsional)</label>
-                            <textarea x-model="modal.form.note" rows="3" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" placeholder="Catatan..."></textarea>
+                            <textarea x-model="modal.form.note" rows="3" class="select-input" placeholder="Catatan..."></textarea>
                         </div>
                     </div>
 

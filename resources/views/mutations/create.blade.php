@@ -16,12 +16,10 @@
 
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Periode</label>
-                <select name="period_id" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" required>
-                    <option value="">Pilih Periode</option>
-                    @foreach ($periods as $p)
-                        <option value="{{ $p->id }}" {{ old('period_id') == $p->id ? 'selected' : '' }}>{{ $p->name }}</option>
-                    @endforeach
-                </select>
+                <x-custom-select name="period_id" variant="input"
+                    placeholder="Pilih Periode"
+                    :items="$periods->map(fn($p) => ['id' => $p->id, 'name' => $p->name])->toArray()"
+                    value-key="id" label-key="name" value="{{ old('period_id') }}" />
                 @error('period_id')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
@@ -29,12 +27,10 @@
 
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Dari Dompet</label>
-                <select name="from_account_id" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow">
-                    <option value="">Pilih Dompet Asal</option>
-                    @foreach ($accounts as $acc)
-                        <option value="{{ $acc->id }}" {{ old('from_account_id') == $acc->id ? 'selected' : '' }}>{{ $acc->name }}</option>
-                    @endforeach
-                </select>
+                <x-custom-select name="from_account_id" variant="input"
+                    placeholder="Pilih Dompet Asal"
+                    :items="$accounts->map(fn($a) => ['id' => $a->id, 'name' => $a->name])->toArray()"
+                    value-key="id" label-key="name" value="{{ old('from_account_id') }}" />
                 @error('from_account_id')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
@@ -42,12 +38,10 @@
 
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Ke Dompet</label>
-                <select name="to_account_id" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow">
-                    <option value="">Pilih Dompet Tujuan</option>
-                    @foreach ($accounts as $acc)
-                        <option value="{{ $acc->id }}" {{ old('to_account_id') == $acc->id ? 'selected' : '' }}>{{ $acc->name }}</option>
-                    @endforeach
-                </select>
+                <x-custom-select name="to_account_id" variant="input"
+                    placeholder="Pilih Dompet Tujuan"
+                    :items="$accounts->map(fn($a) => ['id' => $a->id, 'name' => $a->name])->toArray()"
+                    value-key="id" label-key="name" value="{{ old('to_account_id') }}" />
                 @error('to_account_id')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
@@ -66,7 +60,7 @@
 
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Tanggal</label>
-                <input type="date" name="date" value="{{ old('date', date('Y-m-d')) }}" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" required>
+                <input type="date" name="date" value="{{ old('date', date('Y-m-d')) }}" class="select-input" required>
                 @error('date')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
@@ -74,7 +68,7 @@
 
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Catatan (Opsional)</label>
-                <textarea name="note" rows="3" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" placeholder="Catatan...">{{ old('note') }}</textarea>
+                <textarea name="note" rows="3" class="select-input" placeholder="Catatan...">{{ old('note') }}</textarea>
                 @error('note')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror

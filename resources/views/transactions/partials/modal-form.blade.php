@@ -11,7 +11,7 @@
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Tanggal</label>
-                    <input type="date" x-model="modalForm.date" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" required>
+                    <input type="datetime-local" x-model="modalForm.date" class="select-input" required>
                     <template x-if="modalErrors.date">
                         <p class="mt-1 text-sm text-red-600" x-text="modalErrors.date[0]"></p>
                     </template>
@@ -19,12 +19,10 @@
 
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Periode</label>
-                    <select x-model="modalForm.period_id" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" required>
-                        <option value="">Pilih Periode</option>
-                        <template x-for="period in periods" :key="period.id">
-                            <option :value="period.id" x-text="period.name"></option>
-                        </template>
-                    </select>
+                    <x-custom-select xModel="modalForm.period_id" variant="input"
+                        placeholder="Pilih Periode"
+                        alpine-items="periods"
+                        value-key="id" label-key="name" />
                     <template x-if="modalErrors.period_id">
                         <p class="mt-1 text-sm text-red-600" x-text="modalErrors.period_id[0]"></p>
                     </template>
@@ -32,14 +30,23 @@
 
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Kategori</label>
-                    <select x-model="modalForm.category_id" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" required>
-                        <option value="">Pilih Kategori</option>
-                        <template x-for="category in filteredCategories" :key="category.id">
-                            <option :value="category.id" x-text="category.name"></option>
-                        </template>
-                    </select>
+                    <x-custom-select xModel="modalForm.category_id" variant="input"
+                        placeholder="Pilih Kategori"
+                        alpine-items="categories"
+                        value-key="id" label-key="name" />
                     <template x-if="modalErrors.category_id">
                         <p class="mt-1 text-sm text-red-600" x-text="modalErrors.category_id[0]"></p>
+                    </template>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Dompet</label>
+                    <x-custom-select xModel="modalForm.account_id" variant="input"
+                        placeholder="Pilih Dompet"
+                        alpine-items="accounts"
+                        value-key="id" label-key="name" />
+                    <template x-if="modalErrors.account_id">
+                        <p class="mt-1 text-sm text-red-600" x-text="modalErrors.account_id[0]"></p>
                     </template>
                 </div>
 
@@ -56,7 +63,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Catatan (Opsional)</label>
-                    <textarea x-model="modalForm.note" rows="3" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" placeholder="Catatan tambahan..."></textarea>
+                    <textarea x-model="modalForm.note" rows="3" class="select-input" placeholder="Catatan tambahan..."></textarea>
                 </div>
             </div>
 

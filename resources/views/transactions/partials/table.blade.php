@@ -6,17 +6,21 @@
                     <th class="text-left p-4 font-medium text-slate-700">Tanggal</th>
                     <th class="text-left p-4 font-medium text-slate-700">Kategori</th>
                     <th class="text-left p-4 font-medium text-slate-700">Periode</th>
+                    <th class="text-left p-4 font-medium text-slate-700">Dompet</th>
                     <th class="text-right p-4 font-medium text-slate-700">Jumlah</th>
+                    <th class="text-left p-4 font-medium text-slate-700">Keterangan</th>
                     <th class="text-center p-4 font-medium text-slate-700">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-200">
                 <template x-for="transaction in transactions" :key="transaction.id">
                     <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="p-4 whitespace-nowrap" x-text="transaction.date"></td>
+                        <td class="p-4 whitespace-nowrap" x-text="formatDateTime(transaction.date)"></td>
                         <td class="p-4" x-text="transaction.category?.name ?? '-'"></td>
                         <td class="p-4" x-text="transaction.period?.name ?? '-'"></td>
+                        <td class="p-4" x-text="transaction.account?.name ?? '-'"></td>
                         <td class="p-4 text-right font-medium" :class="type === 'expense' ? 'text-red-600' : (type === 'income' ? 'text-emerald-600' : 'text-blue-600')" x-text="formatCurrency(transaction.amount)"></td>
+                        <td class="p-4 text-slate-500 text-sm" x-text="transaction.note ?? '-'"></td>
                         <td class="p-4 text-center">
                             <div class="flex items-center justify-center gap-2">
                                 <button @click="edit(transaction)" class="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">Edit</button>
@@ -26,7 +30,7 @@
                     </tr>
                 </template>
                 <tr x-show="transactions.length === 0">
-                    <td colspan="5" class="p-10 text-center text-slate-500">Belum ada transaksi.</td>
+                    <td colspan="7" class="p-10 text-center text-slate-500">Belum ada transaksi.</td>
                 </tr>
             </tbody>
         </table>

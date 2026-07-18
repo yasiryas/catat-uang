@@ -32,8 +32,8 @@
                         @forelse($periods as $period)
                             <tr class="hover:bg-slate-50 transition-colors">
                                 <td class="p-4 font-medium">{{ $period->name }}</td>
-                                <td class="p-4">{{ $period->start_date }}</td>
-                                <td class="p-4">{{ $period->end_date }}</td>
+                                <td class="p-4">{{ \Carbon\Carbon::parse($period->start_date)->locale('id')->isoFormat('DD MMM YYYY') }}</td>
+                                <td class="p-4">{{ \Carbon\Carbon::parse($period->end_date)->locale('id')->isoFormat('DD MMM YYYY') }}</td>
                                 <td class="p-4 text-center">
                                     @if ($period->is_closed)
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700">Closed</span>
@@ -43,6 +43,7 @@
                                 </td>
                                 <td class="p-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
+                                        <a href="{{ route('periods.report', $period) }}" class="text-emerald-600 hover:text-emerald-800 font-medium text-sm transition-colors">Laporan</a>
                                         <button @click="edit({{ $period->id }}, '{{ $period->name }}', '{{ $period->start_date }}', '{{ $period->end_date }}', {{ $period->is_closed ? 'true' : 'false' }})" class="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">Edit</button>
                                         <button @click="confirmDelete({{ $period->id }}, '{{ $period->name }}')" class="text-red-600 hover:text-red-800 font-medium text-sm transition-colors">Hapus</button>
                                     </div>
@@ -60,11 +61,11 @@
             <div class="px-4 py-3 border-t border-slate-200">
                 <nav class="flex items-center justify-between">
                     <span class="text-sm text-slate-600">
-                        Menampilkan {{ $periods->count() }} dari {{ $periods->total() }} data
+                        Menampilkan {{ $periods->count() }} dari {{ $periods->total() }} periode
                     </span>
                     <div class="flex items-center gap-2">
                         @if ($periods->onFirstPage())
-                            <span class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-slate-400 opacity-50 cursor-not-allowed">Sebelumnya</span>
+                            <span class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-slate-400 opacity-50 cursor-not-allowed transition-colors">Sebelumnya</span>
                         @else
                             <a href="{{ $periods->previousPageUrl() }}" class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-slate-700 hover:bg-slate-50 transition-colors">Sebelumnya</a>
                         @endif
@@ -72,7 +73,7 @@
                         @if ($periods->hasMorePages())
                             <a href="{{ $periods->nextPageUrl() }}" class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-slate-700 hover:bg-slate-50 transition-colors">Selanjutnya</a>
                         @else
-                            <span class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-slate-400 opacity-50 cursor-not-allowed">Selanjutnya</span>
+                            <span class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-slate-400 opacity-50 cursor-not-allowed transition-colors">Selanjutnya</span>
                         @endif
                     </div>
                 </nav>

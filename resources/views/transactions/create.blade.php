@@ -19,21 +19,19 @@
 
             <div>
                 <x-input-label for="period_id" :value="'Periode'" />
-                <select id="period_id" name="period_id" class="mt-1 block w-full border rounded-lg p-3" required>
-                    @foreach ($periods as $period)
-                        <option value="{{ $period->id }}">{{ $period->name }}</option>
-                    @endforeach
-                </select>
+                <x-custom-select name="period_id" variant="input"
+                    placeholder="Pilih Periode"
+                    :items="$periods->map(fn($p) => ['id' => $p->id, 'name' => $p->name])->toArray()"
+                    value-key="id" label-key="name" value="{{ old('period_id') }}" />
                 <x-input-error :messages="$errors->get('period_id')" class="mt-2" />
             </div>
 
             <div>
                 <x-input-label for="category_id" :value="'Kategori'" />
-                <select id="category_id" name="category_id" class="mt-1 block w-full border rounded-lg p-3" required>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                    @endforeach
-                </select>
+                <x-custom-select id="category_id" name="category_id" variant="input"
+                    placeholder="Pilih Kategori"
+                    :items="$categories->map(fn($c) => ['id' => $c->id, 'name' => $c->name])->toArray()"
+                    value-key="id" label-key="name" value="{{ old('category_id') }}" />
                 <x-input-error :messages="$errors->get('category_id')" class="mt-2" />
             </div>
 

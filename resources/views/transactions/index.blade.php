@@ -11,13 +11,16 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <select x-model="currentType" @change="loadTransactions(1)" class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow">
-                    <option value="all">Semua</option>
-                    <option value="income">Pemasukan</option>
-                    <option value="expense">Pengeluaran</option>
-                    <option value="mutation">Mutasi</option>
-                    <option value="adjustment">Penyesuaian</option>
-                </select>
+                <x-custom-select xModel="currentType" variant="filter"
+                    @change="loadTransactions(1)"
+                    :items="[
+                        ['id' => 'all', 'name' => 'Semua'],
+                        ['id' => 'income', 'name' => 'Pemasukan'],
+                        ['id' => 'expense', 'name' => 'Pengeluaran'],
+                        ['id' => 'mutation', 'name' => 'Mutasi'],
+                        ['id' => 'adjustment', 'name' => 'Penyesuaian'],
+                    ]"
+                    value-key="id" label-key="name" />
 
                 <button @click="create(currentType === 'all' ? 'income' : currentType)" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
@@ -42,7 +45,7 @@
                     <tbody class="divide-y divide-slate-200">
                         <template x-for="transaction in transactions" :key="transaction.id">
                             <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="p-4 whitespace-nowrap" x-text="transaction.date"></td>
+                                <td class="p-4 whitespace-nowrap" x-text="formatDateTime(transaction.date)"></td>
                                 <td class="p-4" x-text="transaction.category?.name ?? '-'"></td>
                                 <td class="p-4" x-text="transaction.period?.name ?? '-'"></td>
                                 <td class="p-4 text-right font-medium" :class="transaction.type === 'expense' ? 'text-red-600' : 'text-emerald-600'" x-text="formatCurrency(transaction.amount)"></td>
@@ -89,17 +92,20 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Jenis Transaksi</label>
-                            <select x-model="modal.form.type" @change="filterCategoriesByType(modal.form.type)" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow">
-                                <option value="income">Pemasukan</option>
-                                <option value="expense">Pengeluaran</option>
-                                <option value="mutation">Mutasi</option>
-                                <option value="adjustment">Penyesuaian</option>
-                            </select>
+                            <x-custom-select xModel="modal.form.type" variant="input"
+                                @change="filterCategoriesByType(modal.form.type)"
+                                :items="[
+                                    ['id' => 'income', 'name' => 'Pemasukan'],
+                                    ['id' => 'expense', 'name' => 'Pengeluaran'],
+                                    ['id' => 'mutation', 'name' => 'Mutasi'],
+                                    ['id' => 'adjustment', 'name' => 'Penyesuaian'],
+                                ]"
+                                value-key="id" label-key="name" />
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Tanggal</label>
-                            <input type="date" x-model="modal.form.date" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" required>
+                            <input type="datetime-local" x-model="modal.form.date" class="select-input" required>
                             <template x-if="modal.errors.date">
                                 <p class="mt-1 text-sm text-red-600" x-text="modal.errors.date[0]"></p>
                             </template>
@@ -107,12 +113,10 @@
 
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Periode</label>
-                            <select x-model="modal.form.period_id" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" required>
-                                <option value="">Pilih Periode</option>
-                                <template x-for="period in periods" :key="period.id">
-                                    <option :value="period.id" x-text="period.name"></option>
-                                </template>
-                            </select>
+                            <x-custom-select xModel="modal.form.period_id" variant="input"
+                                placeholder="Pilih Periode"
+                                alpine-items="periods"
+                                value-key="id" label-key="name" />
                             <template x-if="modal.errors.period_id">
                                 <p class="mt-1 text-sm text-red-600" x-text="modal.errors.period_id[0]"></p>
                             </template>
@@ -120,12 +124,10 @@
 
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Kategori</label>
-                            <select x-model="modal.form.category_id" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" required>
-                                <option value="">Pilih Kategori</option>
-                                <template x-for="category in filteredCategories" :key="category.id">
-                                    <option :value="category.id" x-text="category.name"></option>
-                                </template>
-                            </select>
+                            <x-custom-select xModel="modal.form.category_id" variant="input"
+                                placeholder="Pilih Kategori"
+                                alpine-items="filteredCategories"
+                                value-key="id" label-key="name" />
                             <template x-if="modal.errors.category_id">
                                 <p class="mt-1 text-sm text-red-600" x-text="modal.errors.category_id[0]"></p>
                             </template>
@@ -144,7 +146,7 @@
 
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Catatan (Opsional)</label>
-                            <textarea x-model="modal.form.note" rows="3" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" placeholder="Tambahkan catatan..." maxlength="1000"></textarea>
+                            <textarea x-model="modal.form.note" rows="3" class="select-input" placeholder="Tambahkan catatan..." maxlength="1000"></textarea>
                             <template x-if="modal.errors.note">
                                 <p class="mt-1 text-sm text-red-600" x-text="modal.errors.note[0]"></p>
                             </template>

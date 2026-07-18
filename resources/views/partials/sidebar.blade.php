@@ -9,6 +9,8 @@
         'mutation' => request()->routeIs('mutations.*'),
         'period' => request()->routeIs('periods.*'),
         'adjustment' => request()->routeIs('adjustments.*'),
+        'user' => request()->routeIs('users.*'),
+        'profile' => request()->routeIs('profile.edit'),
     ];
 @endphp
 <div x-show="sidebar" x-transition.opacity @click="sidebar=false" class="fixed inset-0 bg-black/50 z-30 md:hidden"></div>
@@ -104,6 +106,23 @@
             <span x-show="!collapse">Adjustment</span>
         </a>
 
+        @if (auth()->user()?->is_admin)
+            <div class="border-t border-blue-600 my-2"></div>
+
+            <a href="{{ route('users.index') }}"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $menu['user'] ? 'bg-blue-800 shadow' : 'hover:bg-blue-600' }}">
+                <x-heroicon-o-users class="w-5 h-5 shrink-0" />
+                <span x-show="!collapse">Pengguna</span>
+            </a>
+        @endif
+
+        <div class="border-t border-blue-600 my-2"></div>
+
+        <a href="{{ route('profile.edit') }}"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $menu['profile'] ? 'bg-blue-800 shadow' : 'hover:bg-blue-600' }}">
+            <x-heroicon-o-user class="w-5 h-5 shrink-0" />
+            <span x-show="!collapse">Profil</span>
+        </a>
 
     </nav>
 

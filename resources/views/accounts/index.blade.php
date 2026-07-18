@@ -80,7 +80,7 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Nama Dompet</label>
-                            <input type="text" x-model="modal.form.name" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" placeholder="Contoh: Mandiri, BCA, Cash" required>
+                            <input type="text" x-model="modal.form.name" class="select-input" placeholder="Contoh: Mandiri, BCA, Cash" required>
                             <template x-if="modal.errors.name">
                                 <p class="mt-1 text-sm text-red-600" x-text="modal.errors.name[0]"></p>
                             </template>
@@ -88,11 +88,13 @@
 
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Tipe</label>
-                            <select x-model="modal.form.type" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" required>
-                                <option value="bank">Bank</option>
-                                <option value="cash">Tunai</option>
-                                <option value="ewallet">E-Wallet</option>
-                            </select>
+                            <x-custom-select xModel="modal.form.type" variant="input"
+                                :items="[
+                                    ['id' => 'bank', 'name' => 'Bank'],
+                                    ['id' => 'cash', 'name' => 'Tunai'],
+                                    ['id' => 'ewallet', 'name' => 'E-Wallet'],
+                                ]"
+                                value-key="id" label-key="name" />
                             <template x-if="modal.errors.type">
                                 <p class="mt-1 text-sm text-red-600" x-text="modal.errors.type[0]"></p>
                             </template>
@@ -100,7 +102,7 @@
 
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Keterangan (Opsional)</label>
-                            <textarea x-model="modal.form.description" rows="3" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" placeholder="Keterangan tambahan..."></textarea>
+                            <textarea x-model="modal.form.description" rows="3" class="select-input" placeholder="Keterangan tambahan..."></textarea>
                         </div>
                     </div>
 

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PeriodReportExport;
 use App\Http\Requests\StorePeriodRequest;
 use App\Http\Requests\UpdatePeriodRequest;
 use App\Models\Period;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PeriodController extends Controller
 {
@@ -80,5 +82,14 @@ class PeriodController extends Controller
         }
 
         return redirect()->route('periods.index')->with('success', 'Periode berhasil dihapus.');
+    }
+
+    public function report(Period $period)
+    {
+        abort_if($period->user_id !== auth()->id(), 403);
+
+        $filename = 'Laporan_Periode_' . str_replace(' ', '_', $period->name) . '.xlsx';
+
+        return Excel::download(new PeriodReportExport($period), $filename);
     }
 }

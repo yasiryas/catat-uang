@@ -28,7 +28,7 @@ class Mutation extends Model
         'total_expense' => 'decimal:2',
         'total_adjustment' => 'decimal:2',
         'net_balance' => 'decimal:2',
-        'date' => 'date',
+        'date' => 'datetime',
     ];
 
     public function period()

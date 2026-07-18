@@ -4,6 +4,31 @@ import Swal from 'sweetalert2';
 window.Alpine = Alpine;
 window.Swal = Swal;
 
+function nowDateTime() {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    const h = String(now.getHours()).padStart(2, '0');
+    const min = String(now.getMinutes()).padStart(2, '0');
+    return `${y}-${m}-${d}T${h}:${min}`;
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return '-';
+    return new Date(dateStr).toLocaleDateString('id-ID', {
+        year: 'numeric', month: 'long', day: 'numeric'
+    });
+}
+
+function formatDateTime(dateStr) {
+    if (!dateStr) return '-';
+    return new Date(dateStr).toLocaleString('id-ID', {
+        year: 'numeric', month: 'long', day: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+    });
+}
+
 Alpine.magic('toast', () => Alpine.store('toast'));
 
 Alpine.store('toast', {
@@ -254,7 +279,7 @@ window.transactionPage = function () {
                 type: 'income',
                 amount: '',
                 note: '',
-                date: new Date().toISOString().split('T')[0],
+                date: nowDateTime(),
             }
         },
 
@@ -313,7 +338,7 @@ window.transactionPage = function () {
             this.resetForm();
             this.modal.mode = 'create';
             this.modal.form.type = type;
-            this.modal.form.date = new Date().toISOString().split('T')[0];
+            this.modal.form.date = nowDateTime();
             this.modal.show = true;
         },
 
@@ -328,7 +353,7 @@ window.transactionPage = function () {
                 type: transaction.type,
                 amount: transaction.amount,
                 note: transaction.note || '',
-                date: transaction.date
+                date: transaction.date ? transaction.date.replace(' ', 'T') : nowDateTime()
             };
             this.modal.show = true;
         },
@@ -423,9 +448,17 @@ window.transactionPage = function () {
                 type: 'income',
                 amount: '',
                 note: '',
-                date: new Date().toISOString().split('T')[0],
+                date: nowDateTime(),
             };
             this.modal.errors = {};
+        },
+
+        formatDate(dateStr) {
+            return formatDate(dateStr);
+        },
+
+        formatDateTime(dateStr) {
+            return formatDateTime(dateStr);
         },
 
         formatCurrency(amount) {
@@ -481,7 +514,7 @@ window.transactionTypePage = function () {
                 type: 'income',
                 amount: '',
                 note: '',
-                date: new Date().toISOString().split('T')[0],
+                date: nowDateTime(),
             }
         },
 
@@ -554,7 +587,7 @@ window.transactionTypePage = function () {
             this.resetForm();
             this.modal.mode = 'create';
             this.modal.form.type = this.type;
-            this.modal.form.date = new Date().toISOString().split('T')[0];
+            this.modal.form.date = nowDateTime();
             this.modal.show = true;
         },
 
@@ -569,7 +602,7 @@ window.transactionTypePage = function () {
                 type: transaction.type,
                 amount: transaction.amount,
                 note: transaction.note || '',
-                date: transaction.date
+                date: transaction.date ? transaction.date.replace(' ', 'T') : nowDateTime()
             };
             this.modal.show = true;
         },
@@ -664,9 +697,17 @@ window.transactionTypePage = function () {
                 type: this.type,
                 amount: '',
                 note: '',
-                date: new Date().toISOString().split('T')[0],
+                date: nowDateTime(),
             };
             this.modal.errors = {};
+        },
+
+        formatDate(dateStr) {
+            return formatDate(dateStr);
+        },
+
+        formatDateTime(dateStr) {
+            return formatDateTime(dateStr);
         },
 
         formatCurrency(amount) {
@@ -814,7 +855,7 @@ window.accountPage = function () {
 
 window.mutationPage = function () {
     return {
-        modal: { show: false, mode: 'create', loading: false, errors: {}, form: { id: null, period_id: '', from_account_id: '', to_account_id: '', amount: '', note: '', date: new Date().toISOString().split('T')[0] } },
+        modal: { show: false, mode: 'create', loading: false, errors: {}, form: { id: null, period_id: '', from_account_id: '', to_account_id: '', amount: '', note: '', date: nowDateTime() } },
         deleteModal: { show: false, loading: false, mutation: null },
 
         periods: JSON.parse(document.querySelector('[data-periods]')?.getAttribute('data-periods') || '[]'),
@@ -822,7 +863,7 @@ window.mutationPage = function () {
 
         create() {
             this.modal.mode = 'create';
-            this.modal.form = { id: null, period_id: '', from_account_id: '', to_account_id: '', amount: '', note: '', date: new Date().toISOString().split('T')[0] };
+            this.modal.form = { id: null, period_id: '', from_account_id: '', to_account_id: '', amount: '', note: '', date: nowDateTime() };
             this.modal.errors = {};
             this.modal.show = true;
         },
@@ -836,7 +877,7 @@ window.mutationPage = function () {
                 to_account_id: mutation.to_account_id,
                 amount: mutation.amount,
                 note: mutation.note || '',
-                date: mutation.date
+                date: mutation.date ? mutation.date.replace(' ', 'T') : nowDateTime()
             };
             this.modal.errors = {};
             this.modal.show = true;
@@ -891,14 +932,14 @@ window.mutationPage = function () {
 
 window.adjustmentPage = function () {
     return {
-        modal: { show: false, mode: 'create', loading: false, errors: {}, form: { id: null, period_id: '', type: 'income', amount: '', note: '', date: new Date().toISOString().split('T')[0] } },
+        modal: { show: false, mode: 'create', loading: false, errors: {}, form: { id: null, period_id: '', type: 'income', amount: '', note: '', date: nowDateTime() } },
         deleteModal: { show: false, loading: false, adjustment: null },
 
         periods: JSON.parse(document.querySelector('[data-periods]')?.getAttribute('data-periods') || '[]'),
 
         create() {
             this.modal.mode = 'create';
-            this.modal.form = { id: null, period_id: '', type: 'income', amount: '', note: '', date: new Date().toISOString().split('T')[0] };
+            this.modal.form = { id: null, period_id: '', type: 'income', amount: '', note: '', date: nowDateTime() };
             this.modal.errors = {};
             this.modal.show = true;
         },
@@ -911,7 +952,7 @@ window.adjustmentPage = function () {
                 type: adjustment.type,
                 amount: adjustment.amount,
                 note: adjustment.note || '',
-                date: adjustment.date
+                date: adjustment.date ? adjustment.date.replace(' ', 'T') : nowDateTime()
             };
             this.modal.errors = {};
             this.modal.show = true;

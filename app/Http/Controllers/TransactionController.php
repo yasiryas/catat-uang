@@ -155,7 +155,8 @@ class TransactionController extends Controller
     // SHARED METHODS
     private function typeIndex(Request $request, string $type, string $title)
     {
-        $query = Transaction::where('user_id', auth()->id())
+        $query = Transaction::with(['category', 'period', 'account'])
+            ->where('user_id', auth()->id())
             ->where('type', $type)
             ->latest();
         $transactions = $query->paginate(10);
