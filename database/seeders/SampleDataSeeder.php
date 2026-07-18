@@ -54,8 +54,18 @@ class SampleDataSeeder extends Seeder
         $incomeCats  = $categories->where('type', 'income');
         $expenseCats = $categories->where('type', 'expense');
 
-        // ─── Helper to pick random account ──────────────────────
-        $randomAccount = fn () => $accounts->random()->id;
+        // ─── Account mapping per category ───────────────────────
+        $accountMap = [
+            'Gaji'         => 'BCA',
+            'Freelance'    => 'BCA',
+            'Investasi'    => 'Mandiri',
+            'Makanan'      => 'Tunai',
+            'Transportasi' => 'Tunai',
+            'Hiburan'      => 'GoPay',
+            'Tagihan'      => 'BCA',
+            'Kesehatan'    => 'Mandiri',
+            'Lainnya'      => 'Tunai',
+        ];
 
         // ─── Periods ────────────────────────────────────────────
         $periods = [];
@@ -149,11 +159,13 @@ class SampleDataSeeder extends Seeder
                 : $expenseCats->firstWhere('name', $catName);
             if (!$cat) continue;
 
+            $accountName = $accountMap[$catName] ?? 'Tunai';
+
             Transaction::create([
                 'user_id'     => $user->id,
                 'period_id'   => $periods[$pm]->id,
                 'category_id' => $cat->id,
-                'account_id'  => $randomAccount(),
+                'account_id'  => $accounts[$accountName]->id,
                 'type'        => $type,
                 'amount'      => $amount,
                 'date'        => $date,
