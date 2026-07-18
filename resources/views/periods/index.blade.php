@@ -56,10 +56,27 @@
                     </tbody>
                 </table>
             </div>
-        </div>
 
-        <div>
-            {{ $periods->links() }}
+            <div class="px-4 py-3 border-t border-slate-200">
+                <nav class="flex items-center justify-between">
+                    <span class="text-sm text-slate-600">
+                        Menampilkan {{ $periods->count() }} dari {{ $periods->total() }} data
+                    </span>
+                    <div class="flex items-center gap-2">
+                        @if ($periods->onFirstPage())
+                            <span class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-slate-400 opacity-50 cursor-not-allowed">Sebelumnya</span>
+                        @else
+                            <a href="{{ $periods->previousPageUrl() }}" class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-slate-700 hover:bg-slate-50 transition-colors">Sebelumnya</a>
+                        @endif
+                        <span class="px-3 py-1.5 text-sm text-slate-600">Halaman {{ $periods->currentPage() }} dari {{ $periods->lastPage() }}</span>
+                        @if ($periods->hasMorePages())
+                            <a href="{{ $periods->nextPageUrl() }}" class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-slate-700 hover:bg-slate-50 transition-colors">Selanjutnya</a>
+                        @else
+                            <span class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-slate-400 opacity-50 cursor-not-allowed">Selanjutnya</span>
+                        @endif
+                    </div>
+                </nav>
+            </div>
         </div>
 
         {{-- Create/Edit Modal --}}
