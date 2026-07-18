@@ -1,11 +1,12 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "yasiryas/catat-uang",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "KeuanganApp - Aplikasi pencatatan keuangan pribadi.",
     "keywords": [
-        "laravel",
-        "framework"
+        "keuangan",
+        "finance",
+        "laravel"
     ],
     "license": "MIT",
     "require": {
