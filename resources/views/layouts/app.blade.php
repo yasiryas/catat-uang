@@ -17,7 +17,10 @@
 
     <div x-data="{
         sidebar: false,
-        collapse: false
+        collapse: localStorage.getItem('sidebarCollapse') === 'true',
+        init() {
+            this.$watch('collapse', val => localStorage.setItem('sidebarCollapse', val))
+        }
     }" class="flex h-screen overflow-hidden">
 
         @include('partials.sidebar')

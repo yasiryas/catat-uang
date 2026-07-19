@@ -18,14 +18,9 @@
     class="fixed md:static inset-y-0 left-0 z-40 bg-gradient-to-b from-blue-600 to-blue-700 flex flex-col shrink-0 transition-all duration-300"
     :class="collapse ? 'w-20' : 'w-64'">
 
-    <div class="h-16 flex items-center justify-between px-3 border-b border-white/10" :class="collapse ? 'px-3' : 'px-5'">
-        <div class="flex items-center gap-3 overflow-hidden">
-            <x-keuangan-logo class="w-8 h-8 shrink-0" />
-            <h1 x-show="!collapse" class="text-base font-bold tracking-tight text-white whitespace-nowrap">KeuanganApp</h1>
-        </div>
-        <button @click="collapse = !collapse" class="shrink-0 p-1.5 rounded-lg text-blue-200 hover:bg-white/10 hover:text-white transition-colors hidden md:block">
-            <svg class="w-5 h-5 transition-transform duration-300" :class="collapse ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/></svg>
-        </button>
+    <div class="h-16 flex items-center gap-3 px-5 border-b border-white/10" :class="collapse ? 'px-3 justify-center' : 'px-5'">
+        <x-keuangan-logo class="w-8 h-8 shrink-0" />
+        <h1 x-show="!collapse" class="text-base font-bold tracking-tight text-white whitespace-nowrap">KeuanganApp</h1>
     </div>
 
     <nav class="flex-1 px-3 py-6 space-y-3 overflow-y-auto overflow-x-hidden">

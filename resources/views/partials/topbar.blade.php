@@ -1,5 +1,8 @@
 <header class="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-6">
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-2">
+        <button @click="collapse = !collapse" class="hidden md:flex p-2 rounded-lg hover:bg-gray-100 transition-colors" title="Toggle sidebar">
+            <svg class="w-5 h-5 text-gray-500 transition-transform duration-300" :class="collapse ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/></svg>
+        </button>
         <button @click="sidebar = true" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
             <x-heroicon-o-bars-3 class="w-6 h-6 text-gray-500" />
         </button>
