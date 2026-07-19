@@ -23,7 +23,7 @@
         <h1 class="text-base font-bold tracking-tight text-white">KeuanganApp</h1>
     </div>
 
-    <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+    <nav class="flex-1 px-4 py-6 space-y-3 overflow-y-auto">
         <a href="{{ route('dashboard') }}"
             class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors {{ $menu['dashboard'] ? 'bg-white/20 text-white' : 'text-sky-100 hover:bg-white/10 hover:text-white' }}">
             <x-heroicon-o-home class="w-5 h-5 shrink-0 {{ $menu['dashboard'] ? 'text-white' : 'text-sky-200' }}" />
