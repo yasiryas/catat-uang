@@ -8,6 +8,7 @@ use App\Models\Transaction;
 use App\Models\Category;
 use App\Models\Period;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class TransactionController extends Controller
 {
@@ -187,7 +188,13 @@ class TransactionController extends Controller
 
     private function storeTyped(StoreTransactionRequest $request, string $type, string $label)
     {
-        $transaction = Transaction::create($request->validated() + [
+        $data = $request->validated();
+
+        if ($request->hasFile('receipt_image')) {
+            $data['receipt_image'] = $request->file('receipt_image')->store('receipts', 'public');
+        }
+
+        $transaction = Transaction::create($data + [
             'user_id' => auth()->id(),
             'type' => $type,
         ]);
@@ -206,7 +213,23 @@ class TransactionController extends Controller
     {
         abort_unless($transaction->type === $type, 404);
 
-        $transaction->update($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('receipt_image')) {
+            if ($transaction->receipt_image) {
+                Storage::disk('public')->delete($transaction->receipt_image);
+            }
+            $data['receipt_image'] = $request->file('receipt_image')->store('receipts', 'public');
+        }
+
+        if ($request->has('remove_receipt') && $request->remove_receipt) {
+            if ($transaction->receipt_image) {
+                Storage::disk('public')->delete($transaction->receipt_image);
+            }
+            $data['receipt_image'] = null;
+        }
+
+        $transaction->update($data);
 
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
@@ -221,6 +244,10 @@ class TransactionController extends Controller
     private function destroyTyped(Transaction $transaction, Request $request, string $type, string $label)
     {
         abort_unless($transaction->type === $type, 404);
+
+        if ($transaction->receipt_image) {
+            Storage::disk('public')->delete($transaction->receipt_image);
+        }
 
         $transaction->delete();
 

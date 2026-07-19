@@ -511,10 +511,14 @@ window.transactionTypePage = function () {
                 id: null,
                 period_id: '',
                 category_id: '',
+                account_id: '',
                 type: 'income',
                 amount: '',
                 note: '',
                 date: nowDateTime(),
+                receipt_image: null,
+                receipt_preview: null,
+                existing_receipt_url: null,
             }
         },
 
@@ -591,6 +595,33 @@ window.transactionTypePage = function () {
             this.modal.show = true;
         },
 
+        previewReceipt(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.modal.form.receipt_preview = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        },
+
+        removeReceipt() {
+            this.modal.form.receipt_image = null;
+            this.modal.form.receipt_preview = null;
+            const fileInput = this.$el.querySelector('input[type="file"]');
+            if (fileInput) fileInput.value = '';
+        },
+
+        removeExistingReceipt() {
+            this.modal.form.existing_receipt_url = null;
+            this.modal.form.receipt_image = null;
+            this.modal.form.receipt_preview = null;
+            this.modal.form.remove_receipt = true;
+            const fileInput = this.$el.querySelector('input[type="file"]');
+            if (fileInput) fileInput.value = '';
+        },
+
         edit(transaction) {
             this.resetForm();
             this.modal.mode = 'edit';
@@ -602,7 +633,10 @@ window.transactionTypePage = function () {
                 type: transaction.type,
                 amount: transaction.amount,
                 note: transaction.note || '',
-                date: transaction.date ? transaction.date.replace(' ', 'T') : nowDateTime()
+                date: transaction.date ? transaction.date.replace(' ', 'T') : nowDateTime(),
+                receipt_image: null,
+                receipt_preview: null,
+                existing_receipt_url: transaction.receipt_image_url || null,
             };
             this.modal.show = true;
         },
@@ -623,16 +657,40 @@ window.transactionTypePage = function () {
 
                 const method = this.modal.mode === 'create' ? 'POST' : 'PUT';
 
+                const hasFile = this.modal.form.receipt_image instanceof File;
+
+                let body;
+                const headers = {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                };
+
+                if (hasFile) {
+                    body = new FormData();
+                    body.append('period_id', this.modal.form.period_id);
+                    body.append('category_id', this.modal.form.category_id);
+                    if (this.modal.form.account_id) body.append('account_id', this.modal.form.account_id);
+                    body.append('amount', this.modal.form.amount);
+                    body.append('note', this.modal.form.note || '');
+                    body.append('date', this.modal.form.date);
+                    body.append('receipt_image', this.modal.form.receipt_image);
+                    if (this.modal.form.remove_receipt) {
+                        body.append('remove_receipt', '1');
+                    }
+                    if (this.modal.mode === 'edit') {
+                        body.append('_method', 'PUT');
+                    }
+                } else {
+                    headers['Content-Type'] = 'application/json';
+                    body = JSON.stringify(this.modal.form);
+                }
+
                 const response = await fetch(url, {
-                    method,
+                    method: hasFile ? 'POST' : method,
                     credentials: 'same-origin',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify(this.modal.form)
+                    headers,
+                    body
                 });
 
                 const data = await response.json();
@@ -698,6 +756,10 @@ window.transactionTypePage = function () {
                 amount: '',
                 note: '',
                 date: nowDateTime(),
+                receipt_image: null,
+                receipt_preview: null,
+                existing_receipt_url: null,
+                remove_receipt: false,
             };
             this.modal.errors = {};
         },

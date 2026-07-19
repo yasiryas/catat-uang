@@ -34,6 +34,7 @@
                             <th class="text-left p-4 font-medium text-slate-700">Dompet</th>
                             <th class="text-right p-4 font-medium text-slate-700">Jumlah</th>
                             <th class="text-left p-4 font-medium text-slate-700">Keterangan</th>
+                            <th class="text-center p-4 font-medium text-slate-700">Struk</th>
                             <th class="text-center p-4 font-medium text-slate-700">Aksi</th>
                         </tr>
                     </thead>
@@ -47,6 +48,17 @@
                                 <td class="p-4 text-right font-medium" :class="type === 'expense' ? 'text-red-600' : 'text-emerald-600'" x-text="formatCurrency(transaction.amount)"></td>
                                 <td class="p-4 text-slate-500 text-sm" x-text="transaction.note ?? '-'"></td>
                                 <td class="p-4 text-center">
+                                    <template x-if="transaction.receipt_image_url">
+                                        <a :href="transaction.receipt_image_url" target="_blank" class="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 font-medium">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                            Lihat
+                                        </a>
+                                    </template>
+                                    <template x-if="!transaction.receipt_image_url">
+                                        <span class="text-slate-300 text-sm">-</span>
+                                    </template>
+                                </td>
+                                <td class="p-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
                                         <button @click="edit(transaction)" class="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">Edit</button>
                                         <button @click="confirmDelete(transaction)" class="text-red-600 hover:text-red-800 font-medium text-sm transition-colors">Hapus</button>
@@ -55,7 +67,7 @@
                             </tr>
                         </template>
                         <tr x-show="transactions.length === 0">
-                            <td colspan="7" class="p-10 text-center text-slate-500" x-text="emptyMessage"></td>
+                            <td colspan="8" class="p-10 text-center text-slate-500" x-text="emptyMessage"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -147,6 +159,33 @@
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Catatan (Opsional)</label>
                             <textarea x-model="modal.form.note" rows="3" class="select-input" placeholder="Catatan tambahan..."></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Upload Struk (Opsional)</label>
+                            <input type="file" accept="image/jpeg,image/png,image/gif,image/webp"
+                                   @change="modal.form.receipt_image = $event.target.files[0]; previewReceipt($event)"
+                                   class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-colors cursor-pointer">
+                            <template x-if="modal.form.receipt_preview">
+                                <div class="mt-2 relative inline-block">
+                                    <img :src="modal.form.receipt_preview" class="h-24 w-24 object-cover rounded-lg border border-slate-200">
+                                    <button type="button" @click="removeReceipt()" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600">
+                                        &times;
+                                    </button>
+                                </div>
+                            </template>
+                            <template x-if="modal.form.existing_receipt_url && !modal.form.receipt_preview">
+                                <div class="mt-2">
+                                    <a :href="modal.form.existing_receipt_url" target="_blank" class="text-sm text-blue-600 hover:text-blue-800 font-medium inline-flex items-center gap-1">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                        Lihat struk saat ini
+                                    </a>
+                                    <button type="button" @click="removeExistingReceipt()" class="ml-2 text-xs text-red-600 hover:text-red-800 font-medium">Hapus</button>
+                                </div>
+                            </template>
+                            <template x-if="modal.errors.receipt_image">
+                                <p class="mt-1 text-sm text-red-600" x-text="modal.errors.receipt_image[0]"></p>
+                            </template>
                         </div>
                     </div>
 

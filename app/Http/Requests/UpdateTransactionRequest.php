@@ -20,6 +20,7 @@ class UpdateTransactionRequest extends FormRequest
             'amount' => ['required', 'numeric', 'min:0'],
             'note' => ['nullable', 'string', 'max:1000'],
             'date' => ['required', 'date'],
+            'receipt_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,gif,webp', 'max:2048'],
         ];
     }
 }

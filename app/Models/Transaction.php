@@ -14,6 +14,7 @@ class Transaction extends Model
         'type',
         'amount',
         'note',
+        'receipt_image',
         'date',
     ];
 
@@ -21,6 +22,16 @@ class Transaction extends Model
         'date' => 'datetime',
         'amount' => 'decimal:2',
     ];
+
+    protected $appends = ['receipt_image_url'];
+
+    public function getReceiptImageUrlAttribute(): ?string
+    {
+        if (!$this->receipt_image) {
+            return null;
+        }
+        return asset('storage/' . $this->receipt_image);
+    }
 
     public function period()
     {
