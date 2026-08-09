@@ -1161,4 +1161,210 @@ window.adjustmentPage = function () {
     }
 };
 
+window.goalPage = function () {
+    return {
+        goals: JSON.parse(document.querySelector('[data-goals]')?.getAttribute('data-goals') || '[]'),
+        periods: JSON.parse(document.querySelector('[data-periods]')?.getAttribute('data-periods') || '[]'),
+        categories: JSON.parse(document.querySelector('[data-categories]')?.getAttribute('data-categories') || '[]'),
+        accounts: JSON.parse(document.querySelector('[data-accounts]')?.getAttribute('data-accounts') || '[]'),
+
+        ai: { loading: false, result: null, error: null },
+
+        modal: {
+            show: false,
+            mode: 'create',
+            loading: false,
+            errors: {},
+            form: {
+                id: null, name: '', type: 'savings', target_amount: '',
+                period_id: null, category_id: null, account_id: null,
+                start_date: '', end_date: '', is_active: true,
+            }
+        },
+
+        deleteModal: { show: false, loading: false, goal: null },
+
+        init() {
+            this.$watch('modal.form.type', (val) => {
+                if (val !== 'category') this.modal.form.category_id = null;
+                if (val !== 'account') this.modal.form.account_id = null;
+            });
+        },
+
+        formFromGoal(goal) {
+            return {
+                id: goal.id,
+                name: goal.name,
+                type: goal.type,
+                target_amount: goal.target_amount,
+                period_id: goal.period_id || null,
+                category_id: goal.category_id || null,
+                account_id: goal.account_id || null,
+                start_date: goal.start_date || '',
+                end_date: goal.end_date || '',
+                is_active: !!goal.is_active,
+            };
+        },
+
+        create() {
+            this.modal.mode = 'create';
+            this.modal.form = {
+                id: null, name: '', type: 'savings', target_amount: '',
+                period_id: null, category_id: null, account_id: null,
+                start_date: '', end_date: '', is_active: true,
+            };
+            this.modal.errors = {};
+            this.modal.show = true;
+        },
+
+        edit(index) {
+            const goal = this.goals[index];
+            this.modal.mode = 'edit';
+            this.modal.form = this.formFromGoal(goal);
+            this.modal.errors = {};
+            this.modal.show = true;
+        },
+
+        confirmDelete(index) {
+            this.deleteModal.goal = this.goals[index];
+            this.deleteModal.show = true;
+        },
+
+        async toggleActive(index) {
+            const goal = this.goals[index];
+            try {
+                const response = await fetch(route('goals.update', goal.id), {
+                    method: 'PUT', credentials: 'same-origin',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                    body: JSON.stringify({ ...this.formFromGoal(goal), is_active: goal.is_active })
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message || 'Gagal memperbarui target');
+                this.$toast.success(goal.is_active ? 'Target diaktifkan.' : 'Target dinonaktifkan.');
+            } catch (error) { this.$toast.error(error.message); }
+        },
+
+        async submit() {
+            this.modal.loading = true;
+            this.modal.errors = {};
+            try {
+                const url = this.modal.mode === 'create' ? route('goals.store') : route('goals.update', this.modal.form.id);
+                const method = this.modal.mode === 'create' ? 'POST' : 'PUT';
+                const response = await fetch(url, {
+                    method, credentials: 'same-origin',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                    body: JSON.stringify(this.modal.form)
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    if (response.status === 422 && data.errors) { this.modal.errors = data.errors; this.$toast.error('Validasi gagal', 'Error'); }
+                    else { throw new Error(data.message || 'Terjadi kesalahan'); }
+                    return;
+                }
+                this.modal.show = false;
+                this.$toast.success(data.message);
+                location.reload();
+            } catch (error) { this.$toast.error(error.message); }
+            finally { this.modal.loading = false; }
+        },
+
+        async destroy() {
+            this.deleteModal.loading = true;
+            try {
+                const response = await fetch(route('goals.destroy', this.deleteModal.goal.id), {
+                    method: 'DELETE', credentials: 'same-origin',
+                    headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message || 'Gagal menghapus target');
+                this.deleteModal.show = false;
+                this.$toast.success(data.message);
+                location.reload();
+            } catch (error) { this.$toast.error(error.message); }
+            finally { this.deleteModal.loading = false; }
+        },
+
+        async askAi() {
+            this.ai.error = null;
+            this.ai.result = null;
+            this.ai.loading = true;
+            try {
+                const response = await fetch(route('goals.ai'), {
+                    method: 'POST', credentials: 'same-origin',
+                    headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                const data = await response.json();
+                if (!response.ok) { this.ai.error = data.message || 'Gagal mendapatkan rekomendasi AI.'; return; }
+                this.ai.result = data.content;
+            } catch (error) { this.ai.error = 'Terjadi kesalahan jaringan. Coba lagi.'; }
+            finally { this.ai.loading = false; }
+        }
+    }
+};
+
+window.familyPage = function () {
+    return {
+        removeModal: { show: false, loading: false, member: null },
+        dangerModal: { show: false, loading: false, mode: null, title: '', message: '', actionLabel: '' },
+
+        csrf() {
+            return document.querySelector('meta[name="csrf-token"]').content;
+        },
+
+        confirmRemove(id, name) {
+            this.removeModal.member = { id, name };
+            this.removeModal.show = true;
+        },
+
+        async removeMember() {
+            this.removeModal.loading = true;
+            try {
+                const response = await fetch(route('family.members.remove', this.removeModal.member.id), {
+                    method: 'DELETE', credentials: 'same-origin',
+                    headers: { 'X-CSRF-TOKEN': this.csrf(), 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                const data = await response.json();
+                if (!response.ok) { this.$toast.error(data.message || 'Gagal mengeluarkan anggota'); return; }
+                this.removeModal.show = false;
+                this.$toast.success(data.message);
+                location.reload();
+            } catch (error) { this.$toast.error('Terjadi kesalahan'); }
+            finally { this.removeModal.loading = false; }
+        },
+
+        confirmLeave() {
+            this.dangerModal.mode = 'leave';
+            this.dangerModal.title = 'Keluar dari Keluarga';
+            this.dangerModal.message = 'Anda akan berhenti berbagi buku keuangan ini. Data tetap tersimpan di akun Anda.';
+            this.dangerModal.actionLabel = 'Keluar';
+            this.dangerModal.show = true;
+        },
+
+        confirmDestroy() {
+            this.dangerModal.mode = 'destroy';
+            this.dangerModal.title = 'Bubarkan Keluarga';
+            this.dangerModal.message = 'Semua anggota akan dilepas dan buku keuangan bersama ditutup. Lanjutkan?';
+            this.dangerModal.actionLabel = 'Bubarkan';
+            this.dangerModal.show = true;
+        },
+
+        async runDanger() {
+            this.dangerModal.loading = true;
+            try {
+                const isLeave = this.dangerModal.mode === 'leave';
+                const response = await fetch(isLeave ? route('family.leave') : route('family.destroy'), {
+                    method: isLeave ? 'POST' : 'DELETE', credentials: 'same-origin',
+                    headers: { 'X-CSRF-TOKEN': this.csrf(), 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                const data = await response.json();
+                if (!response.ok) { this.$toast.error(data.message || 'Gagal'); return; }
+                this.dangerModal.show = false;
+                this.$toast.success(data.message);
+                location.reload();
+            } catch (error) { this.$toast.error('Terjadi kesalahan'); }
+            finally { this.dangerModal.loading = false; }
+        }
+    }
+};
+
 Alpine.start();

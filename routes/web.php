@@ -4,6 +4,8 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AdjustmentLogController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FamilyController;
+use App\Http\Controllers\GoalController;
 use App\Http\Controllers\MutationController;
 use App\Http\Controllers\PeriodController;
 use App\Http\Controllers\ProfileController;
@@ -19,6 +21,14 @@ Route::get('/', function () {
 
     return view('auth.landing');
 });
+
+Route::get('/cara-pemakaian', function () {
+    return view('auth.usage');
+})->name('usage');
+
+Route::get('/offline', function () {
+    return view('offline');
+})->name('offline');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -68,7 +78,17 @@ Route::middleware('auth')->group(function () {
     Route::resource('mutations', MutationController::class);
     Route::resource('adjustments', AdjustmentLogController::class);
 
+    Route::post('goals/ai', [GoalController::class, 'ai'])->name('goals.ai');
+    Route::resource('goals', GoalController::class);
+
     Route::resource('users', UserController::class);
+
+    Route::get('family', [FamilyController::class, 'index'])->name('family.index');
+    Route::post('family', [FamilyController::class, 'store'])->name('family.store');
+    Route::post('family/invite', [FamilyController::class, 'invite'])->name('family.invite');
+    Route::post('family/leave', [FamilyController::class, 'leave'])->name('family.leave');
+    Route::delete('family', [FamilyController::class, 'destroy'])->name('family.destroy');
+    Route::delete('family/members/{user}', [FamilyController::class, 'remove'])->name('family.members.remove');
 });
 
 require __DIR__.'/auth.php';

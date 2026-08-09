@@ -14,6 +14,7 @@ class AdjustmentLog extends Model
         'date',
         'transaction_id',
         'user_id',
+        'family_id',
         'old_amount',
         'new_amount',
         'reason',
@@ -37,5 +38,21 @@ class AdjustmentLog extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function scopeForUser($query, User $user)
+    {
+        if ($user->belongsToFamily()) {
+            return $query->where('family_id', $user->family_id);
+        }
+
+        return $query->where('user_id', $user->id);
+    }
+
+    public function inSameScope(User $user)
+    {
+        return $user->belongsToFamily()
+            ? $this->family_id === $user->family_id
+            : $this->user_id === $user->id;
     }
 }

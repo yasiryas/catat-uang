@@ -4,19 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\Category;
+use App\Models\Goal;
 use App\Models\Period;
 use App\Models\Transaction;
+use App\Services\GoalService;
 use App\Services\PeriodService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request, PeriodService $periodService)
+    public function index(Request $request, PeriodService $periodService, GoalService $goalService)
     {
-        $periodService->ensureAllMonthsThisYear(auth()->id());
+        $user = auth()->user();
 
-        $userId = auth()->id();
-        $periods = Period::where('user_id', $userId)->latest('year')->latest('month')->get();
+        $periodService->ensureAllMonthsThisYear($user);
+
+        $periods = Period::forUser($user)->latest('year')->latest('month')->get();
         $selectedPeriodId = $request->get('period_id');
 
         $period = null;
@@ -28,12 +32,12 @@ class DashboardController extends Controller
         $expenseByCategory = collect();
         $recentTransactions = collect();
 
-        $baseQuery = Transaction::where('user_id', $userId);
+        $baseQuery = Transaction::forUser($user);
 
         if ($selectedPeriodId && $selectedPeriodId !== 'all') {
             $period = $periods->firstWhere('id', (int) $selectedPeriodId);
             $baseQuery->where('period_id', $selectedPeriodId);
-        } elseif (!$selectedPeriodId || $selectedPeriodId === 'all') {
+        } elseif (! $selectedPeriodId || $selectedPeriodId === 'all') {
             $period = null;
         }
 
@@ -74,18 +78,18 @@ class DashboardController extends Controller
             ->get();
 
         // Summary counts (always global)
-        $totalTransactions = Transaction::where('user_id', $userId)->count();
+        $totalTransactions = Transaction::forUser($user)->count();
         $totalCategories = Category::count();
         $totalPeriods = $periods->count();
 
         // Monthly chart data (filtered by year)
         $year = $period ? $period->year : date('Y');
-        $chartQuery = Transaction::where('user_id', $userId)->whereYear('date', $year);
+        $chartQuery = Transaction::forUser($user)->whereYear('date', $year);
         if ($selectedPeriodId && $selectedPeriodId !== 'all') {
             $chartQuery->where('period_id', $selectedPeriodId);
         }
         $monthlyData = (clone $chartQuery)
-            ->selectRaw("MONTH(date) as month, type, SUM(amount) as total")
+            ->selectRaw('MONTH(date) as month, type, SUM(amount) as total')
             ->groupBy('month', 'type')
             ->get()
             ->groupBy('month');
@@ -95,7 +99,7 @@ class DashboardController extends Controller
         $chartExpense = [];
 
         foreach (range(1, 12) as $m) {
-            $monthName = \Carbon\Carbon::create($year, $m, 1)->locale('id')->isoFormat('MMM');
+            $monthName = Carbon::create($year, $m, 1)->locale('id')->isoFormat('MMM');
             $chartMonths[] = $monthName;
             $data = $monthlyData->get($m);
             $chartIncome[] = (float) ($data?->firstWhere('type', 'income')?->total ?? 0);
@@ -103,14 +107,26 @@ class DashboardController extends Controller
         }
 
         // Saldo per dompet (always global)
-        $accounts = Account::where('user_id', $userId)->get();
+        $accounts = Account::forUser($user)->get();
+
+        // Target & capaian (always global, max 4 target aktif)
+        $goals = Goal::with(['period', 'category', 'account'])
+            ->forUser($user)
+            ->where('is_active', true)
+            ->latest()
+            ->limit(4)
+            ->get()
+            ->map(fn (Goal $goal) => array_merge(
+                ['id' => $goal->id, 'name' => $goal->name, 'type' => $goal->type],
+                $goalService->progressFor($goal)
+            ));
 
         return view('dashboard', compact(
             'period', 'periods', 'selectedPeriodId',
             'totalIncome', 'totalExpense', 'netBalance', 'closingBalance',
             'incomeByCategory', 'expenseByCategory',
             'recentTransactions', 'totalTransactions', 'totalCategories', 'totalPeriods',
-            'chartMonths', 'chartIncome', 'chartExpense', 'accounts', 'year'
+            'chartMonths', 'chartIncome', 'chartExpense', 'accounts', 'year', 'goals'
         ));
     }
 }

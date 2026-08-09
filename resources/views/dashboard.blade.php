@@ -20,68 +20,108 @@
     </div>
 
     {{-- Stat Cards --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-        <div class="bg-white rounded-xl shadow-sm border border-green-100 p-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div class="bg-white rounded-xl shadow-sm border border-green-100 p-5">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-gray-500 text-sm">Total Pemasukan</p>
-                    <h2 class="text-2xl font-bold text-green-600 mt-2">Rp {{ number_format($totalIncome, 0, ',', '.') }}</h2>
+                    <h2 class="text-xl font-bold text-green-600 mt-1">{{ rupiah($totalIncome) }}</h2>
                 </div>
-                <div class="bg-green-100 p-3 rounded-xl">
-                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                <div class="bg-green-100 p-2.5 rounded-lg">
+                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-red-100 p-6">
+        <div class="bg-white rounded-xl shadow-sm border border-red-100 p-5">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-gray-500 text-sm">Total Pengeluaran</p>
-                    <h2 class="text-2xl font-bold text-red-600 mt-2">Rp {{ number_format($totalExpense, 0, ',', '.') }}</h2>
+                    <h2 class="text-xl font-bold text-red-600 mt-1">{{ rupiah($totalExpense) }}</h2>
                 </div>
-                <div class="bg-red-100 p-3 rounded-xl">
-                    <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+                <div class="bg-red-100 p-2.5 rounded-lg">
+                    <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-blue-100 p-6">
+        <div class="bg-white rounded-xl shadow-sm border border-blue-100 p-5">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-gray-500 text-sm">Saldo Bersih</p>
-                    <h2 class="text-2xl font-bold text-blue-600 mt-2">Rp {{ number_format($netBalance, 0, ',', '.') }}</h2>
+                    <h2 class="text-xl font-bold text-blue-600 mt-1">{{ rupiah($netBalance) }}</h2>
                 </div>
-                <div class="bg-blue-100 p-3 rounded-xl">
-                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
+                <div class="bg-blue-100 p-2.5 rounded-lg">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-amber-100 p-6">
+        <div class="bg-white rounded-xl shadow-sm border border-amber-100 p-5">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-gray-500 text-sm">Total Transaksi</p>
-                    <h2 class="text-2xl font-bold text-amber-600 mt-2">{{ $totalTransactions }}</h2>
+                    <h2 class="text-xl font-bold text-amber-600 mt-1">{{ $totalTransactions }}</h2>
                 </div>
-                <div class="bg-amber-100 p-3 rounded-xl">
-                    <svg class="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                <div class="bg-amber-100 p-2.5 rounded-lg">
+                    <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mt-6">
+    {{-- Target & Capaian --}}
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 mt-5">
+        <div class="flex items-center justify-between mb-3">
+            <div>
+                <h3 class="font-semibold">Target & Capaian</h3>
+                <p class="text-xs text-slate-400">Capaian dihitung otomatis dari transaksi Anda.</p>
+            </div>
+            <a href="{{ route('goals.index') }}" class="text-blue-600 text-sm hover:underline font-medium">Kelola Target</a>
+        </div>
+
+        @if ($goals->isEmpty())
+            <p class="text-slate-400 text-center py-8">Belum ada target. <a href="{{ route('goals.index') }}" class="text-blue-600 hover:underline font-medium">Buat target pertama</a> untuk mulai memantau capaian.</p>
+        @else
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                @foreach ($goals as $goal)
+                    @php
+                        $isCap = in_array($goal['type'], ['expense', 'category'], true);
+                        $barColor = $goal['achieved'] ? 'bg-emerald-500' : ($goal['raw_percentage'] > 100 ? 'bg-red-500' : 'bg-blue-500');
+                    @endphp
+                    <div>
+                        <div class="flex items-center justify-between text-sm mb-1">
+                            <span class="font-medium text-slate-700 truncate" title="{{ $goal['name'] }}">{{ $goal['name'] }}</span>
+                            <span class="font-semibold {{ $goal['achieved'] ? 'text-emerald-600' : ($goal['raw_percentage'] > 100 ? 'text-red-600' : 'text-slate-600') }}">{{ $goal['percentage'] }}%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-2 mb-1">
+                            <div class="h-2 rounded-full {{ $barColor }}" style="width: {{ min(100, max(0, $goal['raw_percentage'])) }}%"></div>
+                        </div>
+                        <p class="text-xs text-slate-400">
+                            {{ rupiah($goal['actual']) }}
+                            / {{ rupiah($goal['target']) }}
+                            @if ($goal['achieved'])
+                                <span class="text-emerald-600 font-medium">â€” {{ $isCap ? 'sesuai batas' : 'tercapai' }}</span>
+                            @endif
+                        </p>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 mt-5">
         {{-- Grafik --}}
-        <div class="xl:col-span-2 bg-white rounded-xl shadow-sm p-6">
-            <h3 class="font-semibold mb-4">Grafik Keuangan {{ $year }}</h3>
-            <div class="h-80 relative">
+        <div class="xl:col-span-2 bg-white rounded-xl shadow-sm p-5">
+            <h3 class="font-semibold mb-3">Grafik Keuangan {{ $year }}</h3>
+            <div class="h-72 relative">
                 <canvas id="chartKeuangan"></canvas>
             </div>
         </div>
 
         {{-- Ringkasan --}}
-        <div class="bg-white rounded-xl shadow-sm p-6">
-            <h3 class="font-semibold mb-4">Ringkasan</h3>
+        <div class="bg-white rounded-xl shadow-sm p-5">
+            <h3 class="font-semibold mb-3">Ringkasan</h3>
             <div class="space-y-4 text-sm">
                 <div class="flex justify-between">
                     <span class="text-slate-500">Periode Aktif</span>
@@ -122,7 +162,7 @@
                             @endif
                             {{ $account->name }}
                         </span>
-                        <span class="font-semibold {{ $saldo >= 0 ? 'text-green-600' : 'text-red-600' }}">Rp {{ number_format($saldo, 0, ',', '.') }}</span>
+                        <span class="font-semibold {{ $saldo >= 0 ? 'text-green-600' : 'text-red-600' }}">{{ rupiah($saldo) }}</span>
                     </div>
                 @empty
                     <p class="text-slate-400 text-center py-4">Belum ada dompet.</p>
@@ -132,9 +172,9 @@
     </div>
 
     {{-- Income vs Expense Breakdown --}}
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
-        <div class="bg-white rounded-xl shadow-sm p-6">
-            <h3 class="font-semibold mb-4">Pemasukan per Kategori</h3>
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-5">
+        <div class="bg-white rounded-xl shadow-sm p-5">
+            <h3 class="font-semibold mb-3">Pemasukan per Kategori</h3>
             @if ($incomeByCategory->isNotEmpty())
                 <div class="space-y-3">
                     @php $totalIncomeAmount = $incomeByCategory->sum('total'); @endphp
@@ -143,7 +183,7 @@
                         <div>
                             <div class="flex justify-between text-sm mb-1">
                                 <span class="font-medium">{{ $item->category?->name ?? '-' }}</span>
-                                <span class="text-emerald-600 font-semibold">Rp {{ number_format((float) $item->total, 0, ',', '.') }}</span>
+                                <span class="text-emerald-600 font-semibold">{{ rupiah((float) $item->total) }}</span>
                             </div>
                             <div class="w-full bg-slate-100 rounded-full h-2">
                                 <div class="bg-emerald-500 h-2 rounded-full" style="width: {{ $pct }}%"></div>
@@ -156,8 +196,8 @@
             @endif
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm p-6">
-            <h3 class="font-semibold mb-4">Pengeluaran per Kategori</h3>
+        <div class="bg-white rounded-xl shadow-sm p-5">
+            <h3 class="font-semibold mb-3">Pengeluaran per Kategori</h3>
             @if ($expenseByCategory->isNotEmpty())
                 <div class="space-y-3">
                     @php $totalExpenseAmount = $expenseByCategory->sum('total'); @endphp
@@ -166,7 +206,7 @@
                         <div>
                             <div class="flex justify-between text-sm mb-1">
                                 <span class="font-medium">{{ $item->category?->name ?? '-' }}</span>
-                                <span class="text-red-600 font-semibold">Rp {{ number_format((float) $item->total, 0, ',', '.') }}</span>
+                                <span class="text-red-600 font-semibold">{{ rupiah((float) $item->total) }}</span>
                             </div>
                             <div class="w-full bg-slate-100 rounded-full h-2">
                                 <div class="bg-red-500 h-2 rounded-full" style="width: {{ $pct }}%"></div>
@@ -181,8 +221,8 @@
     </div>
 
     {{-- Transaksi Terbaru --}}
-    <div class="bg-white rounded-xl shadow-sm p-6 mt-6">
-        <div class="flex items-center justify-between mb-4">
+    <div class="bg-white rounded-xl shadow-sm p-5 mt-5">
+        <div class="flex items-center justify-between mb-3">
             <h3 class="font-semibold">Transaksi Terbaru</h3>
             <a href="{{ route('transactions.income.index') }}" class="text-blue-600 text-sm hover:underline">Lihat Semua</a>
         </div>
@@ -201,7 +241,7 @@
                 <tbody class="divide-y divide-slate-100">
                     @forelse($recentTransactions as $tx)
                         <tr class="hover:bg-slate-50 transition-colors">
-                            <td class="py-3 text-sm whitespace-nowrap">{{ \Carbon\Carbon::parse($tx->date)->locale('id')->isoFormat('DD MMM YYYY, HH:mm') }}</td>
+                            <td class="py-3 text-sm whitespace-nowrap">{{ tanggal($tx->date, true) }}</td>
                             <td class="py-3 text-sm font-medium">{{ $tx->category?->name ?? '-' }}</td>
                             <td class="py-3 text-sm text-slate-500">{{ $tx->account?->name ?? '-' }}</td>
                             <td class="py-3">
@@ -216,7 +256,7 @@
                                 @endif
                             </td>
                             <td class="py-3 text-sm font-medium text-right {{ $tx->type === 'expense' ? 'text-red-600' : 'text-green-600' }}">
-                                {{ $tx->type === 'expense' ? '-' : '+' }}Rp {{ number_format($tx->amount, 0, ',', '.') }}
+                                {{ $tx->type === 'expense' ? '-' : '+' }}{{ rupiah($tx->amount) }}
                             </td>
                         </tr>
                     @empty

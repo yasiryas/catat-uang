@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -8,10 +8,12 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased min-h-screen bg-gray-100">
-    <div class="min-h-screen flex items-center justify-center px-4 py-12">
+<body class="font-sans antialiased min-h-screen"
+      style="background-image: url('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=1920&auto=format&fit=crop'); background-size: cover; background-position: center; background-attachment: fixed;">
+    <div class="fixed inset-0 bg-slate-900/70"></div>
+    <div class="relative min-h-screen flex items-center justify-center px-4 py-12">
         <div class="w-full max-w-5xl">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div class="grid grid-cols-1 lg:grid-cols-2">
                     <div class="p-8 md:p-12 bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex flex-col justify-between">
                         <div>
@@ -70,6 +72,12 @@
                                     Buat Akun Baru
                                 </a>
                             @endif
+
+                            <a href="{{ route('usage') }}"
+                                class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-blue-700 font-semibold hover:bg-blue-100 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                                Cara Pemakaian
+                            </a>
                         </div>
 
                         <div class="mt-6 bg-gray-50 rounded-lg border border-gray-200 p-4">

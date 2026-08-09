@@ -34,7 +34,7 @@
                     <tbody class="divide-y divide-slate-200">
                         @forelse($adjustments as $adjustment)
                             <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="p-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($adjustment->date)->locale('id')->isoFormat('DD MMM YYYY, HH:mm') }}</td>
+                                <td class="p-4 whitespace-nowrap">{{ tanggal($adjustment->date, true) }}</td>
                                 <td class="p-4">{{ $adjustment->period?->name ?? '-' }}</td>
                                 <td class="p-4">
                                     @if ($adjustment->type === 'income')
@@ -43,7 +43,7 @@
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Pengeluaran</span>
                                     @endif
                                 </td>
-                                <td class="p-4 text-right font-medium">Rp {{ number_format((float) $adjustment->amount, 0, ',', '.') }}</td>
+                                <td class="p-4 text-right font-medium">{{ rupiah((float) $adjustment->amount) }}</td>
                                 <td class="p-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
                                         <button @click="edit(@json($adjustment))" class="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">Edit</button>

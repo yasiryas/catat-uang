@@ -13,7 +13,7 @@ class PeriodController extends Controller
 {
     public function index(Request $request)
     {
-        $periods = Period::where('user_id', auth()->id())->latest()->paginate(10);
+        $periods = Period::forUser(auth()->user())->latest()->paginate(10);
 
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
@@ -37,7 +37,7 @@ class PeriodController extends Controller
 
     public function store(StorePeriodRequest $request)
     {
-        $period = Period::create($request->validated() + ['user_id' => auth()->id()]);
+        $period = Period::create($request->validated() + ['user_id' => auth()->id(), 'family_id' => auth()->user()->family_id]);
 
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
@@ -61,6 +61,8 @@ class PeriodController extends Controller
 
     public function update(UpdatePeriodRequest $request, Period $period)
     {
+        abort_if(! $period->inSameScope(auth()->user()), 403);
+
         $period->update($request->validated());
 
         if ($request->ajax() || $request->wantsJson()) {
@@ -75,6 +77,8 @@ class PeriodController extends Controller
 
     public function destroy(Period $period, Request $request)
     {
+        abort_if(! $period->inSameScope(auth()->user()), 403);
+
         $period->delete();
 
         if ($request->ajax() || $request->wantsJson()) {
@@ -86,7 +90,7 @@ class PeriodController extends Controller
 
     public function report(Period $period)
     {
-        abort_if($period->user_id !== auth()->id(), 403);
+        abort_if(! $period->inSameScope(auth()->user()), 403);
 
         $filename = 'Laporan_Periode_' . str_replace(' ', '_', $period->name) . '.xlsx';
 

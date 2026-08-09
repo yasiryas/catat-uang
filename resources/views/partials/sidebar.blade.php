@@ -1,13 +1,15 @@
-@php
+﻿@php
     $menu = [
         'dashboard' => request()->routeIs('dashboard'),
         'account' => request()->routeIs('accounts.*'),
         'category' => request()->routeIs('categories.*'),
         'income' => request()->routeIs('transactions.income.*'),
         'expense' => request()->routeIs('transactions.expense.*'),
+        'goal' => request()->routeIs('goals.*'),
         'mutation' => request()->routeIs('mutations.*'),
         'period' => request()->routeIs('periods.*'),
         'adjustment' => request()->routeIs('adjustments.*'),
+        'family' => request()->routeIs('family.*'),
         'user' => request()->routeIs('users.*'),
     ];
 @endphp
@@ -16,18 +18,24 @@
 
 <aside
     class="fixed md:static inset-y-0 left-0 z-40 bg-gradient-to-b from-blue-600 to-blue-700 flex flex-col shrink-0 transition-all duration-300"
-    :class="collapse ? 'w-20' : 'w-64'">
+    :class="[
+        sidebar ? 'translate-x-0 w-64' : '-translate-x-full md:translate-x-0',
+        collapse ? 'md:w-20' : 'md:w-64',
+    ]">
 
-    <div class="h-16 flex items-center gap-3 px-5 border-b border-white/10" :class="collapse ? 'px-3 justify-center' : 'px-5'">
+    <div class="h-16 flex items-center gap-3 px-5 border-b border-white/10" :class="collapse ? 'md:px-3 md:justify-center' : 'px-5'">
         <x-keuangan-logo class="w-8 h-8 shrink-0" />
         <h1 x-show="!collapse" class="text-base font-bold tracking-tight text-white whitespace-nowrap">KeuanganApp</h1>
+        <button @click="sidebar = false" class="ml-auto md:hidden p-1.5 rounded-lg hover:bg-white/10">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
     </div>
 
     <nav class="flex-1 px-3 py-6 space-y-3 overflow-y-auto overflow-x-hidden">
         <a href="{{ route('dashboard') }}"
             class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors {{ $menu['dashboard'] ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}"
-            :class="collapse ? 'justify-center px-0' : ''">
-            <x-heroicon-o-home class="w-5 h-5 shrink-0 {{ $menu['dashboard'] ? 'text-white' : 'text-blue-200' }}" />
+            :class="collapse ? 'md:justify-center md:px-0' : ''">
+            <x-heroicon-o-home class="w-5 h-5 shrink-0" />
             <span x-show="!collapse">Dashboard</span>
         </a>
 
@@ -62,6 +70,13 @@
             <span x-show="!collapse">Pengeluaran</span>
         </a>
 
+        <a href="{{ route('goals.index') }}"
+            class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors {{ $menu['goal'] ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}"
+            :class="collapse ? 'justify-center px-0' : ''">
+            <x-heroicon-o-arrow-trending-up class="w-5 h-5 shrink-0 {{ $menu['goal'] ? 'text-white' : 'text-blue-200' }}" />
+            <span x-show="!collapse">Target & Capaian</span>
+        </a>
+
         <a href="{{ route('mutations.index') }}"
             class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors {{ $menu['mutation'] ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}"
             :class="collapse ? 'justify-center px-0' : ''">
@@ -84,6 +99,13 @@
             :class="collapse ? 'justify-center px-0' : ''">
             <x-heroicon-o-adjustments-horizontal class="w-5 h-5 shrink-0 {{ $menu['adjustment'] ? 'text-white' : 'text-blue-200' }}" />
             <span x-show="!collapse">Adjustment</span>
+        </a>
+
+        <a href="{{ route('family.index') }}"
+            class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors {{ $menu['family'] ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}"
+            :class="collapse ? 'justify-center px-0' : ''">
+            <x-heroicon-o-users class="w-5 h-5 shrink-0 {{ $menu['family'] ? 'text-white' : 'text-blue-200' }}" />
+            <span x-show="!collapse">Keluarga</span>
         </a>
 
         @if (auth()->user()?->is_admin)

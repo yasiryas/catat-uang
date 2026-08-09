@@ -36,11 +36,11 @@
                     <tbody class="divide-y divide-slate-200">
                         @forelse($mutations as $mutation)
                             <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="p-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($mutation->date)->locale('id')->isoFormat('DD MMM YYYY, HH:mm') }}</td>
+                                <td class="p-4 whitespace-nowrap">{{ tanggal($mutation->date, true) }}</td>
                                 <td class="p-4">{{ $mutation->period?->name ?? '-' }}</td>
                                 <td class="p-4">{{ $mutation->fromAccount?->name ?? '-' }}</td>
                                 <td class="p-4">{{ $mutation->toAccount?->name ?? '-' }}</td>
-                                <td class="p-4 text-right font-medium">Rp {{ number_format((float) $mutation->amount, 0, ',', '.') }}</td>
+                                <td class="p-4 text-right font-medium">{{ rupiah((float) $mutation->amount) }}</td>
                                 <td class="p-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
                                         <button @click="edit(@json($mutation))" class="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">Edit</button>

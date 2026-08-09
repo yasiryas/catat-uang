@@ -3,57 +3,69 @@
 namespace App\Services;
 
 use App\Models\Period;
-use Illuminate\Support\Facades\Date;
+use App\Models\User;
 
 class PeriodService
 {
-    public function ensurePeriodExists(int $userId): Period
+    public function ensurePeriodExists(User $user): Period
     {
         $now = now();
         $year = $now->year;
         $month = $now->month;
 
-        $monthNames = [
-            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
-            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
-            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
+        $values = [
+            'name' => $this->monthName($month).' '.$year,
+            'start_date' => "{$year}-{$month}-01",
+            'end_date' => "{$year}-{$month}-".now()->daysInMonth,
+            'is_closed' => false,
         ];
 
-        return Period::firstOrCreate([
-            'user_id' => $userId,
-            'year' => $year,
-            'month' => $month,
-        ], [
-            'name' => $monthNames[$month] . ' ' . $year,
-            'start_date' => "{$year}-{$month}-01",
-            'end_date' => "{$year}-{$month}-" . now()->daysInMonth,
-            'is_closed' => false,
-        ]);
+        if ($user->belongsToFamily()) {
+            return Period::firstOrCreate(
+                ['family_id' => $user->family_id, 'year' => $year, 'month' => $month],
+                $values + ['user_id' => $user->id]
+            );
+        }
+
+        return Period::firstOrCreate(
+            ['user_id' => $user->id, 'year' => $year, 'month' => $month],
+            $values
+        );
     }
 
-    public function ensureAllMonthsThisYear(int $userId): void
+    public function ensureAllMonthsThisYear(User $user): void
     {
         $now = now();
         $year = $now->year;
 
-        $monthNames = [
+        for ($month = 1; $month <= $now->month; $month++) {
+            $values = [
+                'name' => $this->monthName($month).' '.$year,
+                'start_date' => "{$year}-{$month}-01",
+                'end_date' => "{$year}-{$month}-".now()->year($year)->month($month)->daysInMonth,
+                'is_closed' => false,
+            ];
+
+            if ($user->belongsToFamily()) {
+                Period::firstOrCreate(
+                    ['family_id' => $user->family_id, 'year' => $year, 'month' => $month],
+                    $values + ['user_id' => $user->id]
+                );
+            } else {
+                Period::firstOrCreate(
+                    ['user_id' => $user->id, 'year' => $year, 'month' => $month],
+                    $values
+                );
+            }
+        }
+    }
+
+    private function monthName(int $month): string
+    {
+        return [
             1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
             5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
             9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
-        ];
-
-        for ($month = 1; $month <= $now->month; $month++) {
-            $daysInMonth = now()->year($year)->month($month)->daysInMonth;
-            Period::firstOrCreate([
-                'user_id' => $userId,
-                'year' => $year,
-                'month' => $month,
-            ], [
-                'name' => $monthNames[$month] . ' ' . $year,
-                'start_date' => "{$year}-{$month}-01",
-                'end_date' => "{$year}-{$month}-{$daysInMonth}",
-                'is_closed' => false,
-            ]);
-        }
+        ][$month];
     }
 }

@@ -51,7 +51,7 @@
 
                     <td class="p-4 text-right">
 
-                        Rp {{ number_format($category->budget_limit, 0, ',', '.') }}
+                        {{ rupiah($category->budget_limit) }}
 
                     </td>
 

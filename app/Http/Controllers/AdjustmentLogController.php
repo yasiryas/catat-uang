@@ -5,14 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreAdjustmentLogRequest;
 use App\Http\Requests\UpdateAdjustmentLogRequest;
 use App\Models\AdjustmentLog;
-use App\Models\Period;
 use Illuminate\Http\Request;
 
 class AdjustmentLogController extends Controller
 {
     public function index(Request $request)
     {
-        $adjustments = AdjustmentLog::latest()->paginate(10);
+        $adjustments = AdjustmentLog::forUser(auth()->user())->latest()->paginate(10);
 
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
@@ -36,7 +35,10 @@ class AdjustmentLogController extends Controller
 
     public function store(StoreAdjustmentLogRequest $request)
     {
-        $adjustment = AdjustmentLog::create($request->validated() + ['user_id' => auth()->id()]);
+        $adjustment = AdjustmentLog::create($request->validated() + [
+            'user_id' => auth()->id(),
+            'family_id' => auth()->user()->family_id,
+        ]);
 
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
@@ -60,6 +62,8 @@ class AdjustmentLogController extends Controller
 
     public function update(UpdateAdjustmentLogRequest $request, AdjustmentLog $adjustment)
     {
+        abort_if(! $adjustment->inSameScope(auth()->user()), 403);
+
         $adjustment->update($request->validated());
 
         if ($request->ajax() || $request->wantsJson()) {
@@ -74,6 +78,8 @@ class AdjustmentLogController extends Controller
 
     public function destroy(AdjustmentLog $adjustment, Request $request)
     {
+        abort_if(! $adjustment->inSameScope(auth()->user()), 403);
+
         $adjustment->delete();
 
         if ($request->ajax() || $request->wantsJson()) {

@@ -9,7 +9,7 @@ class AccountController extends Controller
 {
     public function index(Request $request)
     {
-        $accounts = Account::where('user_id', auth()->id())->latest()->paginate(10);
+        $accounts = Account::forUser(auth()->user())->latest()->paginate(10);
 
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
@@ -39,7 +39,7 @@ class AccountController extends Controller
             'description' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        $account = Account::create($validated + ['user_id' => auth()->id()]);
+        $account = Account::create($validated + ['user_id' => auth()->id(), 'family_id' => auth()->user()->family_id]);
 
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
@@ -53,13 +53,13 @@ class AccountController extends Controller
 
     public function edit(Account $account)
     {
-        abort_if($account->user_id !== auth()->id(), 403);
+        abort_if(! $account->inSameScope(auth()->user()), 403);
         abort(404);
     }
 
     public function update(Request $request, Account $account)
     {
-        abort_if($account->user_id !== auth()->id(), 403);
+        abort_if(! $account->inSameScope(auth()->user()), 403);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -81,7 +81,7 @@ class AccountController extends Controller
 
     public function destroy(Account $account, Request $request)
     {
-        abort_if($account->user_id !== auth()->id(), 403);
+        abort_if(! $account->inSameScope(auth()->user()), 403);
 
         $account->delete();
 

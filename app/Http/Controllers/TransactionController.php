@@ -22,7 +22,7 @@ class TransactionController extends Controller
 
     protected function getPeriods()
     {
-        return Period::where('user_id', auth()->id())->latest()->get();
+        return Period::forUser(auth()->user())->latest()->get();
     }
 
     // INCOME
@@ -157,14 +157,14 @@ class TransactionController extends Controller
     private function typeIndex(Request $request, string $type, string $title)
     {
         $query = Transaction::with(['category', 'period', 'account'])
-            ->where('user_id', auth()->id())
+            ->forUser(auth()->user())
             ->where('type', $type)
             ->latest();
         $transactions = $query->paginate(10);
 
         $categories = $this->getCategories($type);
         $periods = $this->getPeriods();
-        $accounts = \App\Models\Account::where('user_id', auth()->id())->latest()->get();
+        $accounts = \App\Models\Account::forUser(auth()->user())->latest()->get();
 
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
@@ -183,7 +183,7 @@ class TransactionController extends Controller
 
     protected function getAccounts()
     {
-        return \App\Models\Account::where('user_id', auth()->id())->latest()->get();
+        return \App\Models\Account::forUser(auth()->user())->latest()->get();
     }
 
     private function storeTyped(StoreTransactionRequest $request, string $type, string $label)
@@ -196,6 +196,7 @@ class TransactionController extends Controller
 
         $transaction = Transaction::create($data + [
             'user_id' => auth()->id(),
+            'family_id' => auth()->user()->family_id,
             'type' => $type,
         ]);
 
@@ -212,6 +213,7 @@ class TransactionController extends Controller
     private function updateTyped(UpdateTransactionRequest $request, Transaction $transaction, string $type, string $label)
     {
         abort_unless($transaction->type === $type, 404);
+        abort_if(! $transaction->inSameScope(auth()->user()), 403);
 
         $data = $request->validated();
 
@@ -244,6 +246,7 @@ class TransactionController extends Controller
     private function destroyTyped(Transaction $transaction, Request $request, string $type, string $label)
     {
         abort_unless($transaction->type === $type, 404);
+        abort_if(! $transaction->inSameScope(auth()->user()), 403);
 
         if ($transaction->receipt_image) {
             Storage::disk('public')->delete($transaction->receipt_image);

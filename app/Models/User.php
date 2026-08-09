@@ -7,10 +7,11 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'is_admin'])]
+#[Fillable(['name', 'email', 'password', 'is_admin', 'family_id', 'family_role'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -29,5 +30,28 @@ class User extends Authenticatable
             'password' => 'hashed',
             'is_admin' => 'boolean',
         ];
+    }
+
+    public function family(): BelongsTo
+    {
+        return $this->belongsTo(Family::class);
+    }
+
+    public function isFamilyAdmin(): bool
+    {
+        return $this->family_role === 'admin';
+    }
+
+    public function belongsToFamily(): bool
+    {
+        return (bool) $this->family_id;
+    }
+
+    /**
+     * Nilai scoping data: gunakan family bila ada, jika tidak pakai id user.
+     */
+    public function scopeKey(): int
+    {
+        return $this->family_id ?? $this->id;
     }
 }

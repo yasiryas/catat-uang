@@ -32,8 +32,8 @@
                         @forelse($periods as $period)
                             <tr class="hover:bg-slate-50 transition-colors">
                                 <td class="p-4 font-medium">{{ $period->name }}</td>
-                                <td class="p-4">{{ \Carbon\Carbon::parse($period->start_date)->locale('id')->isoFormat('DD MMM YYYY') }}</td>
-                                <td class="p-4">{{ \Carbon\Carbon::parse($period->end_date)->locale('id')->isoFormat('DD MMM YYYY') }}</td>
+<td class="p-4">{{ tanggal($period->start_date) }}</td>
+                                    <td class="p-4">{{ tanggal($period->end_date) }}</td>
                                 <td class="p-4 text-center">
                                     @if ($period->is_closed)
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700">Closed</span>

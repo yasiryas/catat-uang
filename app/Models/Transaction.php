@@ -8,6 +8,7 @@ class Transaction extends Model
 {
     protected $fillable = [
         'user_id',
+        'family_id',
         'period_id',
         'category_id',
         'account_id',
@@ -71,5 +72,21 @@ class Transaction extends Model
     public function scopeMutation($query)
     {
         return $query->where('type', 'mutation');
+    }
+
+    public function scopeForUser($query, User $user)
+    {
+        if ($user->belongsToFamily()) {
+            return $query->where('family_id', $user->family_id);
+        }
+
+        return $query->where('user_id', $user->id);
+    }
+
+    public function inSameScope(User $user)
+    {
+        return $user->belongsToFamily()
+            ? $this->family_id === $user->family_id
+            : $this->user_id === $user->id;
     }
 }
