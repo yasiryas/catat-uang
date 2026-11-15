@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Concerns\RespondsWithPagination;
 use App\Http\Requests\StoreGoalRequest;
 use App\Http\Requests\UpdateGoalRequest;
 use App\Models\Account;
@@ -17,6 +18,8 @@ use Throwable;
 
 class GoalController extends Controller
 {
+    use RespondsWithPagination;
+
     public function __construct(
         private readonly GoalService $goalService,
         private readonly AiService $aiService,
@@ -32,6 +35,8 @@ class GoalController extends Controller
             ->latest()
             ->paginate(10);
 
+        $progress = $this->goalService->progressForMany($goals->getCollection());
+
         $goalStats = $goals->getCollection()->map(fn (Goal $goal) => [
             'id' => $goal->id,
             'name' => $goal->name,
@@ -46,7 +51,7 @@ class GoalController extends Controller
             'period' => $goal->period?->name,
             'category' => $goal->category?->name,
             'account' => $goal->account?->name,
-            'progress' => $this->goalService->progressFor($goal),
+            'progress' => $progress[$goal->id],
         ])->values();
 
         $periods = Period::forUser($user)->latest('year')->latest('month')->get(['id', 'name']);
@@ -74,21 +79,6 @@ class GoalController extends Controller
         }
 
         return view('goals.index', compact('goals', 'goalStats', 'periods', 'categories', 'accounts', 'summary'));
-    }
-
-    public function create()
-    {
-        abort(404);
-    }
-
-    public function show(string $id)
-    {
-        abort(404);
-    }
-
-    public function edit(string $id)
-    {
-        abort(404);
     }
 
     public function store(StoreGoalRequest $request)

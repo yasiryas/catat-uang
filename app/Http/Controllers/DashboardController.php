@@ -9,12 +9,16 @@ use App\Models\Period;
 use App\Models\Transaction;
 use App\Services\GoalService;
 use App\Services\PeriodService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request, PeriodService $periodService, GoalService $goalService)
+    public function __construct(
+        private readonly GoalService $goalService,
+    ) {}
+
+    public function index(Request $request, PeriodService $periodService)
     {
         $user = auth()->user();
 
@@ -22,104 +26,33 @@ class DashboardController extends Controller
 
         $periods = Period::forUser($user)->latest('year')->latest('month')->get();
         $selectedPeriodId = $request->get('period_id');
+        $period = $this->selectedPeriod($periods, $selectedPeriodId);
 
-        $period = null;
-        $totalIncome = 0;
-        $totalExpense = 0;
-        $netBalance = 0;
-        $closingBalance = 0;
-        $incomeByCategory = collect();
-        $expenseByCategory = collect();
-        $recentTransactions = collect();
+        $scopedTransactions = Transaction::forUser($user)
+            ->when($period, fn ($query) => $query->where('period_id', $period->id));
 
-        $baseQuery = Transaction::forUser($user);
+        [$totalIncome, $totalExpense] = $this->sumIncomeAndExpense($scopedTransactions);
+        $netBalance = $totalIncome - $totalExpense;
+        $closingBalance = $period ? $period->opening_balance + $netBalance : 0;
 
-        if ($selectedPeriodId && $selectedPeriodId !== 'all') {
-            $period = $periods->firstWhere('id', (int) $selectedPeriodId);
-            $baseQuery->where('period_id', $selectedPeriodId);
-        } elseif (! $selectedPeriodId || $selectedPeriodId === 'all') {
-            $period = null;
-        }
+        $incomeByCategory = $this->sumByCategory($scopedTransactions, 'income');
+        $expenseByCategory = $this->sumByCategory($scopedTransactions, 'expense');
 
-        if ($period) {
-            $totalIncome = (clone $baseQuery)->where('type', 'income')->sum('amount');
-            $totalExpense = (clone $baseQuery)->where('type', 'expense')->sum('amount');
-            $netBalance = $totalIncome - $totalExpense;
-            $closingBalance = $period->opening_balance + $netBalance;
-        } else {
-            $totalIncome = (clone $baseQuery)->where('type', 'income')->sum('amount');
-            $totalExpense = (clone $baseQuery)->where('type', 'expense')->sum('amount');
-            $netBalance = $totalIncome - $totalExpense;
-        }
-
-        // Income breakdown by category
-        $incomeByCategory = (clone $baseQuery)
-            ->where('type', 'income')
-            ->selectRaw('category_id, SUM(amount) as total')
-            ->with('category')
-            ->groupBy('category_id')
-            ->get()
-            ->sortByDesc('total');
-
-        // Expense breakdown by category
-        $expenseByCategory = (clone $baseQuery)
-            ->where('type', 'expense')
-            ->selectRaw('category_id, SUM(amount) as total')
-            ->with('category')
-            ->groupBy('category_id')
-            ->get()
-            ->sortByDesc('total');
-
-        // Recent transactions
-        $recentTransactions = (clone $baseQuery)
+        $recentTransactions = (clone $scopedTransactions)
             ->with(['category', 'account'])
             ->latest('date')
             ->take(10)
             ->get();
 
-        // Summary counts (always global)
         $totalTransactions = Transaction::forUser($user)->count();
         $totalCategories = Category::count();
         $totalPeriods = $periods->count();
 
-        // Monthly chart data (filtered by year)
-        $year = $period ? $period->year : date('Y');
-        $chartQuery = Transaction::forUser($user)->whereYear('date', $year);
-        if ($selectedPeriodId && $selectedPeriodId !== 'all') {
-            $chartQuery->where('period_id', $selectedPeriodId);
-        }
-        $monthlyData = (clone $chartQuery)
-            ->selectRaw('MONTH(date) as month, type, SUM(amount) as total')
-            ->groupBy('month', 'type')
-            ->get()
-            ->groupBy('month');
+        $year = $period?->year ?? now()->year;
+        [$chartMonths, $chartIncome, $chartExpense] = $this->monthlyChart($user, $selectedPeriodId, $year);
 
-        $chartMonths = [];
-        $chartIncome = [];
-        $chartExpense = [];
-
-        foreach (range(1, 12) as $m) {
-            $monthName = Carbon::create($year, $m, 1)->locale('id')->isoFormat('MMM');
-            $chartMonths[] = $monthName;
-            $data = $monthlyData->get($m);
-            $chartIncome[] = (float) ($data?->firstWhere('type', 'income')?->total ?? 0);
-            $chartExpense[] = (float) ($data?->firstWhere('type', 'expense')?->total ?? 0);
-        }
-
-        // Saldo per dompet (always global)
-        $accounts = Account::forUser($user)->get();
-
-        // Target & capaian (always global, max 4 target aktif)
-        $goals = Goal::with(['period', 'category', 'account'])
-            ->forUser($user)
-            ->where('is_active', true)
-            ->latest()
-            ->limit(4)
-            ->get()
-            ->map(fn (Goal $goal) => array_merge(
-                ['id' => $goal->id, 'name' => $goal->name, 'type' => $goal->type],
-                $goalService->progressFor($goal)
-            ));
+        $accounts = $this->accountsWithSaldo($user);
+        $goals = $this->activeGoalsWithProgress($user);
 
         return view('dashboard', compact(
             'period', 'periods', 'selectedPeriodId',
@@ -127,6 +60,103 @@ class DashboardController extends Controller
             'incomeByCategory', 'expenseByCategory',
             'recentTransactions', 'totalTransactions', 'totalCategories', 'totalPeriods',
             'chartMonths', 'chartIncome', 'chartExpense', 'accounts', 'year', 'goals'
+        ));
+    }
+
+    private function selectedPeriod(Collection $periods, ?string $selectedPeriodId): ?Period
+    {
+        if (! $selectedPeriodId || $selectedPeriodId === 'all') {
+            return null;
+        }
+
+        return $periods->firstWhere('id', (int) $selectedPeriodId);
+    }
+
+    /**
+     * @return array{0: float, 1: float} [income, expense]
+     */
+    private function sumIncomeAndExpense($query): array
+    {
+        $totals = (clone $query)
+            ->selectRaw("SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) as income")
+            ->selectRaw("SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) as expense")
+            ->first();
+
+        return [(float) $totals->income, (float) $totals->expense];
+    }
+
+    private function sumByCategory($query, string $type): Collection
+    {
+        return (clone $query)
+            ->where('type', $type)
+            ->selectRaw('category_id, SUM(amount) as total')
+            ->with('category')
+            ->groupBy('category_id')
+            ->get()
+            ->sortByDesc('total')
+            ->values();
+    }
+
+    /**
+     * @return array{0: array, 1: array, 2: array} [labels, income, expense]
+     */
+    private function monthlyChart($user, ?string $selectedPeriodId, int $year): array
+    {
+        $monthlyData = Transaction::forUser($user)
+            ->whereYear('date', $year)
+            ->when($selectedPeriodId && $selectedPeriodId !== 'all', fn ($q) => $q->where('period_id', $selectedPeriodId))
+            ->selectRaw('MONTH(date) as month, type, SUM(amount) as total')
+            ->groupBy('month', 'type')
+            ->get()
+            ->groupBy('month');
+
+        $labels = [];
+        $income = [];
+        $expense = [];
+
+        foreach (range(1, 12) as $month) {
+            $data = $monthlyData->get($month);
+
+            $labels[] = now()->setDate($year, $month, 1)->locale('id')->isoFormat('MMM');
+            $income[] = (float) ($data?->firstWhere('type', 'income')?->total ?? 0);
+            $expense[] = (float) ($data?->firstWhere('type', 'expense')?->total ?? 0);
+        }
+
+        return [$labels, $income, $expense];
+    }
+
+    private function accountsWithSaldo($user): Collection
+    {
+        $accounts = Account::forUser($user)->get();
+
+        if ($accounts->isEmpty()) {
+            return $accounts;
+        }
+
+        $saldos = Transaction::query()
+            ->whereIn('account_id', $accounts->modelKeys())
+            ->whereIn('type', ['income', 'expense'])
+            ->selectRaw("account_id, SUM(CASE WHEN type = 'income' THEN amount ELSE -amount END) as saldo")
+            ->groupBy('account_id')
+            ->pluck('saldo', 'account_id');
+
+        return $accounts->each(fn (Account $account) => $account->saldo = (float) ($saldos[$account->id] ?? 0));
+    }
+
+    private function activeGoalsWithProgress($user): Collection
+    {
+        $goals = Goal::with(['period', 'category', 'account'])
+            ->forUser($user)
+            ->where('is_active', true)
+            ->latest()
+            ->limit(4)
+            ->get();
+
+        $progress = $this->goalService->progressForMany($goals);
+
+        return $goals->map(fn (Goal $goal) => array_merge(
+            ['id' => $goal->id, 'name' => $goal->name, 'type' => $goal->type],
+            $progress[$goal->id]
         ));
     }
 }

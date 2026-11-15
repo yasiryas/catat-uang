@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\PeriodReportExport;
+use App\Http\Concerns\RespondsWithPagination;
 use App\Http\Requests\StorePeriodRequest;
 use App\Http\Requests\UpdatePeriodRequest;
 use App\Models\Period;
@@ -11,28 +12,17 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class PeriodController extends Controller
 {
+    use RespondsWithPagination;
+
     public function index(Request $request)
     {
         $periods = Period::forUser(auth()->user())->latest()->paginate(10);
 
         if ($request->ajax() || $request->wantsJson()) {
-            return response()->json([
-                'data' => $periods->items(),
-                'pagination' => [
-                    'current_page' => $periods->currentPage(),
-                    'last_page' => $periods->lastPage(),
-                    'per_page' => $periods->perPage(),
-                    'total' => $periods->total(),
-                ],
-            ]);
+            return $this->paginatedJson($periods);
         }
 
         return view('periods.index', compact('periods'));
-    }
-
-    public function create()
-    {
-        abort(404);
     }
 
     public function store(StorePeriodRequest $request)
@@ -47,16 +37,6 @@ class PeriodController extends Controller
         }
 
         return redirect()->route('periods.index')->with('success', 'Periode berhasil ditambahkan.');
-    }
-
-    public function show(string $id)
-    {
-        abort(404);
-    }
-
-    public function edit(string $id)
-    {
-        abort(404);
     }
 
     public function update(UpdatePeriodRequest $request, Period $period)
@@ -92,7 +72,7 @@ class PeriodController extends Controller
     {
         abort_if(! $period->inSameScope(auth()->user()), 403);
 
-        $filename = 'Laporan_Periode_' . str_replace(' ', '_', $period->name) . '.xlsx';
+        $filename = 'Laporan_Periode_'.str_replace(' ', '_', $period->name).'.xlsx';
 
         return Excel::download(new PeriodReportExport($period), $filename);
     }

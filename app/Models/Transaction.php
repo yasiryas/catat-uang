@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToUserScope;
 use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
+    use BelongsToUserScope;
+
     protected $fillable = [
         'user_id',
         'family_id',
@@ -28,10 +31,11 @@ class Transaction extends Model
 
     public function getReceiptImageUrlAttribute(): ?string
     {
-        if (!$this->receipt_image) {
+        if (! $this->receipt_image) {
             return null;
         }
-        return asset('storage/' . $this->receipt_image);
+
+        return asset('storage/'.$this->receipt_image);
     }
 
     public function period()
@@ -72,21 +76,5 @@ class Transaction extends Model
     public function scopeMutation($query)
     {
         return $query->where('type', 'mutation');
-    }
-
-    public function scopeForUser($query, User $user)
-    {
-        if ($user->belongsToFamily()) {
-            return $query->where('family_id', $user->family_id);
-        }
-
-        return $query->where('user_id', $user->id);
-    }
-
-    public function inSameScope(User $user)
-    {
-        return $user->belongsToFamily()
-            ? $this->family_id === $user->family_id
-            : $this->user_id === $user->id;
     }
 }

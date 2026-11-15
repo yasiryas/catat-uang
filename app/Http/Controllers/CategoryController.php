@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Concerns\RespondsWithPagination;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
@@ -9,20 +10,14 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    use RespondsWithPagination;
+
     public function index(Request $request)
     {
         $categories = Category::latest()->paginate(10);
 
         if ($request->ajax() || $request->wantsJson()) {
-            return response()->json([
-                'data' => $categories->items(),
-                'pagination' => [
-                    'current_page' => $categories->currentPage(),
-                    'last_page' => $categories->lastPage(),
-                    'per_page' => $categories->perPage(),
-                    'total' => $categories->total(),
-                ],
-            ]);
+            return $this->paginatedJson($categories);
         }
 
         return view('categories.index', compact('categories'));

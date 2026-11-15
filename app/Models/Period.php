@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToUserScope;
 use Illuminate\Database\Eloquent\Model;
 
 class Period extends Model
 {
+    use BelongsToUserScope;
+
     protected $fillable = ['user_id', 'family_id', 'name', 'start_date', 'end_date', 'year', 'month', 'opening_balance', 'closing_balance', 'is_closed'];
 
     protected $casts = [
@@ -27,21 +30,5 @@ class Period extends Model
     public function scopeCurrent($query)
     {
         return $query->where('year', date('Y'))->where('month', date('m'));
-    }
-
-    public function scopeForUser($query, User $user)
-    {
-        if ($user->belongsToFamily()) {
-            return $query->where('family_id', $user->family_id);
-        }
-
-        return $query->where('user_id', $user->id);
-    }
-
-    public function inSameScope(User $user)
-    {
-        return $user->belongsToFamily()
-            ? $this->family_id === $user->family_id
-            : $this->user_id === $user->id;
     }
 }

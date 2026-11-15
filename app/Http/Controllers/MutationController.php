@@ -2,35 +2,34 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Concerns\RespondsWithPagination;
 use App\Http\Requests\StoreMutationRequest;
 use App\Http\Requests\UpdateMutationRequest;
+use App\Models\Account;
 use App\Models\Mutation;
+use App\Models\Period;
 use Illuminate\Http\Request;
 
 class MutationController extends Controller
 {
+    use RespondsWithPagination;
+
     public function index(Request $request)
     {
-        $mutations = Mutation::forUser(auth()->user())->latest()->paginate(10);
+        $mutations = Mutation::with(['period', 'fromAccount', 'toAccount'])
+            ->forUser(auth()->user())
+            ->latest()
+            ->paginate(10);
 
         if ($request->ajax() || $request->wantsJson()) {
-            return response()->json([
-                'data' => $mutations->items(),
-                'pagination' => [
-                    'current_page' => $mutations->currentPage(),
-                    'last_page' => $mutations->lastPage(),
-                    'per_page' => $mutations->perPage(),
-                    'total' => $mutations->total(),
-                ],
-            ]);
+            return $this->paginatedJson($mutations);
         }
 
-        return view('mutations.index', compact('mutations'));
-    }
+        $user = auth()->user();
+        $periods = Period::forUser($user)->latest('year')->latest('month')->get(['id', 'name']);
+        $accounts = Account::forUser($user)->latest()->get(['id', 'name']);
 
-    public function create()
-    {
-        abort(404);
+        return view('mutations.index', compact('mutations', 'periods', 'accounts'));
     }
 
     public function store(StoreMutationRequest $request)
@@ -48,16 +47,6 @@ class MutationController extends Controller
         }
 
         return redirect()->route('mutations.index')->with('success', 'Mutasi berhasil ditambahkan.');
-    }
-
-    public function show(string $id)
-    {
-        abort(404);
-    }
-
-    public function edit(string $id)
-    {
-        abort(404);
     }
 
     public function update(UpdateMutationRequest $request, Mutation $mutation)

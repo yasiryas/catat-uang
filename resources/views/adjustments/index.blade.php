@@ -3,10 +3,7 @@
 @section('title', 'Adjustment')
 
 @section('content')
-    @php
-        $periodsJson = json_encode(\App\Models\Period::where('user_id', auth()->id())->latest()->get(['id', 'name']));
-    @endphp
-    <div x-data="adjustmentPage()" data-periods='{{ $periodsJson }}'>
+    <div x-data="adjustmentPage()" data-periods='@json($periods)'>
         <div class="flex items-center justify-between mb-6">
             <div>
                 <h1 class="text-2xl font-bold">Adjustment</h1>
@@ -46,7 +43,7 @@
                                 <td class="p-4 text-right font-medium">{{ rupiah((float) $adjustment->amount) }}</td>
                                 <td class="p-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
-                                        <button @click="edit(@json($adjustment))" class="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">Edit</button>
+                                        <button @click="edit(@json(['id' => $adjustment->id, 'period_id' => $adjustment->period_id, 'type' => $adjustment->type, 'amount' => (float) $adjustment->amount, 'note' => $adjustment->note, 'date' => $adjustment->date?->format('Y-m-d\TH:i')]))" class="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">Edit</button>
                                         <button @click="confirmDelete({{ $adjustment->id }})" class="text-red-600 hover:text-red-800 font-medium text-sm transition-colors">Hapus</button>
                                     </div>
                                 </td>

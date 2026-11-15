@@ -2,33 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Concerns\RespondsWithPagination;
 use App\Models\Account;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
+    use RespondsWithPagination;
+
     public function index(Request $request)
     {
         $accounts = Account::forUser(auth()->user())->latest()->paginate(10);
 
         if ($request->ajax() || $request->wantsJson()) {
-            return response()->json([
-                'data' => $accounts->items(),
-                'pagination' => [
-                    'current_page' => $accounts->currentPage(),
-                    'last_page' => $accounts->lastPage(),
-                    'per_page' => $accounts->perPage(),
-                    'total' => $accounts->total(),
-                ],
-            ]);
+            return $this->paginatedJson($accounts);
         }
 
         return view('accounts.index', compact('accounts'));
-    }
-
-    public function create()
-    {
-        abort(404);
     }
 
     public function store(Request $request)
@@ -49,12 +39,6 @@ class AccountController extends Controller
         }
 
         return redirect()->route('accounts.index')->with('success', 'Dompet berhasil ditambahkan.');
-    }
-
-    public function edit(Account $account)
-    {
-        abort_if(! $account->inSameScope(auth()->user()), 403);
-        abort(404);
     }
 
     public function update(Request $request, Account $account)

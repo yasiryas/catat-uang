@@ -105,12 +105,21 @@ PROMPT;
             ))
             ->values();
 
-        $accounts = Account::forUser($user)->get()->map(function (Account $account) use ($user) {
-            $income = (float) Transaction::forUser($user)->where('account_id', $account->id)->where('type', 'income')->sum('amount');
-            $expense = (float) Transaction::forUser($user)->where('account_id', $account->id)->where('type', 'expense')->sum('amount');
+        $accounts = Account::forUser($user)->get();
+        $saldos = Transaction::forUser($user)
+            ->whereIn('account_id', $accounts->modelKeys())
+            ->whereIn('type', ['income', 'expense'])
+            ->selectRaw("account_id, SUM(CASE WHEN type = 'income' THEN amount ELSE -amount END) as saldo")
+            ->groupBy('account_id')
+            ->pluck('saldo', 'account_id');
 
-            return ['name' => $account->name, 'type' => $account->type, 'saldo' => $income - $expense];
-        })->values();
+        $accountSaldos = $accounts
+            ->map(fn (Account $account) => [
+                'name' => $account->name,
+                'type' => $account->type,
+                'saldo' => (float) ($saldos[$account->id] ?? 0),
+            ])
+            ->values();
 
         return [
             'periode' => $period->name,
@@ -120,7 +129,7 @@ PROMPT;
             'pengeluaran_per_kategori' => $expenseByCategory->toArray(),
             'pemasukan_per_kategori' => $incomeByCategory->toArray(),
             'target_aktif' => $goals->toArray(),
-            'saldo_dompet' => $accounts->toArray(),
+            'saldo_dompet' => $accountSaldos->toArray(),
         ];
     }
 

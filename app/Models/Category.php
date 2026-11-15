@@ -8,6 +8,10 @@ class Category extends Model
 {
     protected $fillable = ['name', 'type', 'budget_limit'];
 
+    protected $casts = [
+        'budget_limit' => 'decimal:2',
+    ];
+
     public function transactions()
     {
         return $this->hasMany(Transaction::class);

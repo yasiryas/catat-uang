@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToUserScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Goal extends Model
 {
+    use BelongsToUserScope;
+
     protected $fillable = [
         'user_id',
         'family_id',
@@ -52,21 +55,5 @@ class Goal extends Model
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);
-    }
-
-    public function scopeForUser(Builder $query, User $user): Builder
-    {
-        if ($user->belongsToFamily()) {
-            return $query->where('family_id', $user->family_id);
-        }
-
-        return $query->where('user_id', $user->id);
-    }
-
-    public function inSameScope(User $user): bool
-    {
-        return $user->belongsToFamily()
-            ? $this->family_id === $user->family_id
-            : $this->user_id === $user->id;
     }
 }

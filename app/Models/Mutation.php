@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToUserScope;
 use Illuminate\Database\Eloquent\Model;
 
 class Mutation extends Model
 {
+    use BelongsToUserScope;
+
     protected $fillable = [
         'user_id',
         'family_id',
@@ -45,21 +48,5 @@ class Mutation extends Model
     public function toAccount()
     {
         return $this->belongsTo(Account::class, 'to_account_id');
-    }
-
-    public function scopeForUser($query, User $user)
-    {
-        if ($user->belongsToFamily()) {
-            return $query->where('family_id', $user->family_id);
-        }
-
-        return $query->where('user_id', $user->id);
-    }
-
-    public function inSameScope(User $user)
-    {
-        return $user->belongsToFamily()
-            ? $this->family_id === $user->family_id
-            : $this->user_id === $user->id;
     }
 }

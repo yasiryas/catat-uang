@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToUserScope;
 use Illuminate\Database\Eloquent\Model;
 
 class AdjustmentLog extends Model
 {
+    use BelongsToUserScope;
+
     protected $fillable = [
         'period_id',
         'type',
@@ -38,21 +41,5 @@ class AdjustmentLog extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function scopeForUser($query, User $user)
-    {
-        if ($user->belongsToFamily()) {
-            return $query->where('family_id', $user->family_id);
-        }
-
-        return $query->where('user_id', $user->id);
-    }
-
-    public function inSameScope(User $user)
-    {
-        return $user->belongsToFamily()
-            ? $this->family_id === $user->family_id
-            : $this->user_id === $user->id;
     }
 }

@@ -3,11 +3,7 @@
 @section('title', 'Mutasi')
 
 @section('content')
-    @php
-        $periodsJson = json_encode(\App\Models\Period::where('user_id', auth()->id())->latest()->get(['id', 'name']));
-        $accountsJson = json_encode(\App\Models\Account::where('user_id', auth()->id())->latest()->get(['id', 'name']));
-    @endphp
-    <div x-data="mutationPage()" data-periods='{{ $periodsJson }}' data-accounts='{{ $accountsJson }}'>
+    <div x-data="mutationPage()" data-periods='@json($periods)' data-accounts='@json($accounts)'>
         <div class="flex items-center justify-between mb-6">
             <div>
                 <h1 class="text-2xl font-bold">Mutasi</h1>
@@ -43,7 +39,7 @@
                                 <td class="p-4 text-right font-medium">{{ rupiah((float) $mutation->amount) }}</td>
                                 <td class="p-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
-                                        <button @click="edit(@json($mutation))" class="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">Edit</button>
+                                        <button @click="edit(@json(['id' => $mutation->id, 'period_id' => $mutation->period_id, 'from_account_id' => $mutation->from_account_id, 'to_account_id' => $mutation->to_account_id, 'amount' => (float) $mutation->amount, 'note' => $mutation->note, 'date' => $mutation->date?->format('Y-m-d\TH:i')]))" class="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">Edit</button>
                                         <button @click="confirmDelete({{ $mutation->id }})" class="text-red-600 hover:text-red-800 font-medium text-sm transition-colors">Hapus</button>
                                     </div>
                                 </td>

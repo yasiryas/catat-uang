@@ -146,11 +146,6 @@
             <h4 class="text-sm font-semibold text-slate-500 mb-3">Saldo per Dompet</h4>
             <div class="space-y-3 text-sm">
                 @forelse($accounts as $account)
-                    @php
-                        $incomeTotal = \App\Models\Transaction::where('account_id', $account->id)->where('type', 'income')->sum('amount');
-                        $expenseTotal = \App\Models\Transaction::where('account_id', $account->id)->where('type', 'expense')->sum('amount');
-                        $saldo = $incomeTotal - $expenseTotal;
-                    @endphp
                     <div class="flex justify-between">
                         <span class="flex items-center gap-2">
                             @if ($account->type === 'bank')
@@ -162,7 +157,7 @@
                             @endif
                             {{ $account->name }}
                         </span>
-                        <span class="font-semibold {{ $saldo >= 0 ? 'text-green-600' : 'text-red-600' }}">{{ rupiah($saldo) }}</span>
+                        <span class="font-semibold {{ $account->saldo >= 0 ? 'text-green-600' : 'text-red-600' }}">{{ rupiah($account->saldo) }}</span>
                     </div>
                 @empty
                     <p class="text-slate-400 text-center py-4">Belum ada dompet.</p>
@@ -271,12 +266,13 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const ctx = document.getElementById('chartKeuangan').getContext('2d');
+<script type="module">
+    import { Chart } from 'chart.js/auto';
 
-    new Chart(ctx, {
+    document.addEventListener('DOMContentLoaded', function () {
+        const ctx = document.getElementById('chartKeuangan').getContext('2d');
+
+        new Chart(ctx, {
         type: 'bar',
         data: {
             labels: @json($chartMonths),

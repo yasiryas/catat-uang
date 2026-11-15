@@ -35,10 +35,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::resource('categories', CategoryController::class);
-    Route::resource('periods', PeriodController::class);
+    Route::resource('categories', CategoryController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::resource('periods', PeriodController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::get('periods/{period}/report', [PeriodController::class, 'report'])->name('periods.report');
-    Route::resource('accounts', AccountController::class);
+    Route::resource('accounts', AccountController::class)->only(['index', 'store', 'update', 'destroy']);
 
     // Transactions by type - explicit routes to specific controller methods
     Route::prefix('transactions')->name('transactions.')->group(function () {
@@ -75,13 +75,13 @@ Route::middleware('auth')->group(function () {
         Route::delete('adjustment/{transaction}', [TransactionController::class, 'destroyAdjustment'])->name('adjustment.destroy');
     });
 
-    Route::resource('mutations', MutationController::class);
-    Route::resource('adjustments', AdjustmentLogController::class);
+    Route::resource('mutations', MutationController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::resource('adjustments', AdjustmentLogController::class)->only(['index', 'store', 'update', 'destroy']);
 
     Route::post('goals/ai', [GoalController::class, 'ai'])->name('goals.ai');
-    Route::resource('goals', GoalController::class);
+    Route::resource('goals', GoalController::class)->only(['index', 'store', 'update', 'destroy']);
 
-    Route::resource('users', UserController::class);
+    Route::resource('users', UserController::class)->only(['index', 'store', 'update', 'destroy']);
 
     Route::get('family', [FamilyController::class, 'index'])->name('family.index');
     Route::post('family', [FamilyController::class, 'store'])->name('family.store');

@@ -2,21 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Concerns\RespondsWithPagination;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
-use App\Models\Transaction;
+use App\Models\Account;
 use App\Models\Category;
 use App\Models\Period;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class TransactionController extends Controller
 {
-    protected function getCategories($type)
+    use RespondsWithPagination;
+
+    protected function getCategories(string $type)
     {
         if ($type === 'mutation' || $type === 'adjustment') {
-            return Category::where('type', 'income')->orWhere('type', 'expense')->latest()->get();
+            return Category::whereIn('type', ['income', 'expense'])->latest()->get();
         }
+
         return Category::where('type', $type)->latest()->get();
     }
 
@@ -44,6 +49,7 @@ class TransactionController extends Controller
     public function editIncome(Transaction $transaction)
     {
         abort_unless($transaction->type === 'income', 404);
+
         return redirect()->route('transactions.income.index');
     }
 
@@ -76,6 +82,7 @@ class TransactionController extends Controller
     public function editExpense(Transaction $transaction)
     {
         abort_unless($transaction->type === 'expense', 404);
+
         return redirect()->route('transactions.expense.index');
     }
 
@@ -108,6 +115,7 @@ class TransactionController extends Controller
     public function editMutation(Transaction $transaction)
     {
         abort_unless($transaction->type === 'mutation', 404);
+
         return redirect()->route('transactions.mutation.index');
     }
 
@@ -140,6 +148,7 @@ class TransactionController extends Controller
     public function editAdjustment(Transaction $transaction)
     {
         abort_unless($transaction->type === 'adjustment', 404);
+
         return redirect()->route('transactions.adjustment.index');
     }
 
@@ -156,34 +165,21 @@ class TransactionController extends Controller
     // SHARED METHODS
     private function typeIndex(Request $request, string $type, string $title)
     {
-        $query = Transaction::with(['category', 'period', 'account'])
+        $transactions = Transaction::with(['category', 'period', 'account'])
             ->forUser(auth()->user())
             ->where('type', $type)
-            ->latest();
-        $transactions = $query->paginate(10);
+            ->latest()
+            ->paginate(10);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return $this->paginatedJson($transactions);
+        }
 
         $categories = $this->getCategories($type);
         $periods = $this->getPeriods();
-        $accounts = \App\Models\Account::forUser(auth()->user())->latest()->get();
-
-        if ($request->ajax() || $request->wantsJson()) {
-            return response()->json([
-                'data' => $transactions->items(),
-                'pagination' => [
-                    'current_page' => $transactions->currentPage(),
-                    'last_page' => $transactions->lastPage(),
-                    'per_page' => $transactions->perPage(),
-                    'total' => $transactions->total(),
-                ],
-            ]);
-        }
+        $accounts = Account::forUser(auth()->user())->latest()->get();
 
         return view('transactions.type', compact('transactions', 'categories', 'periods', 'accounts', 'type', 'title'));
-    }
-
-    protected function getAccounts()
-    {
-        return \App\Models\Account::forUser(auth()->user())->latest()->get();
     }
 
     private function storeTyped(StoreTransactionRequest $request, string $type, string $label)
@@ -203,7 +199,7 @@ class TransactionController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'message' => "$label berhasil ditambahkan.",
-                'data' => $transaction
+                'data' => $transaction,
             ], 201);
         }
 
@@ -236,7 +232,7 @@ class TransactionController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'message' => "$label berhasil diperbarui.",
-                'data' => $transaction
+                'data' => $transaction,
             ]);
         }
 

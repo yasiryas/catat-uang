@@ -2,35 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Concerns\RespondsWithPagination;
 use App\Http\Requests\StoreAdjustmentLogRequest;
 use App\Http\Requests\UpdateAdjustmentLogRequest;
 use App\Models\AdjustmentLog;
+use App\Models\Period;
 use Illuminate\Http\Request;
 
 class AdjustmentLogController extends Controller
 {
+    use RespondsWithPagination;
+
     public function index(Request $request)
     {
-        $adjustments = AdjustmentLog::forUser(auth()->user())->latest()->paginate(10);
+        $adjustments = AdjustmentLog::with('period')
+            ->forUser(auth()->user())
+            ->latest()
+            ->paginate(10);
 
         if ($request->ajax() || $request->wantsJson()) {
-            return response()->json([
-                'data' => $adjustments->items(),
-                'pagination' => [
-                    'current_page' => $adjustments->currentPage(),
-                    'last_page' => $adjustments->lastPage(),
-                    'per_page' => $adjustments->perPage(),
-                    'total' => $adjustments->total(),
-                ],
-            ]);
+            return $this->paginatedJson($adjustments);
         }
 
-        return view('adjustments.index', compact('adjustments'));
-    }
+        $periods = Period::forUser(auth()->user())->latest('year')->latest('month')->get(['id', 'name']);
 
-    public function create()
-    {
-        abort(404);
+        return view('adjustments.index', compact('adjustments', 'periods'));
     }
 
     public function store(StoreAdjustmentLogRequest $request)
@@ -48,16 +44,6 @@ class AdjustmentLogController extends Controller
         }
 
         return redirect()->route('adjustments.index')->with('success', 'Adjustment berhasil ditambahkan.');
-    }
-
-    public function show(string $id)
-    {
-        abort(404);
-    }
-
-    public function edit(string $id)
-    {
-        abort(404);
     }
 
     public function update(UpdateAdjustmentLogRequest $request, AdjustmentLog $adjustment)
