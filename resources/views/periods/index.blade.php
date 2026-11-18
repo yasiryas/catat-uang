@@ -44,8 +44,8 @@
                                 <td class="p-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
                                         <a href="{{ route('periods.report', $period) }}" class="text-emerald-600 hover:text-emerald-800 font-medium text-sm transition-colors">Laporan</a>
-                                        <button @click="edit({{ $period->id }}, '{{ $period->name }}', '{{ $period->start_date }}', '{{ $period->end_date }}', {{ $period->is_closed ? 'true' : 'false' }})" class="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">Edit</button>
-                                        <button @click="confirmDelete({{ $period->id }}, '{{ $period->name }}')" class="text-red-600 hover:text-red-800 font-medium text-sm transition-colors">Hapus</button>
+                                        <button @click="edit(@js(['id' => $period->id, 'name' => $period->name, 'start_date' => $period->start_date?->format('Y-m-d'), 'end_date' => $period->end_date?->format('Y-m-d'), 'is_closed' => $period->is_closed]))" class="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">Edit</button>
+                                        <button @click="confirmDelete(@js(['id' => $period->id, 'name' => $period->name]))" class="text-red-600 hover:text-red-800 font-medium text-sm transition-colors">Hapus</button>
                                     </div>
                                 </td>
                             </tr>

@@ -80,7 +80,7 @@
                                         {{ $member->family_role === 'admin' ? 'Admin' : 'Anggota' }}
                                     </span>
                                     @if ($user->isFamilyAdmin() && $member->id !== $user->id)
-                                        <button @click="confirmRemove({{ $member->id }}, '{{ $member->name }}')" class="text-red-600 hover:text-red-800 font-medium text-sm transition-colors">Keluarkan</button>
+                                        <button @click="confirmRemove(@js(['id' => $member->id, 'name' => $member->name]))" class="text-red-600 hover:text-red-800 font-medium text-sm transition-colors">Keluarkan</button>
                                     @endif
                                 </li>
                             @endforeach

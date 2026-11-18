@@ -795,15 +795,21 @@ window.periodPage = function () {
             this.modal.show = true;
         },
 
-        edit(id, name, startDate, endDate, isClosed) {
+        edit(period) {
             this.modal.mode = 'edit';
-            this.modal.form = { id, name, start_date: startDate, end_date: endDate, is_closed: isClosed };
+            this.modal.form = {
+                id: period.id,
+                name: period.name,
+                start_date: period.start_date,
+                end_date: period.end_date,
+                is_closed: period.is_closed,
+            };
             this.modal.errors = {};
             this.modal.show = true;
         },
 
-        confirmDelete(id, name) {
-            this.deleteModal.period = { id, name };
+        confirmDelete(period) {
+            this.deleteModal.period = period;
             this.deleteModal.show = true;
         },
 
@@ -861,15 +867,20 @@ window.accountPage = function () {
             this.modal.show = true;
         },
 
-        edit(id, name, type, description) {
+        edit(account) {
             this.modal.mode = 'edit';
-            this.modal.form = { id, name, type, description: description || '' };
+            this.modal.form = {
+                id: account.id,
+                name: account.name,
+                type: account.type,
+                description: account.description || '',
+            };
             this.modal.errors = {};
             this.modal.show = true;
         },
 
-        confirmDelete(id, name) {
-            this.deleteModal.account = { id, name };
+        confirmDelete(account) {
+            this.deleteModal.account = account;
             this.deleteModal.show = true;
         },
 
@@ -1311,8 +1322,8 @@ window.familyPage = function () {
             return document.querySelector('meta[name="csrf-token"]').content;
         },
 
-        confirmRemove(id, name) {
-            this.removeModal.member = { id, name };
+        confirmRemove(member) {
+            this.removeModal.member = member;
             this.removeModal.show = true;
         },
 

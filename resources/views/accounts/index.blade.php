@@ -43,8 +43,8 @@
                                 <td class="p-4 text-slate-500">{{ $account->description ?? '-' }}</td>
                                 <td class="p-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
-                                        <button @click="edit({{ $account->id }}, '{{ $account->name }}', '{{ $account->type }}', '{{ $account->description }}')" class="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">Edit</button>
-                                        <button @click="confirmDelete({{ $account->id }}, '{{ $account->name }}')" class="text-red-600 hover:text-red-800 font-medium text-sm transition-colors">Hapus</button>
+                                        <button @click="edit(@js(['id' => $account->id, 'name' => $account->name, 'type' => $account->type, 'description' => $account->description]))" class="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">Edit</button>
+                                        <button @click="confirmDelete(@js(['id' => $account->id, 'name' => $account->name]))" class="text-red-600 hover:text-red-800 font-medium text-sm transition-colors">Hapus</button>
                                     </div>
                                 </td>
                             </tr>

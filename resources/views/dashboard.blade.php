@@ -10,8 +10,8 @@
         </div>
 
         <form method="GET" action="{{ route('dashboard') }}"
-              x-data="{ period_id: '{{ $selectedPeriodId && $selectedPeriodId !== 'all' ? (string) $selectedPeriodId : 'all' }}' }"
-              x-init="$watch('period_id', () => period_id !== '{{ $selectedPeriodId && $selectedPeriodId !== 'all' ? (string) $selectedPeriodId : 'all' }}' && $el.submit())">
+              x-data="{ period_id: @js($selectedPeriodId), initialPeriodId: @js($selectedPeriodId) }"
+              x-init="$watch('period_id', (value) => value !== initialPeriodId && $el.submit())">
             <x-custom-select name="period_id" xModel="period_id" variant="filter"
                 placeholder="Semua Periode"
                 :items="collect($periods)->map(fn($p) => ['id' => (string) $p->id, 'name' => $p->name])->prepend(['id' => 'all', 'name' => 'Semua Periode'])->toArray()"

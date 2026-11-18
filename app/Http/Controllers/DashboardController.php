@@ -11,6 +11,7 @@ use App\Services\GoalService;
 use App\Services\PeriodService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\Rule;
 
 class DashboardController extends Controller
 {
@@ -25,7 +26,10 @@ class DashboardController extends Controller
         $periodService->ensureAllMonthsThisYear($user);
 
         $periods = Period::forUser($user)->latest('year')->latest('month')->get();
-        $selectedPeriodId = $request->get('period_id');
+        $allowedPeriodIds = $periods->pluck('id')->map(fn (int $id): string => (string) $id)->push('all')->all();
+        $selectedPeriodId = $request->validate([
+            'period_id' => ['nullable', 'string', Rule::in($allowedPeriodIds)],
+        ])['period_id'] ?? 'all';
         $period = $this->selectedPeriod($periods, $selectedPeriodId);
 
         $scopedTransactions = Transaction::forUser($user)
