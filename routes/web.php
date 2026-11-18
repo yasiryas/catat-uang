@@ -85,7 +85,12 @@ Route::middleware('auth')->group(function () {
 
     Route::get('family', [FamilyController::class, 'index'])->name('family.index');
     Route::post('family', [FamilyController::class, 'store'])->name('family.store');
-    Route::post('family/invite', [FamilyController::class, 'invite'])->name('family.invite');
+    Route::post('family/invite', [FamilyController::class, 'invite'])->middleware('throttle:6,1')->name('family.invite');
+    Route::middleware('signed')->group(function () {
+        Route::get('family/invitations/{invitation}', [FamilyController::class, 'showInvitation'])->name('family.invitations.show');
+        Route::post('family/invitations/{invitation}/accept', [FamilyController::class, 'acceptInvitation'])->name('family.invitations.accept');
+        Route::post('family/invitations/{invitation}/reject', [FamilyController::class, 'rejectInvitation'])->name('family.invitations.reject');
+    });
     Route::post('family/leave', [FamilyController::class, 'leave'])->name('family.leave');
     Route::delete('family', [FamilyController::class, 'destroy'])->name('family.destroy');
     Route::delete('family/members/{user}', [FamilyController::class, 'remove'])->name('family.members.remove');

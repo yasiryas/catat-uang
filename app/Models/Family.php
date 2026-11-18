@@ -21,6 +21,11 @@ class Family extends Model
         return $this->hasMany(User::class, 'family_id')->where('family_role', 'admin');
     }
 
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(FamilyInvitation::class);
+    }
+
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
