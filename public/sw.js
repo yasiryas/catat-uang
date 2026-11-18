@@ -1,6 +1,5 @@
-const CACHE_NAME = 'keuanganapp-v1';
+const CACHE_NAME = 'keuanganapp-v2';
 const APP_SHELL = [
-    '/',
     '/manifest.webmanifest',
     '/icon-192.png',
     '/icon-512.png',
@@ -8,6 +7,7 @@ const APP_SHELL = [
     '/favicon.svg',
     '/offline',
 ];
+const CACHEABLE_ASSET = /^\/build\/assets\/[^/]+\.(js|css)$/;
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
@@ -23,6 +23,14 @@ self.addEventListener('activate', (event) => {
     );
 });
 
+self.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'LOGOUT') {
+        event.waitUntil(
+            caches.keys().then((keys) => Promise.all(keys.map((key) => caches.delete(key))))
+        );
+    }
+});
+
 self.addEventListener('fetch', (event) => {
     const { request } = event;
 
@@ -31,55 +39,21 @@ self.addEventListener('fetch', (event) => {
     const url = new URL(request.url);
 
     if (url.origin !== location.origin) return;
+    if (request.mode === 'navigate' && url.pathname !== '/offline') return;
+    if (url.searchParams.has('signature') || url.searchParams.has('expires')) return;
+    if (url.pathname.includes('/receipt')) return;
 
-    if (url.pathname === '/offline') return;
+    const isCacheable = APP_SHELL.includes(url.pathname) || CACHEABLE_ASSET.test(url.pathname);
 
-    if (url.pathname.startsWith('/build/')) {
-        event.respondWith(
-            caches.match(request).then((cached) => {
-                const fetched = fetch(request)
-                    .then((response) => {
-                        if (response.ok) {
-                            const clone = response.clone();
-                            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-                        }
-                        return response;
-                    })
-                    .catch(() => cached);
-                return cached || fetched;
-            })
-        );
-        return;
-    }
-
-    if (request.mode === 'navigate') {
-        event.respondWith(
-            fetch(request)
-                .then((response) => {
-                    if (response.ok) {
-                        const clone = response.clone();
-                        caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-                    }
-                    return response;
-                })
-                .catch(() =>
-                    caches.match(request).then((cached) => cached || caches.match('/offline'))
-                )
-        );
-        return;
-    }
+    if (!isCacheable) return;
 
     event.respondWith(
-        caches.match(request).then(
-            (cached) =>
-                cached ||
-                fetch(request).then((response) => {
-                    if (response.ok) {
-                        const clone = response.clone();
-                        caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-                    }
-                    return response;
-                })
-        )
+        caches.match(request).then((cached) => cached || fetch(request).then((response) => {
+            if (response.ok) {
+                const clone = response.clone();
+                caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+            }
+            return response;
+        }))
     );
 });

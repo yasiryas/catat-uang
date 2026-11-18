@@ -4,6 +4,16 @@ import Swal from 'sweetalert2';
 window.Alpine = Alpine;
 window.Swal = Swal;
 
+document.addEventListener('submit', (event) => {
+    if (event.target instanceof HTMLFormElement && event.target.action.endsWith('/logout')) {
+        navigator.serviceWorker?.getRegistrations().then((registrations) => {
+            registrations.forEach((registration) => {
+                registration.active?.postMessage({ type: 'LOGOUT' });
+            });
+        });
+    }
+});
+
 function nowDateTime() {
     const now = new Date();
     const y = now.getFullYear();
