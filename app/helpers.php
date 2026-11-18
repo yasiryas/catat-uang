@@ -11,7 +11,7 @@ if (! function_exists('rupiah')) {
         $value = max(0, (float) $value);
         $formatted = number_format($value, 0, ',', '.');
 
-        return $withRp ? 'Rp ' . $formatted : $formatted;
+        return $withRp ? 'Rp '.$formatted : $formatted;
     }
 }
 

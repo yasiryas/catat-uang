@@ -3,10 +3,10 @@
 @section('title', 'Dashboard')
 
 @section('content')
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center justify-between mb-4">
         <div>
-            <h1 class="text-2xl font-bold">Dashboard</h1>
-            <p class="text-slate-500">Ringkasan keuangan Anda</p>
+            <h1 class="text-xl font-bold">Dashboard</h1>
+            <p class="text-sm text-slate-600">Ringkasan keuangan Anda</p>
         </div>
 
         <form method="GET" action="{{ route('dashboard') }}"
@@ -20,70 +20,70 @@
     </div>
 
     {{-- Stat Cards --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-        <div class="bg-white rounded-xl shadow-sm border border-green-100 p-5">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+        <div class="bg-white rounded-xl shadow-sm border border-green-100 p-4">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Total Pemasukan</p>
+                    <p class="text-slate-600 text-sm">Total Pemasukan</p>
                     <h2 class="text-xl font-bold text-green-600 mt-1">{{ rupiah($totalIncome) }}</h2>
                 </div>
                 <div class="bg-green-100 p-2.5 rounded-lg">
-                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    <svg aria-hidden="true" class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-red-100 p-5">
+        <div class="bg-white rounded-xl shadow-sm border border-red-100 p-4">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Total Pengeluaran</p>
+                    <p class="text-slate-600 text-sm">Total Pengeluaran</p>
                     <h2 class="text-xl font-bold text-red-600 mt-1">{{ rupiah($totalExpense) }}</h2>
                 </div>
                 <div class="bg-red-100 p-2.5 rounded-lg">
-                    <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+                    <svg aria-hidden="true" class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-blue-100 p-5">
+        <div class="bg-white rounded-xl shadow-sm border border-blue-100 p-4">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Saldo Bersih</p>
+                    <p class="text-slate-600 text-sm">Saldo Bersih</p>
                     <h2 class="text-xl font-bold text-blue-600 mt-1">{{ rupiah($netBalance) }}</h2>
                 </div>
                 <div class="bg-blue-100 p-2.5 rounded-lg">
-                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
+                    <svg aria-hidden="true" class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-amber-100 p-5">
+        <div class="bg-white rounded-xl shadow-sm border border-amber-100 p-4">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Total Transaksi</p>
+                    <p class="text-slate-600 text-sm">Total Transaksi</p>
                     <h2 class="text-xl font-bold text-amber-600 mt-1">{{ $totalTransactions }}</h2>
                 </div>
                 <div class="bg-amber-100 p-2.5 rounded-lg">
-                    <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                    <svg aria-hidden="true" class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                 </div>
             </div>
         </div>
     </div>
 
     {{-- Target & Capaian --}}
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 mt-5">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 mt-4">
         <div class="flex items-center justify-between mb-3">
             <div>
-                <h3 class="font-semibold">Target & Capaian</h3>
-                <p class="text-xs text-slate-400">Capaian dihitung otomatis dari transaksi Anda.</p>
+                <h2 class="font-semibold">Target & Capaian</h2>
+                <p class="text-xs text-slate-500">Capaian dihitung otomatis dari transaksi Anda.</p>
             </div>
             <a href="{{ route('goals.index') }}" class="text-blue-600 text-sm hover:underline font-medium">Kelola Target</a>
         </div>
 
         @if ($goals->isEmpty())
-            <p class="text-slate-400 text-center py-8">Belum ada target. <a href="{{ route('goals.index') }}" class="text-blue-600 hover:underline font-medium">Buat target pertama</a> untuk mulai memantau capaian.</p>
+            <p class="text-slate-500 text-center py-8">Belum ada target. <a href="{{ route('goals.index') }}" class="text-blue-600 hover:underline font-medium">Buat target pertama</a> untuk mulai memantau capaian.</p>
         @else
-            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
                 @foreach ($goals as $goal)
                     @php
                         $isCap = in_array($goal['type'], ['expense', 'category'], true);
@@ -97,7 +97,7 @@
                         <div class="w-full bg-slate-100 rounded-full h-2 mb-1">
                             <div class="h-2 rounded-full {{ $barColor }}" style="width: {{ min(100, max(0, $goal['raw_percentage'])) }}%"></div>
                         </div>
-                        <p class="text-xs text-slate-400">
+                        <p class="text-xs text-slate-500">
                             {{ rupiah($goal['actual']) }}
                             / {{ rupiah($goal['target']) }}
                             @if ($goal['achieved'])
@@ -110,19 +110,19 @@
         @endif
     </div>
 
-    <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 mt-5">
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-3 mt-4">
         {{-- Grafik --}}
-        <div class="xl:col-span-2 bg-white rounded-xl shadow-sm p-5">
-            <h3 class="font-semibold mb-3">Grafik Keuangan {{ $year }}</h3>
-            <div class="h-72 relative">
-                <canvas id="chartKeuangan"></canvas>
+        <div class="xl:col-span-2 bg-white rounded-xl shadow-sm p-4">
+            <h2 class="font-semibold mb-3">Grafik Keuangan {{ $year }}</h3>
+            <div class="h-64 relative">
+                <canvas id="chartKeuangan" role="img" aria-label="Grafik pemasukan dan pengeluaran tahun {{ $year }}">Grafik keuangan tahun {{ $year }} tidak dapat ditampilkan pada browser ini.</canvas>
             </div>
         </div>
 
         {{-- Ringkasan --}}
-        <div class="bg-white rounded-xl shadow-sm p-5">
-            <h3 class="font-semibold mb-3">Ringkasan</h3>
-            <div class="space-y-4 text-sm">
+        <div class="bg-white rounded-xl shadow-sm p-4">
+            <h2 class="font-semibold mb-3">Ringkasan</h3>
+            <div class="space-y-3 text-sm">
                 <div class="flex justify-between">
                     <span class="text-slate-500">Periode Aktif</span>
                     <span class="font-semibold">{{ $period?->name ?? ($selectedPeriodId === 'all' || !$selectedPeriodId ? 'Semua' : '-') }}</span>
@@ -141,35 +141,35 @@
                 </div>
             </div>
 
-            <hr class="my-4">
+            <hr class="my-3">
 
-            <h4 class="text-sm font-semibold text-slate-500 mb-3">Saldo per Dompet</h4>
+            <h3 class="text-sm font-semibold text-slate-500 mb-3">Saldo per Dompet</h3>
             <div class="space-y-3 text-sm">
                 @forelse($accounts as $account)
                     <div class="flex justify-between">
                         <span class="flex items-center gap-2">
                             @if ($account->type === 'bank')
-                                <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                                <svg aria-hidden="true" class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
                             @elseif ($account->type === 'cash')
-                                <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                <svg aria-hidden="true" class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                             @else
-                                <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                <svg aria-hidden="true" class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                             @endif
                             {{ $account->name }}
                         </span>
                         <span class="font-semibold {{ $account->saldo >= 0 ? 'text-green-600' : 'text-red-600' }}">{{ rupiah($account->saldo) }}</span>
                     </div>
                 @empty
-                    <p class="text-slate-400 text-center py-4">Belum ada dompet.</p>
+                    <p class="text-slate-500 text-center py-4">Belum ada dompet.</p>
                 @endforelse
             </div>
         </div>
     </div>
 
     {{-- Income vs Expense Breakdown --}}
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-5">
-        <div class="bg-white rounded-xl shadow-sm p-5">
-            <h3 class="font-semibold mb-3">Pemasukan per Kategori</h3>
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-3 mt-4">
+        <div class="bg-white rounded-xl shadow-sm p-4">
+            <h2 class="font-semibold mb-3">Pemasukan per Kategori</h3>
             @if ($incomeByCategory->isNotEmpty())
                 <div class="space-y-3">
                     @php $totalIncomeAmount = $incomeByCategory->sum('total'); @endphp
@@ -187,12 +187,12 @@
                     @endforeach
                 </div>
             @else
-                <p class="text-slate-400 text-center py-8">Belum ada pemasukan.</p>
+                <p class="text-slate-500 text-center py-8">Belum ada pemasukan.</p>
             @endif
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm p-5">
-            <h3 class="font-semibold mb-3">Pengeluaran per Kategori</h3>
+        <div class="bg-white rounded-xl shadow-sm p-4">
+            <h2 class="font-semibold mb-3">Pengeluaran per Kategori</h3>
             @if ($expenseByCategory->isNotEmpty())
                 <div class="space-y-3">
                     @php $totalExpenseAmount = $expenseByCategory->sum('total'); @endphp
@@ -210,53 +210,49 @@
                     @endforeach
                 </div>
             @else
-                <p class="text-slate-400 text-center py-8">Belum ada pengeluaran.</p>
+                <p class="text-slate-500 text-center py-8">Belum ada pengeluaran.</p>
             @endif
         </div>
     </div>
 
     {{-- Transaksi Terbaru --}}
-    <div class="bg-white rounded-xl shadow-sm p-5 mt-5">
+    <div class="bg-white rounded-xl shadow-sm p-4 mt-4">
         <div class="flex items-center justify-between mb-3">
-            <h3 class="font-semibold">Transaksi Terbaru</h3>
+            <h2 class="font-semibold">Transaksi Terbaru</h2>
             <a href="{{ route('transactions.income.index') }}" class="text-blue-600 text-sm hover:underline">Lihat Semua</a>
         </div>
 
         <div class="overflow-x-auto">
-            <table class="w-full">
+            <table class="w-full md:text-sm">
                 <thead>
                     <tr class="border-b">
-                        <th class="text-left py-3 text-sm text-slate-500 font-medium">Tanggal</th>
-                        <th class="text-left text-sm text-slate-500 font-medium">Kategori</th>
-                        <th class="text-left text-sm text-slate-500 font-medium">Akun</th>
-                        <th class="text-left text-sm text-slate-500 font-medium">Jenis</th>
-                        <th class="text-right text-sm text-slate-500 font-medium">Nominal</th>
+                        <th scope="col" class="text-left py-3 md:py-2.5 text-sm text-slate-500 font-medium">Tanggal</th>
+                        <th scope="col" class="text-left text-sm text-slate-500 font-medium">Kategori</th>
+                        <th scope="col" class="text-left text-sm text-slate-500 font-medium">Akun</th>
+                        <th scope="col" class="text-left text-sm text-slate-500 font-medium">Jenis</th>
+                        <th scope="col" class="text-right text-sm text-slate-500 font-medium">Nominal</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($recentTransactions as $tx)
                         <tr class="hover:bg-slate-50 transition-colors">
-                            <td class="py-3 text-sm whitespace-nowrap">{{ tanggal($tx->date, true) }}</td>
-                            <td class="py-3 text-sm font-medium">{{ $tx->category?->name ?? '-' }}</td>
-                            <td class="py-3 text-sm text-slate-500">{{ $tx->account?->name ?? '-' }}</td>
-                            <td class="py-3">
+                            <td class="py-3 md:py-2.5 text-sm whitespace-nowrap"><time datetime="{{ $tx->date?->toIso8601String() }}">{{ tanggal($tx->date, true) }}</time></td>
+                            <td class="py-3 md:py-2.5 text-sm font-medium">{{ $tx->category?->name ?? '-' }}</td>
+                            <td class="py-3 md:py-2.5 text-sm text-slate-500">{{ $tx->account?->name ?? '-' }}</td>
+                            <td class="py-3 md:py-2.5">
                                 @if ($tx->type === 'income')
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">Pemasukan</span>
-                                @elseif ($tx->type === 'expense')
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Pengeluaran</span>
-                                @elseif ($tx->type === 'mutation')
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Mutasi</span>
                                 @else
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">Penyesuaian</span>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Pengeluaran</span>
                                 @endif
                             </td>
-                            <td class="py-3 text-sm font-medium text-right {{ $tx->type === 'expense' ? 'text-red-600' : 'text-green-600' }}">
+                            <td class="py-3 md:py-2.5 text-sm font-medium text-right {{ $tx->type === 'expense' ? 'text-red-600' : 'text-green-600' }}">
                                 {{ $tx->type === 'expense' ? '-' : '+' }}{{ rupiah($tx->amount) }}
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center py-8 text-gray-400">Belum ada transaksi.</td>
+                            <td colspan="5" class="text-center py-8 text-slate-500">Belum ada transaksi.</td>
                         </tr>
                     @endforelse
                 </tbody>

@@ -6,7 +6,7 @@
         <h3 class="text-lg font-semibold mb-2" x-text="'Hapus ' + title"></h3>
         <p class="text-slate-600 mb-6">Yakin ingin menghapus transaksi ini? Tindakan ini tidak dapat dibatalkan.</p>
         <div class="flex justify-center gap-3">
-            <button @click="$dispatch('close-modal', { name: type + '-delete' })" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">
+            <button @click="$dispatch('close-modal', { name: type + '-delete' })" class="px-3 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">
                 Batal
             </button>
             <button @click="delete()" :disabled="deleteModalLoading" :class="submitButtonClass + ' text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mx-auto'">

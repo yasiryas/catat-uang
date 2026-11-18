@@ -3,14 +3,14 @@
 @section('title', 'Kategori')
 
 @section('content')
-    <div x-data="categoryPage()" x-init="fetchCategories()">
-        <div class="flex items-center justify-between mb-6">
+    <div x-data="categoryPage({ isAdmin: @js(auth()->user()->is_admin), scopeKey: @js(auth()->user()->scopeKey()), byFamily: @js(auth()->user()->belongsToFamily()) })" x-init="fetchCategories()">
+        <div class="flex items-center justify-between mb-4">
             <div>
-                <h1 class="text-2xl font-bold">Kategori</h1>
-                <p class="text-slate-500">Kelola kategori pemasukan dan pengeluaran.</p>
+                <h1 class="text-xl font-bold">Kategori</h1>
+                <p class="text-sm text-slate-600">Kelola kategori pemasukan dan pengeluaran.</p>
             </div>
 
-            <button @click="create()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
+            <button @click="create()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 Tambah Kategori
             </button>
@@ -18,34 +18,36 @@
 
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="w-full">
+                <table class="w-full md:text-sm">
                     <thead class="bg-slate-50 border-b border-slate-200">
                         <tr>
-                            <th class="text-left p-4 font-medium text-slate-700">Nama</th>
-                            <th class="text-left p-4 font-medium text-slate-700">Jenis</th>
-                            <th class="text-right p-4 font-medium text-slate-700">Budget</th>
-                            <th class="text-center p-4 font-medium text-slate-700">Aksi</th>
+                            <th scope="col" class="text-left p-4 md:py-2.5 font-medium text-slate-700">Nama</th>
+                            <th scope="col" class="text-left p-4 md:py-2.5 font-medium text-slate-700">Jenis</th>
+                            <th scope="col" class="text-right p-4 md:py-2.5 font-medium text-slate-700">Budget</th>
+                            <th scope="col" class="text-center p-4 md:py-2.5 font-medium text-slate-700">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200">
                         <template x-for="category in categories" :key="category.id">
                             <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="p-4 font-medium" x-text="category.name"></td>
-                                <td class="p-4">
+                                <td class="p-4 md:py-2.5 font-medium" x-text="category.name"></td>
+                                <td class="p-4 md:py-2.5">
                                     <span :class="'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ' + (category.type === 'income' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800')"
                                         x-text="category.type === 'income' ? 'Pemasukan' : 'Pengeluaran'"></span>
                                 </td>
-                                <td class="p-4 text-right font-medium" x-text="formatCurrency(category.budget_limit)"></td>
-                                <td class="p-4 text-center">
-                                    <div class="flex items-center justify-center gap-2">
-                                        <button @click="edit(category)" class="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">Edit</button>
-                                        <button @click="confirmDelete(category)" class="text-red-600 hover:text-red-800 font-medium text-sm transition-colors">Hapus</button>
-                                    </div>
+                                <td class="p-4 md:py-2.5 text-right font-medium" x-text="formatCurrency(category.budget_limit)"></td>
+                                <td class="p-4 md:py-2.5 text-center">
+                                    <template x-if="canManage(category)">
+                                        <div class="flex items-center justify-center gap-2">
+                                            <button @click="edit(category)" class="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">Edit</button>
+                                            <button @click="confirmDelete(category)" class="text-red-600 hover:text-red-800 font-medium text-sm transition-colors">Hapus</button>
+                                        </div>
+                                    </template>
                                 </td>
                             </tr>
                         </template>
                         <tr x-show="categories.length === 0">
-                            <td colspan="4" class="p-10 text-center text-slate-500">Belum ada kategori.</td>
+                            <td colspan="4" class="p-8 text-center text-slate-500">Belum ada kategori.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -53,11 +55,11 @@
         </div>
 
         <!-- Create/Edit Modal (inlined) -->
-        <div x-show="modal.show" style="display: none"
+        <div x-show="modal.show" style="display: none" role="dialog" aria-modal="true" aria-label="Form kategori"
              x-on:open-modal.window="if ((typeof $event.detail === 'string' ? $event.detail : $event.detail?.name) === 'category-form') modal.show = true"
              x-on:close-modal.window="if ((typeof $event.detail === 'string' ? $event.detail : $event.detail?.name) === 'category-form') modal.show = false"
              class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50 flex items-center justify-center">
-            <div x-show="modal.show" x-on:click="modal.show = false" class="fixed inset-0 transform transition-all"
+            <div x-show="modal.show" x-on:click="modal.show = false" aria-hidden="true" class="fixed inset-0 transform transition-all"
                  x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
                  x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
                 <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
@@ -66,7 +68,7 @@
                  x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 scale-95 translate-y-4 sm:translate-y-0" x-transition:enter-end="opacity-100 scale-100 translate-y-0"
                  x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 scale-100 translate-y-0" x-transition:leave-end="opacity-0 scale-95 translate-y-4 sm:translate-y-0">
             <div class="p-6">
-                <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center justify-between mb-4">
                     <h2 class="text-xl font-bold" x-text="modal.mode === 'create' ? 'Tambah Kategori' : 'Edit Kategori'"></h2>
                     <button @click="modal.show = false" class="text-slate-400 hover:text-slate-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -109,10 +111,10 @@
                     </div>
 
                     <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200">
-                        <button type="button" @click="modal.show = false" class="px-4 py-2.5 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">
+                        <button type="button" @click="modal.show = false" class="px-3 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">
                             Batal
                         </button>
-                        <button type="submit" :disabled="modal.loading" class="px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                        <button type="submit" :disabled="modal.loading" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                             <template x-if="modal.loading">
                                 <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
                                 Menyimpan...
@@ -147,10 +149,10 @@
                 <h3 class="text-lg font-semibold mb-2">Hapus Kategori</h3>
                 <p class="text-slate-600 mb-6">Yakin ingin menghapus kategori <strong x-text="deleteModal.category?.name"></strong>? Tindakan ini tidak dapat dibatalkan.</p>
                 <div class="flex justify-center gap-3">
-                    <button @click="deleteModal.show = false" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">
+                    <button @click="deleteModal.show = false" class="px-3 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">
                         Batal
                     </button>
-                    <button @click="deleteCategory()" :disabled="deleteModal.loading" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                    <button @click="deleteCategory()" :disabled="deleteModal.loading" class="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                         <template x-if="deleteModal.loading">
                             <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
                         </template>

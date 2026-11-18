@@ -18,11 +18,7 @@ class TransactionController extends Controller
 
     protected function getCategories(string $type)
     {
-        if ($type === 'mutation' || $type === 'adjustment') {
-            return Category::whereIn('type', ['income', 'expense'])->latest()->get();
-        }
-
-        return Category::where('type', $type)->latest()->get();
+        return Category::forUser(auth()->user())->where('type', $type)->latest()->get();
     }
 
     protected function getPeriods()
@@ -113,72 +109,6 @@ class TransactionController extends Controller
     public function destroyExpense(Transaction $transaction, Request $request)
     {
         return $this->destroyTyped($transaction, $request, 'expense', 'Pengeluaran');
-    }
-
-    // MUTATION
-    public function mutation(Request $request)
-    {
-        return $this->typeIndex($request, 'mutation', 'Mutasi');
-    }
-
-    public function createMutation()
-    {
-        return redirect()->route('transactions.mutation.index');
-    }
-
-    public function storeMutation(StoreTransactionRequest $request)
-    {
-        return $this->storeTyped($request, 'mutation', 'Mutasi');
-    }
-
-    public function editMutation(Transaction $transaction)
-    {
-        abort_unless($transaction->type === 'mutation', 404);
-
-        return redirect()->route('transactions.mutation.index');
-    }
-
-    public function updateMutation(UpdateTransactionRequest $request, Transaction $transaction)
-    {
-        return $this->updateTyped($request, $transaction, 'mutation', 'Mutasi');
-    }
-
-    public function destroyMutation(Transaction $transaction, Request $request)
-    {
-        return $this->destroyTyped($transaction, $request, 'mutation', 'Mutasi');
-    }
-
-    // ADJUSTMENT
-    public function adjustment(Request $request)
-    {
-        return $this->typeIndex($request, 'adjustment', 'Penyesuaian');
-    }
-
-    public function createAdjustment()
-    {
-        return redirect()->route('transactions.adjustment.index');
-    }
-
-    public function storeAdjustment(StoreTransactionRequest $request)
-    {
-        return $this->storeTyped($request, 'adjustment', 'Penyesuaian');
-    }
-
-    public function editAdjustment(Transaction $transaction)
-    {
-        abort_unless($transaction->type === 'adjustment', 404);
-
-        return redirect()->route('transactions.adjustment.index');
-    }
-
-    public function updateAdjustment(UpdateTransactionRequest $request, Transaction $transaction)
-    {
-        return $this->updateTyped($request, $transaction, 'adjustment', 'Penyesuaian');
-    }
-
-    public function destroyAdjustment(Transaction $transaction, Request $request)
-    {
-        return $this->destroyTyped($transaction, $request, 'adjustment', 'Penyesuaian');
     }
 
     // SHARED METHODS

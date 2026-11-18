@@ -58,22 +58,6 @@ Route::middleware('auth')->group(function () {
         Route::put('expense/{transaction}', [TransactionController::class, 'updateExpense'])->name('expense.update');
         Route::delete('expense/{transaction}', [TransactionController::class, 'destroyExpense'])->name('expense.destroy');
 
-        // Mutation
-        Route::get('mutation', [TransactionController::class, 'mutation'])->name('mutation.index');
-        Route::get('mutation/create', [TransactionController::class, 'createMutation'])->name('mutation.create');
-        Route::post('mutation', [TransactionController::class, 'storeMutation'])->name('mutation.store');
-        Route::get('mutation/{transaction}/edit', [TransactionController::class, 'editMutation'])->name('mutation.edit');
-        Route::put('mutation/{transaction}', [TransactionController::class, 'updateMutation'])->name('mutation.update');
-        Route::delete('mutation/{transaction}', [TransactionController::class, 'destroyMutation'])->name('mutation.destroy');
-
-        // Adjustment
-        Route::get('adjustment', [TransactionController::class, 'adjustment'])->name('adjustment.index');
-        Route::get('adjustment/create', [TransactionController::class, 'createAdjustment'])->name('adjustment.create');
-        Route::post('adjustment', [TransactionController::class, 'storeAdjustment'])->name('adjustment.store');
-        Route::get('adjustment/{transaction}/edit', [TransactionController::class, 'editAdjustment'])->name('adjustment.edit');
-        Route::put('adjustment/{transaction}', [TransactionController::class, 'updateAdjustment'])->name('adjustment.update');
-        Route::delete('adjustment/{transaction}', [TransactionController::class, 'destroyAdjustment'])->name('adjustment.destroy');
-
         Route::get('{transaction}/receipt', [TransactionController::class, 'receipt'])->middleware('signed')->name('receipt');
     });
 

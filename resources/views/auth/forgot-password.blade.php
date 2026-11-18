@@ -10,7 +10,7 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700&display=swap" rel="stylesheet" />
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -19,7 +19,7 @@
     <div class="w-full max-w-sm">
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
             <div class="text-center mb-6">
-                <h2 class="text-xl font-semibold text-gray-900">Lupa Password</h2>
+                <h1 class="text-xl font-semibold text-gray-900">Lupa Password</h1>
                 <p class="mt-1 text-sm text-gray-500">Masukkan email Anda, kami akan mengirim tautan untuk mengatur ulang password.</p>
             </div>
 
@@ -45,7 +45,7 @@
                 </div>
 
                 <button type="submit"
-                    class="w-full py-2.5 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm">
+                    class="w-full py-2 px-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm">
                     Kirim Tautan Reset
                 </button>
             </form>

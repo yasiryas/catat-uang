@@ -137,7 +137,7 @@
                         'steps' => [
                             ['Mutasi Antar Dompet', 'Gunakan menu "Mutasi" untuk mencatat pemindahan uang dari satu dompet ke dompet lain.'],
                             ['Penyesuaian', 'Gunakan "Adjustment" untuk mengoreksi saldo, misalnya selisih kas kecil atau pembulatan.'],
-                            ['Sesuaikan Kategori', 'Mutasi dan adjustment tetap dapat dikelompokkan per kategori agar laporan tetap rapi.'],
+                            ['Lihat Ringkasan', 'Mutasi mengubah saldo antar dompet, sedangkan adjustment mengubah total pemasukan/pengeluaran di dashboard.'],
                         ],
                     ],
                     [

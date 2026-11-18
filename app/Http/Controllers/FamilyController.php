@@ -11,9 +11,7 @@ use Illuminate\Support\Facades\URL;
 
 class FamilyController extends Controller
 {
-    public function __construct(private readonly FamilyService $familyService)
-    {
-    }
+    public function __construct(private readonly FamilyService $familyService) {}
 
     public function index()
     {

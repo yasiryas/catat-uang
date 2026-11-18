@@ -9,6 +9,7 @@ use App\Models\Mutation;
 use App\Models\Period;
 use App\Models\Transaction;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
 class SampleDataSeeder extends Seeder
@@ -55,20 +56,20 @@ class SampleDataSeeder extends Seeder
             Category::create($data);
         }
         $categories = Category::all()->keyBy(fn ($c) => $c->name);
-        $incomeCats  = $categories->where('type', 'income');
+        $incomeCats = $categories->where('type', 'income');
         $expenseCats = $categories->where('type', 'expense');
 
         // ─── Account mapping per category ───────────────────────
         $accountMap = [
-            'Gaji'         => 'BCA',
-            'Freelance'    => 'BCA',
-            'Investasi'    => 'Mandiri',
-            'Makanan'      => 'Tunai',
+            'Gaji' => 'BCA',
+            'Freelance' => 'BCA',
+            'Investasi' => 'Mandiri',
+            'Makanan' => 'Tunai',
             'Transportasi' => 'Tunai',
-            'Hiburan'      => 'GoPay',
-            'Tagihan'      => 'BCA',
-            'Kesehatan'    => 'Mandiri',
-            'Lainnya'      => 'Tunai',
+            'Hiburan' => 'GoPay',
+            'Tagihan' => 'BCA',
+            'Kesehatan' => 'Mandiri',
+            'Lainnya' => 'Tunai',
         ];
 
         // ─── Periods ────────────────────────────────────────────
@@ -76,8 +77,8 @@ class SampleDataSeeder extends Seeder
         foreach (range(1, 7) as $m) {
             $year = 2026;
             $start = sprintf('%s-%02d-01', $year, $m);
-            $end   = date('Y-m-t', strtotime($start));
-            $monthName = \Carbon\Carbon::parse($start)->locale('id')->isoFormat('MMMM');
+            $end = date('Y-m-t', strtotime($start));
+            $monthName = Carbon::parse($start)->locale('id')->isoFormat('MMMM');
 
             $opening = match ($m) {
                 1 => 5000000,
@@ -86,15 +87,15 @@ class SampleDataSeeder extends Seeder
             $isClosed = $m < 7;
 
             $periods[$m] = Period::create([
-                'user_id'         => $user->id,
-                'name'            => "{$monthName} {$year}",
-                'start_date'      => $start,
-                'end_date'        => $end,
-                'year'            => $year,
-                'month'           => $m,
+                'user_id' => $user->id,
+                'name' => "{$monthName} {$year}",
+                'start_date' => $start,
+                'end_date' => $end,
+                'year' => $year,
+                'month' => $m,
                 'opening_balance' => $opening ?? 0,
                 'closing_balance' => 0,
-                'is_closed'       => $isClosed,
+                'is_closed' => $isClosed,
             ]);
         }
 
@@ -161,26 +162,28 @@ class SampleDataSeeder extends Seeder
             $cat = $type === 'income'
                 ? $incomeCats->firstWhere('name', $catName)
                 : $expenseCats->firstWhere('name', $catName);
-            if (!$cat) continue;
+            if (! $cat) {
+                continue;
+            }
 
             $accountName = $accountMap[$catName] ?? 'Tunai';
 
             Transaction::create([
-                'user_id'     => $user->id,
-                'period_id'   => $periods[$pm]->id,
+                'user_id' => $user->id,
+                'period_id' => $periods[$pm]->id,
                 'category_id' => $cat->id,
-                'account_id'  => $accounts[$accountName]->id,
-                'type'        => $type,
-                'amount'      => $amount,
-                'date'        => $date,
-                'note'        => $note,
+                'account_id' => $accounts[$accountName]->id,
+                'type' => $type,
+                'amount' => $amount,
+                'date' => $date,
+                'note' => $note,
             ]);
         }
 
         // ─── Compute period closing balances ────────────────────
         $runningBalance = 0;
         foreach ($periods as $p) {
-            $incomeTotal  = Transaction::where('period_id', $p->id)->where('type', 'income')->sum('amount');
+            $incomeTotal = Transaction::where('period_id', $p->id)->where('type', 'income')->sum('amount');
             $expenseTotal = Transaction::where('period_id', $p->id)->where('type', 'expense')->sum('amount');
 
             if ($p->month === 1) {
@@ -196,27 +199,27 @@ class SampleDataSeeder extends Seeder
 
         // ─── Mutations ──────────────────────────────────────────
         Mutation::create([
-            'user_id'        => $user->id,
-            'period_id'      => $periods[7]->id,
+            'user_id' => $user->id,
+            'period_id' => $periods[7]->id,
             'from_account_id' => $accounts['BCA']->id,
-            'to_account_id'   => $accounts['Tunai']->id,
-            'from_account'   => 'BCA',
-            'to_account'     => 'Tunai',
-            'amount'         => 500000,
-            'note'           => 'Tarik tunai',
-            'date'           => '2026-07-05 10:00:00',
+            'to_account_id' => $accounts['Tunai']->id,
+            'from_account' => 'BCA',
+            'to_account' => 'Tunai',
+            'amount' => 500000,
+            'note' => 'Tarik tunai',
+            'date' => '2026-07-05 10:00:00',
         ]);
 
         Mutation::create([
-            'user_id'        => $user->id,
-            'period_id'      => $periods[6]->id,
+            'user_id' => $user->id,
+            'period_id' => $periods[6]->id,
             'from_account_id' => $accounts['BCA']->id,
-            'to_account_id'   => $accounts['GoPay']->id,
-            'from_account'   => 'BCA',
-            'to_account'     => 'GoPay',
-            'amount'         => 200000,
-            'note'           => 'Top up GoPay',
-            'date'           => '2026-06-15 13:00:00',
+            'to_account_id' => $accounts['GoPay']->id,
+            'from_account' => 'BCA',
+            'to_account' => 'GoPay',
+            'amount' => 200000,
+            'note' => 'Top up GoPay',
+            'date' => '2026-06-15 13:00:00',
         ]);
 
         // ─── Adjustment Logs ────────────────────────────────────
@@ -226,16 +229,16 @@ class SampleDataSeeder extends Seeder
 
         if ($adjustTx) {
             AdjustmentLog::create([
-                'period_id'      => $periods[7]->id,
+                'period_id' => $periods[7]->id,
                 'transaction_id' => $adjustTx->id,
-                'user_id'        => $user->id,
-                'type'           => 'expense',
-                'amount'         => 50000,
-                'old_amount'     => $adjustTx->amount,
-                'new_amount'     => $adjustTx->amount - 50000,
-                'reason'         => 'Koreksi overbudget makan',
-                'note'           => 'Adjustment via seeder',
-                'date'           => '2026-07-13 11:00:00',
+                'user_id' => $user->id,
+                'type' => 'expense',
+                'amount' => 50000,
+                'old_amount' => $adjustTx->amount,
+                'new_amount' => $adjustTx->amount - 50000,
+                'reason' => 'Koreksi overbudget makan',
+                'note' => 'Adjustment via seeder',
+                'date' => '2026-07-13 11:00:00',
             ]);
         }
     }

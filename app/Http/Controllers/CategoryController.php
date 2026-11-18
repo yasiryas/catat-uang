@@ -14,7 +14,7 @@ class CategoryController extends Controller
 
     public function index(Request $request)
     {
-        $categories = Category::latest()->paginate(10);
+        $categories = Category::forUser(auth()->user())->latest()->paginate(10);
 
         if ($request->ajax() || $request->wantsJson()) {
             return $this->paginatedJson($categories);

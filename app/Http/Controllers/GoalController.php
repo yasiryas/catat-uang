@@ -55,7 +55,7 @@ class GoalController extends Controller
         ])->values();
 
         $periods = Period::forUser($user)->latest('year')->latest('month')->get(['id', 'name']);
-        $categories = Category::latest()->get(['id', 'name']);
+        $categories = Category::forUser(auth()->user())->latest()->get(['id', 'name']);
         $accounts = Account::forUser($user)->latest()->get(['id', 'name']);
 
         $summary = [

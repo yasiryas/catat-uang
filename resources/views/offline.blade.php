@@ -17,7 +17,7 @@
             Koneksi internet tidak tersedia. Periksa kembali koneksi Anda, lalu coba muat ulang halaman.
         </p>
         <button onclick="location.reload()"
-            class="mt-6 inline-flex items-center justify-center w-full rounded-lg bg-blue-600 px-4 py-2.5 text-white font-semibold hover:bg-blue-700 transition shadow-sm">
+            class="mt-6 inline-flex items-center justify-center w-full rounded-lg bg-blue-600 px-3 py-2 text-white font-semibold hover:bg-blue-700 transition shadow-sm">
             Coba Lagi
         </button>
     </div>

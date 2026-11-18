@@ -5,7 +5,7 @@
         @csrf
 
         <div class="text-center mb-6">
-            <h2 class="text-xl font-semibold text-gray-900">Daftar</h2>
+            <h1 class="text-xl font-semibold text-gray-900">Daftar</h1>
             <p class="mt-1 text-sm text-gray-500">Buat akun baru Anda</p>
         </div>
 
@@ -53,7 +53,7 @@
                 Sudah punya akun?
             </a>
 
-            <button type="submit" class="ms-4 py-2.5 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm">
+            <button type="submit" class="ms-4 py-2 px-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm">
                 Daftar
             </button>
         </div>

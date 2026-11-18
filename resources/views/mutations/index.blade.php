@@ -4,13 +4,13 @@
 
 @section('content')
     <div x-data="mutationPage()" data-periods='@json($periods)' data-accounts='@json($accounts)'>
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center justify-between mb-4">
             <div>
-                <h1 class="text-2xl font-bold">Mutasi</h1>
-                <p class="text-slate-500">Kelola mutasi antar dompet.</p>
+                <h1 class="text-xl font-bold">Mutasi</h1>
+                <p class="text-sm text-slate-600">Kelola mutasi antar dompet.</p>
             </div>
 
-            <button @click="create()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
+            <button @click="create()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 Tambah
             </button>
@@ -18,35 +18,46 @@
 
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="w-full">
+                <table class="w-full md:text-sm">
                     <thead class="bg-slate-50 border-b border-slate-200">
                         <tr>
-                            <th class="text-left p-4 font-medium text-slate-700">Tanggal</th>
-                            <th class="text-left p-4 font-medium text-slate-700">Periode</th>
-                            <th class="text-left p-4 font-medium text-slate-700">Dari</th>
-                            <th class="text-left p-4 font-medium text-slate-700">Ke</th>
-                            <th class="text-right p-4 font-medium text-slate-700">Jumlah</th>
-                            <th class="text-center p-4 font-medium text-slate-700">Aksi</th>
+                            <th class="text-left p-4 md:py-2.5 font-medium text-slate-700">Tanggal</th>
+                            <th class="text-left p-4 md:py-2.5 font-medium text-slate-700">Periode</th>
+                            <th class="text-left p-4 md:py-2.5 font-medium text-slate-700">Dari</th>
+                            <th class="text-left p-4 md:py-2.5 font-medium text-slate-700">Ke</th>
+                            <th class="text-right p-4 md:py-2.5 font-medium text-slate-700">Jumlah</th>
+                            <th class="text-center p-4 md:py-2.5 font-medium text-slate-700">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200">
                         @forelse($mutations as $mutation)
                             <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="p-4 whitespace-nowrap">{{ tanggal($mutation->date, true) }}</td>
-                                <td class="p-4">{{ $mutation->period?->name ?? '-' }}</td>
-                                <td class="p-4">{{ $mutation->fromAccount?->name ?? '-' }}</td>
-                                <td class="p-4">{{ $mutation->toAccount?->name ?? '-' }}</td>
-                                <td class="p-4 text-right font-medium">{{ rupiah((float) $mutation->amount) }}</td>
-                                <td class="p-4 text-center">
+                                <td class="p-4 md:py-2.5 whitespace-nowrap">{{ tanggal($mutation->date, true) }}</td>
+                                <td class="p-4 md:py-2.5">{{ $mutation->period?->name ?? '-' }}</td>
+                                <td class="p-4 md:py-2.5">{{ $mutation->fromAccount?->name ?? '-' }}</td>
+                                <td class="p-4 md:py-2.5">{{ $mutation->toAccount?->name ?? '-' }}</td>
+                                <td class="p-4 md:py-2.5 text-right font-medium">{{ rupiah((float) $mutation->amount) }}</td>
+                                <td class="p-4 md:py-2.5 text-center">
+                                    @php
+                                        $mutationData = [
+                                            'id' => $mutation->id,
+                                            'period_id' => $mutation->period_id,
+                                            'from_account_id' => $mutation->from_account_id,
+                                            'to_account_id' => $mutation->to_account_id,
+                                            'amount' => (float) $mutation->amount,
+                                            'note' => $mutation->note,
+                                            'date' => $mutation->date?->format('Y-m-d\TH:i'),
+                                        ];
+                                    @endphp
                                     <div class="flex items-center justify-center gap-2">
-                                        <button @click="edit(@json(['id' => $mutation->id, 'period_id' => $mutation->period_id, 'from_account_id' => $mutation->from_account_id, 'to_account_id' => $mutation->to_account_id, 'amount' => (float) $mutation->amount, 'note' => $mutation->note, 'date' => $mutation->date?->format('Y-m-d\TH:i')]))" class="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">Edit</button>
+                                        <button @click="edit(@json($mutationData))" class="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">Edit</button>
                                         <button @click="confirmDelete({{ $mutation->id }})" class="text-red-600 hover:text-red-800 font-medium text-sm transition-colors">Hapus</button>
                                     </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="p-10 text-center text-slate-500">Belum ada mutasi.</td>
+                                <td colspan="6" class="p-8 text-center text-slate-500">Belum ada mutasi.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -69,7 +80,7 @@
                  x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 scale-95 translate-y-4 sm:translate-y-0" x-transition:enter-end="opacity-100 scale-100 translate-y-0"
                  x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 scale-100 translate-y-0" x-transition:leave-end="opacity-0 scale-95 translate-y-4 sm:translate-y-0">
             <div class="p-6">
-                <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center justify-between mb-4">
                     <h2 class="text-xl font-bold" x-text="modal.mode === 'create' ? 'Tambah Mutasi' : 'Edit Mutasi'"></h2>
                     <button @click="modal.show = false" class="text-slate-400 hover:text-slate-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -137,8 +148,8 @@
                     </div>
 
                     <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200">
-                        <button type="button" @click="modal.show = false" class="px-4 py-2.5 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">Batal</button>
-                        <button type="submit" :disabled="modal.loading" class="px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                        <button type="button" @click="modal.show = false" class="px-3 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">Batal</button>
+                        <button type="submit" :disabled="modal.loading" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                             <template x-if="modal.loading"><svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg></template>
                             <span x-text="modal.mode === 'create' ? 'Simpan' : 'Perbarui'"></span>
                         </button>
@@ -165,8 +176,8 @@
                 <h3 class="text-lg font-semibold mb-2">Hapus Mutasi</h3>
                 <p class="text-slate-600 mb-6">Yakin ingin menghapus mutasi ini?</p>
                 <div class="flex justify-center gap-3">
-                    <button @click="deleteModal.show = false" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">Batal</button>
-                    <button @click="destroy()" :disabled="deleteModal.loading" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                    <button @click="deleteModal.show = false" class="px-3 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">Batal</button>
+                    <button @click="destroy()" :disabled="deleteModal.loading" class="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                         <template x-if="deleteModal.loading"><svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg></template>
                         <span>Hapus</span>
                     </button>

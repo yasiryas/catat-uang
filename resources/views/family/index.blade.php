@@ -9,23 +9,23 @@
     @endphp
 
     <div x-data="familyPage()">
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center justify-between mb-4">
             <div>
                 <h1 class="text-xl font-bold">Keluarga</h1>
-                <p class="text-slate-500">Kelola buku keuangan bersama untuk 2 akun atau lebih.</p>
+                <p class="text-sm text-slate-600">Kelola buku keuangan bersama untuk 2 akun atau lebih.</p>
             </div>
         </div>
 
         @if (session('error'))
-            <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg p-3 mb-6 text-sm">{{ session('error') }}</div>
+            <div role="alert" class="bg-red-50 border border-red-200 text-red-700 rounded-lg p-3 mb-6 text-sm">{{ session('error') }}</div>
         @endif
         @if (session('success'))
-            <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg p-3 mb-6 text-sm">{{ session('success') }}</div>
+            <div role="status" class="bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg p-3 mb-6 text-sm">{{ session('success') }}</div>
         @endif
 
         @if (! $family)
             {{-- Belum punya keluarga --}}
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-10 max-w-2xl">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 max-w-2xl">
                 <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
                     <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                 </div>
@@ -35,13 +35,13 @@
                 <form method="POST" action="{{ route('family.store') }}" class="max-w-md space-y-4">
                     @csrf
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Nama Keluarga</label>
-                        <input type="text" name="name" value="{{ old('name') }}" class="select-input" placeholder="Contoh: Keluarga Santoso" required>
+                        <label for="family-name" class="block text-sm font-medium text-slate-700 mb-1">Nama Keluarga</label>
+                        <input id="family-name" type="text" name="name" value="{{ old('name') }}" class="select-input" placeholder="Contoh: Keluarga Santoso" required>
                         @error('name')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
-                    <button type="submit" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium">Buat Keluarga</button>
+                    <button type="submit" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium">Buat Keluarga</button>
                 </form>
             </div>
         @else
@@ -93,8 +93,9 @@
                             <p class="text-sm text-slate-500 mb-4">Masukkan email akun yang <strong>sudah terdaftar</strong> di aplikasi ini. Anggota yang bergabung akan ikut melihat & mengelola buku keuangan yang sama.</p>
                             <form method="POST" action="{{ route('family.invite') }}" class="flex flex-col sm:flex-row gap-3 max-w-lg" x-data="{ email: '' }">
                                 @csrf
-                                <input type="email" name="email" x-model="email" class="select-input flex-1" placeholder="email@contoh.com" required>
-                                <button type="submit" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium shrink-0">Undang</button>
+                                <label for="invite-email" class="sr-only">Email anggota yang diundang</label>
+                                <input id="invite-email" type="email" name="email" x-model="email" class="select-input flex-1" placeholder="email@contoh.com" required>
+                                <button type="submit" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium shrink-0">Undang</button>
                             </form>
                             @error('email')
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -121,9 +122,9 @@
                             {{ $user->isFamilyAdmin() ? 'Semua anggota akan dilepas, data tetap tersimpan per pemiliknya.' : 'Anda akan berhenti berbagi buku keuangan ini. Data tetap tersimpan di akun Anda.' }}
                         </p>
                         @if ($user->isFamilyAdmin())
-                            <button @click="confirmDestroy()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm">Bubarkan Keluarga</button>
+                            <button @click="confirmDestroy()" class="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm">Bubarkan Keluarga</button>
                         @else
-                            <button @click="confirmLeave()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm">Keluar dari Keluarga</button>
+                            <button @click="confirmLeave()" class="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm">Keluar dari Keluarga</button>
                         @endif
                     </div>
                 </div>
@@ -146,8 +147,8 @@
                         <h3 class="text-lg font-semibold mb-2">Keluarkan Anggota</h3>
                         <p class="text-slate-600 mb-6">Yakin ingin mengeluarkan <strong x-text="removeModal.member?.name"></strong> dari keluarga?</p>
                         <div class="flex justify-center gap-3">
-                            <button @click="removeModal.show = false" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">Batal</button>
-                            <button @click="removeMember()" :disabled="removeModal.loading" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center gap-2">
+                            <button @click="removeModal.show = false" class="px-3 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">Batal</button>
+                            <button @click="removeMember()" :disabled="removeModal.loading" class="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center gap-2">
                                 <template x-if="removeModal.loading"><svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg></template>
                                 <span>Keluarkan</span>
                             </button>
@@ -173,8 +174,8 @@
                         <h3 class="text-lg font-semibold mb-2" x-text="dangerModal.title"></h3>
                         <p class="text-slate-600 mb-6" x-text="dangerModal.message"></p>
                         <div class="flex justify-center gap-3">
-                            <button @click="dangerModal.show = false" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">Batal</button>
-                            <button @click="runDanger()" :disabled="dangerModal.loading" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center gap-2">
+                            <button @click="dangerModal.show = false" class="px-3 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">Batal</button>
+                            <button @click="runDanger()" :disabled="dangerModal.loading" class="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center gap-2">
                                 <template x-if="dangerModal.loading"><svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg></template>
                                 <span x-text="dangerModal.actionLabel"></span>
                             </button>

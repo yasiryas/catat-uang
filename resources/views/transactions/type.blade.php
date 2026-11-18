@@ -11,13 +11,13 @@
          data-categories='{{ json_encode($categories) }}'
          data-periods='{{ json_encode($periods) }}'
          data-accounts='{{ json_encode($accounts) }}'>
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center justify-between mb-4">
             <div>
-                <h1 class="text-2xl font-bold" x-text="title"></h1>
-                <p class="text-slate-500" x-text="subtitle"></p>
+                <h1 class="text-xl font-bold" x-text="title"></h1>
+                <p class="text-sm text-slate-600" x-text="subtitle"></p>
             </div>
 
-            <button @click="create()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
+            <button @click="create()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 Tambah
             </button>
@@ -25,29 +25,29 @@
 
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="w-full">
+                <table class="w-full md:text-sm">
                     <thead class="bg-slate-50 border-b border-slate-200">
                         <tr>
-                            <th class="text-left p-4 font-medium text-slate-700">Tanggal</th>
-                            <th class="text-left p-4 font-medium text-slate-700">Kategori</th>
-                            <th class="text-left p-4 font-medium text-slate-700">Periode</th>
-                            <th class="text-left p-4 font-medium text-slate-700">Dompet</th>
-                            <th class="text-right p-4 font-medium text-slate-700">Jumlah</th>
-                            <th class="text-left p-4 font-medium text-slate-700">Keterangan</th>
-                            <th class="text-center p-4 font-medium text-slate-700">Struk</th>
-                            <th class="text-center p-4 font-medium text-slate-700">Aksi</th>
+                            <th scope="col" class="text-left p-4 md:py-2.5 font-medium text-slate-700">Tanggal</th>
+                            <th scope="col" class="text-left p-4 md:py-2.5 font-medium text-slate-700">Kategori</th>
+                            <th scope="col" class="text-left p-4 md:py-2.5 font-medium text-slate-700">Periode</th>
+                            <th scope="col" class="text-left p-4 md:py-2.5 font-medium text-slate-700">Dompet</th>
+                            <th scope="col" class="text-right p-4 md:py-2.5 font-medium text-slate-700">Jumlah</th>
+                            <th scope="col" class="text-left p-4 md:py-2.5 font-medium text-slate-700">Keterangan</th>
+                            <th scope="col" class="text-center p-4 md:py-2.5 font-medium text-slate-700">Struk</th>
+                            <th scope="col" class="text-center p-4 md:py-2.5 font-medium text-slate-700">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200">
                         <template x-for="transaction in transactions" :key="transaction.id">
                             <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="p-4 whitespace-nowrap" x-text="formatDateTime(transaction.date)"></td>
-                                <td class="p-4" x-text="transaction.category?.name ?? '-'"></td>
-                                <td class="p-4" x-text="transaction.period?.name ?? '-'"></td>
-                                <td class="p-4" x-text="transaction.account?.name ?? '-'"></td>
-                                <td class="p-4 text-right font-medium" :class="type === 'expense' ? 'text-red-600' : 'text-emerald-600'" x-text="formatCurrency(transaction.amount)"></td>
-                                <td class="p-4 text-slate-500 text-sm" x-text="transaction.note ?? '-'"></td>
-                                <td class="p-4 text-center">
+                                <td class="p-4 md:py-2.5 whitespace-nowrap" x-text="formatDateTime(transaction.date)"></td>
+                                <td class="p-4 md:py-2.5" x-text="transaction.category?.name ?? '-'"></td>
+                                <td class="p-4 md:py-2.5" x-text="transaction.period?.name ?? '-'"></td>
+                                <td class="p-4 md:py-2.5" x-text="transaction.account?.name ?? '-'"></td>
+                                <td class="p-4 md:py-2.5 text-right font-medium" :class="type === 'expense' ? 'text-red-600' : 'text-emerald-600'" x-text="formatCurrency(transaction.amount)"></td>
+                                <td class="p-4 md:py-2.5 text-slate-500 text-sm" x-text="transaction.note ?? '-'"></td>
+                                <td class="p-4 md:py-2.5 text-center">
                                     <template x-if="transaction.receipt_image_url">
                                         <a :href="transaction.receipt_image_url" target="_blank" class="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 font-medium">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -58,7 +58,7 @@
                                         <span class="text-slate-300 text-sm">-</span>
                                     </template>
                                 </td>
-                                <td class="p-4 text-center">
+                                <td class="p-4 md:py-2.5 text-center">
                                     <div class="flex items-center justify-center gap-2">
                                         <button @click="edit(transaction)" class="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">Edit</button>
                                         <button @click="confirmDelete(transaction)" class="text-red-600 hover:text-red-800 font-medium text-sm transition-colors">Hapus</button>
@@ -67,7 +67,7 @@
                             </tr>
                         </template>
                         <tr x-show="transactions.length === 0">
-                            <td colspan="8" class="p-10 text-center text-slate-500" x-text="emptyMessage"></td>
+                            <td colspan="8" class="p-8 text-center text-slate-500" x-text="emptyMessage"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -86,11 +86,11 @@
         </div>
 
         <!-- Create/Edit Modal (inlined to avoid x-data scope isolation) -->
-        <div x-show="modal.show" style="display: none"
+        <div x-show="modal.show" style="display: none" role="dialog" aria-modal="true" aria-label="Form transaksi"
              x-on:open-modal.window="if ((typeof $event.detail === 'string' ? $event.detail : $event.detail?.name) === '{{ $formModalName }}') modal.show = true"
              x-on:close-modal.window="if ((typeof $event.detail === 'string' ? $event.detail : $event.detail?.name) === '{{ $formModalName }}') modal.show = false"
              class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50 flex items-center justify-center">
-            <div x-show="modal.show" x-on:click="modal.show = false" class="fixed inset-0 transform transition-all"
+            <div x-show="modal.show" x-on:click="modal.show = false" aria-hidden="true" class="fixed inset-0 transform transition-all"
                  x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
                  x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
                 <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
@@ -99,7 +99,7 @@
                  x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 scale-95 translate-y-4 sm:translate-y-0" x-transition:enter-end="opacity-100 scale-100 translate-y-0"
                  x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 scale-100 translate-y-0" x-transition:leave-end="opacity-0 scale-95 translate-y-4 sm:translate-y-0">
             <div class="p-6">
-                <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center justify-between mb-4">
                     <h2 class="text-xl font-bold" x-text="modal.mode === 'create' ? 'Tambah ' + title : 'Edit ' + title"></h2>
                     <button @click="modal.show = false" class="text-slate-400 hover:text-slate-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -194,10 +194,10 @@
                     </div>
 
                     <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200">
-                        <button type="button" @click="modal.show = false" class="px-4 py-2.5 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">
+                        <button type="button" @click="modal.show = false" class="px-3 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">
                             Batal
                         </button>
-                        <button type="submit" :disabled="modal.loading" :class="submitButtonClass + ' px-4 py-2.5 text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2'">
+                        <button type="submit" :disabled="modal.loading" :class="submitButtonClass + ' px-3 py-2 text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2'">
                             <template x-if="modal.loading">
                                 <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
                                 Menyimpan...
@@ -232,10 +232,10 @@
                 <h3 class="text-lg font-semibold mb-2">Hapus</h3>
                 <p class="text-slate-600 mb-6">Yakin ingin menghapus <strong x-text="deleteModal.transaction?.category?.name"></strong> sebesar <strong x-text="formatCurrency(deleteModal.transaction?.amount)"></strong>? Tindakan ini tidak dapat dibatalkan.</p>
                 <div class="flex justify-center gap-3">
-                    <button @click="deleteModal.show = false" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">
+                    <button @click="deleteModal.show = false" class="px-3 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">
                         Batal
                     </button>
-                    <button @click="deleteTransaction()" :disabled="deleteModal.loading" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                    <button @click="deleteTransaction()" :disabled="deleteModal.loading" class="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                         <template x-if="deleteModal.loading">
                             <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
                         </template>

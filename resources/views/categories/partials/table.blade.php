@@ -6,19 +6,19 @@
 
             <tr>
 
-                <th class="text-left p-4">
+                <th scope="col" class="text-left p-4">
                     Nama
                 </th>
 
-                <th class="text-left p-4">
+                <th scope="col" class="text-left p-4">
                     Jenis
                 </th>
 
-                <th class="text-right p-4">
+                <th scope="col" class="text-right p-4">
                     Budget
                 </th>
 
-                <th class="text-center p-4">
+                <th scope="col" class="text-center p-4">
                     Aksi
                 </th>
 

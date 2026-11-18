@@ -1,4 +1,4 @@
-<x-modal :modal-name="type + '-form'" :show="false" max-width="lg">
+<x-modal :modal-name="type + '-form'" :show="false" max-width="lg" :label="title">
     <div class="p-6">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-bold" x-text="modalMode === 'create' ? 'Tambah ' + title : 'Edit ' + title"></h2>
@@ -19,7 +19,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Periode</label>
-                    <x-custom-select xModel="modalForm.period_id" variant="input"
+                    <x-custom-select xModel="modalForm.period_id" label="Periode" variant="input"
                         placeholder="Pilih Periode"
                         alpine-items="periods"
                         value-key="id" label-key="name" />
@@ -30,7 +30,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Kategori</label>
-                    <x-custom-select xModel="modalForm.category_id" variant="input"
+                    <x-custom-select xModel="modalForm.category_id" label="Kategori" variant="input"
                         placeholder="Pilih Kategori"
                         alpine-items="categories"
                         value-key="id" label-key="name" />
@@ -41,7 +41,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Dompet</label>
-                    <x-custom-select xModel="modalForm.account_id" variant="input"
+                    <x-custom-select xModel="modalForm.account_id" label="Dompet" variant="input"
                         placeholder="Pilih Dompet"
                         alpine-items="accounts"
                         value-key="id" label-key="name" />
@@ -68,7 +68,7 @@
             </div>
 
             <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200">
-                <button type="button" @click="$dispatch('close-modal', { name: type + '-form' })" class="px-4 py-2.5 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">
+                <button type="button" @click="$dispatch('close-modal', { name: type + '-form' })" class="px-3 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">
                     Batal
                 </button>
                 <button type="submit" :disabled="modalLoading" :class="submitButtonClass + ' text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2'">

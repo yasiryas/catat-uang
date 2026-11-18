@@ -29,6 +29,6 @@ class Period extends Model
 
     public function scopeCurrent($query)
     {
-        return $query->where('year', date('Y'))->where('month', date('m'));
+        return $query->where('year', now()->year)->where('month', now()->month);
     }
 }

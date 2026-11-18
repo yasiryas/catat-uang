@@ -2,6 +2,7 @@
     'modalName' => '',
     'maxWidth' => '2xl',
     'show' => false,
+    'label' => 'Dialog',
 ])
 
 @php
@@ -38,13 +39,16 @@ $maxWidth = [
     x-on:open-modal.window="handleOpen($event.detail)"
     x-on:close-modal.window="handleClose($event.detail)"
     x-on:keydown.escape.window="show = false"
-    x-on:keydown.tab.prevent="$event.shiftKey ? \$refs.prev?.focus() : \$refs.next?.focus()"
     x-show="show"
+    role="dialog"
+    aria-modal="true"
+    aria-label="{{ $label }}"
     class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50 flex items-center justify-center"
     style="display: {{ $show ? 'block' : 'none' }};"
 >
     <div
         x-show="show"
+        aria-hidden="true"
         class="fixed inset-0 transform transition-all"
         x-on:click="show = false"
         x-transition:enter="ease-out duration-300"
@@ -59,7 +63,7 @@ $maxWidth = [
 
     <div
         x-show="show"
-        class="bg-white rounded-xl overflow-hidden shadow-lg border border-gray-200 transform transition-all sm:w-full {{ $maxWidth }} sm:mx-auto"
+        class="bg-white rounded-xl shadow-lg border border-gray-200 transform transition-all sm:w-full {{ $maxWidth }} sm:mx-auto max-h-[calc(100dvh-3rem)] overflow-y-auto overflow-x-hidden"
         x-transition:enter="ease-out duration-300"
         x-transition:enter-start="opacity-0 scale-95 translate-y-4 sm:translate-y-0"
         x-transition:enter-end="opacity-100 scale-100 translate-y-0"

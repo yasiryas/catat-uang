@@ -70,14 +70,4 @@ class Transaction extends Model
     {
         return $query->where('type', 'expense');
     }
-
-    public function scopeAdjustment($query)
-    {
-        return $query->where('type', 'adjustment');
-    }
-
-    public function scopeMutation($query)
-    {
-        return $query->where('type', 'mutation');
-    }
 }

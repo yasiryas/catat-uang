@@ -75,13 +75,17 @@ class TransactionSeeder extends Seeder
 
         foreach ($transactions as $t) {
             $period = $periods->get($t['period_month']);
-            if (!$period) continue;
+            if (! $period) {
+                continue;
+            }
 
             $category = $t['type'] === 'income'
                 ? $incomeCategories->where('name', $t['category'])->first()
                 : $expenseCategories->where('name', $t['category'])->first();
 
-            if (!$category) continue;
+            if (! $category) {
+                continue;
+            }
 
             Transaction::create([
                 'user_id' => $user->id,

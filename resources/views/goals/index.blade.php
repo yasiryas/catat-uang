@@ -19,20 +19,20 @@
          data-categories='{{ json_encode($categories) }}'
          data-accounts='{{ json_encode($accounts) }}'>
 
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center justify-between mb-4">
             <div>
                 <h1 class="text-xl font-bold">Target & Capaian</h1>
-                <p class="text-slate-500">Tetapkan target keuangan, capaian dihitung otomatis dari transaksi.</p>
+                <p class="text-sm text-slate-600">Tetapkan target keuangan, capaian dihitung otomatis dari transaksi.</p>
             </div>
 
-            <button @click="create()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
+            <button @click="create()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 Tambah Target
             </button>
         </div>
 
         {{-- AI Rekomendasi --}}
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 mb-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-start gap-3">
                     <div class="bg-violet-100 p-3 rounded-xl shrink-0">
@@ -44,7 +44,7 @@
                     </div>
                 </div>
                 <button @click="askAi()" :disabled="ai.loading"
-                    class="px-4 py-2.5 bg-violet-600 hover:bg-violet-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 justify-center shrink-0">
+                    class="px-3 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 justify-center shrink-0">
                     <template x-if="ai.loading">
                         <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
                     </template>
@@ -55,15 +55,15 @@
                 </button>
             </div>
 
-            <div x-show="ai.loading" class="mt-5 space-y-2">
+            <div x-show="ai.loading" class="mt-4 space-y-2">
                 <div class="h-4 bg-slate-100 rounded animate-pulse w-3/4"></div>
                 <div class="h-4 bg-slate-100 rounded animate-pulse w-full"></div>
                 <div class="h-4 bg-slate-100 rounded animate-pulse w-5/6"></div>
             </div>
 
-            <div x-show="ai.error" x-cloak class="mt-5 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg p-3" x-text="ai.error"></div>
+            <div x-show="ai.error" x-cloak class="mt-4 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg p-3" x-text="ai.error"></div>
 
-            <div x-show="ai.result && !ai.loading" x-cloak class="mt-5">
+            <div x-show="ai.result && !ai.loading" x-cloak class="mt-4">
                 <div class="flex items-center justify-between mb-3">
                     <span class="text-xs font-medium text-slate-400 uppercase tracking-wide">Hasil analisis</span>
                     <button @click="ai.result = null" class="text-xs text-slate-400 hover:text-slate-600 font-medium">Tutup</button>
@@ -71,22 +71,22 @@
                 <div class="prose prose-sm max-w-none prose-headings:text-slate-800 prose-li:my-0.5 text-slate-700 leading-relaxed" x-html="ai.result"></div>
             </div>
 
-            <div x-show="!ai.loading && !ai.result && !ai.error" x-cloak class="mt-5 text-sm text-slate-400 border-t border-slate-100 pt-4">
+            <div x-show="!ai.loading && !ai.result && !ai.error" x-cloak class="mt-4 text-sm text-slate-400 border-t border-slate-100 pt-4">
                 <span class="font-medium text-slate-500">Tips:</span> sediakan data transaksi beberapa periode agar analisis lebih akurat.
             </div>
         </div>
 
         {{-- Ringkasan --}}
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
                 <p class="text-sm font-medium text-slate-500">Total Target</p>
                 <p class="text-xl font-bold text-slate-800 mt-1">{{ $summary['total'] }}</p>
             </div>
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
                 <p class="text-sm font-medium text-slate-500">Tercapai</p>
                 <p class="text-xl font-bold text-emerald-600 mt-1">{{ $summary['achieved'] }}</p>
             </div>
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
                 <p class="text-sm font-medium text-slate-500">Rata-rata Capaian</p>
                 <p class="text-xl font-bold text-indigo-600 mt-1">{{ $summary['avg_percentage'] }}%</p>
             </div>
@@ -94,18 +94,18 @@
 
         {{-- Daftar Target --}}
         @if ($goalStats->isEmpty())
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-14 text-center">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 text-center">
                 <div class="w-16 h-16 mx-auto mb-4 bg-slate-100 rounded-full flex items-center justify-center">
                     <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                 </div>
                 <h3 class="font-semibold text-slate-700 mb-1">Belum ada target</h3>
                 <p class="text-slate-500 text-sm mb-6">Mulai tetapkan target tabungan, pemasukan, atau batas pengeluaran.</p>
-                <button @click="create()" class="px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                <button @click="create()" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
                     Buat Target Pertama
                 </button>
             </div>
         @else
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
                 @foreach ($goalStats as $index => $goal)
                     @php
                         $meta = $typeMeta[$goal['type']] ?? $typeMeta['savings'];
@@ -119,7 +119,7 @@
                             ? 'bg-emerald-100 text-emerald-700'
                             : ($p['raw_percentage'] > 100 ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700');
                     @endphp
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex flex-col">
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex flex-col">
                         <div class="flex items-start justify-between gap-2 mb-3">
                             <h3 class="font-semibold text-slate-800 leading-snug">{{ $goal['name'] }}</h3>
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium shrink-0 {{ $meta['color'] }}">
@@ -191,8 +191,8 @@
         @endif
 
         {{-- Create/Edit Modal --}}
-        <div x-show="modal.show" style="display: none" class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50 flex items-center justify-center">
-            <div x-show="modal.show" x-on:click="modal.show = false" class="fixed inset-0 transform transition-all"
+        <div x-show="modal.show" style="display: none" role="dialog" aria-modal="true" aria-label="Form target" class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50 flex items-center justify-center">
+            <div x-show="modal.show" x-on:click="modal.show = false" aria-hidden="true" class="fixed inset-0 transform transition-all"
                  x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
                  x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
                 <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
@@ -299,8 +299,8 @@
                         </div>
 
                         <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200">
-                            <button type="button" @click="modal.show = false" class="px-4 py-2.5 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">Batal</button>
-                            <button type="submit" :disabled="modal.loading" class="px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                            <button type="button" @click="modal.show = false" class="px-3 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">Batal</button>
+                            <button type="submit" :disabled="modal.loading" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                                 <template x-if="modal.loading">
                                     <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
                                 </template>
@@ -329,8 +329,8 @@
                     <h3 class="text-lg font-semibold mb-2">Hapus Target</h3>
                     <p class="text-slate-600 mb-6">Yakin ingin menghapus <strong x-text="deleteModal.goal?.name"></strong>? Tindakan ini tidak dapat dibatalkan.</p>
                     <div class="flex justify-center gap-3">
-                        <button @click="deleteModal.show = false" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">Batal</button>
-                        <button @click="destroy()" :disabled="deleteModal.loading" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                        <button @click="deleteModal.show = false" class="px-3 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors">Batal</button>
+                        <button @click="destroy()" :disabled="deleteModal.loading" class="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                             <template x-if="deleteModal.loading">
                                 <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
                             </template>

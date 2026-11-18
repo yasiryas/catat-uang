@@ -11,6 +11,7 @@
     'valueKey' => 'id',
     'labelKey' => 'name',
     'value' => null,
+    'label' => null,
 ])
 
 @php
@@ -74,13 +75,17 @@ $uid = $id ?? 'cs-' . md5($xModel ?? $name ?? $placeholder . rand());
     x-id="['cs-{{ $uid }}']"
     class="relative"
 >
-    <select x-ref="hiddenSelect"
+    @if ($label)
+        <label id="{{ $uid }}-label" for="{{ $uid }}" class="sr-only">{{ $label }}</label>
+    @endif
+
+    <select id="{{ $uid }}" x-ref="hiddenSelect"
             @if($xModel) x-model="{{ $xModel }}" @endif
             @change="syncDisplay()"
             @if($required) required @endif
             @if($disabled) disabled @endif
             @if($name) name="{{ $name }}" @endif
-            class="sr-only" aria-hidden="true" tabindex="-1">
+            class="sr-only" tabindex="-1" @if ($label) aria-labelledby="{{ $uid }}-label" @endif>
         @if($alpineItems)
             <option value=""></option>
             <template x-for="item in {{ $alpineItems }}" :key="item['{{ $valueKey }}']">
@@ -100,9 +105,9 @@ $uid = $id ?? 'cs-' . md5($xModel ?? $name ?? $placeholder . rand());
             :class="{ 'ring-2 ring-blue-500 border-blue-500': open }"
             aria-haspopup="listbox"
             :aria-expanded="open"
-            :aria-labelledby="$id('cs-{{ $uid }}', 'button')">
+            :aria-label="selectedLabel || '{{ $label ?? $placeholder }}'">
         <span class="truncate" x-text="selectedLabel || '{{ $placeholder }}'" :class="{ 'text-slate-400': !selectedLabel }"></span>
-        <svg class="w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg aria-hidden="true" class="w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9l6 6 6-6"/>
         </svg>
     </button>
@@ -142,7 +147,7 @@ $uid = $id ?? 'cs-' . md5($xModel ?? $name ?? $placeholder . rand());
                          :aria-selected="item['{{ $valueKey }}'] == selectedValue"
                          tabindex="0">
                         <span x-text="item['{{ $labelKey }}']"></span>
-                        <svg x-show="item['{{ $valueKey }}'] == selectedValue" class="w-4 h-4 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg x-show="item['{{ $valueKey }}'] == selectedValue" aria-hidden="true" class="w-4 h-4 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                         </svg>
                     </div>
@@ -159,7 +164,7 @@ $uid = $id ?? 'cs-' . md5($xModel ?? $name ?? $placeholder . rand());
                          :aria-selected="'{{ $iv }}' == selectedValue"
                          tabindex="0">
                         <span>{{ $il }}</span>
-                        <svg x-show="'{{ $iv }}' == selectedValue" class="w-4 h-4 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg x-show="'{{ $iv }}' == selectedValue" aria-hidden="true" class="w-4 h-4 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                         </svg>
                     </div>

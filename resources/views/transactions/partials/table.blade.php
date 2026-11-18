@@ -3,13 +3,13 @@
         <table class="w-full">
             <thead class="bg-slate-50 border-b border-slate-200">
                 <tr>
-                    <th class="text-left p-4 font-medium text-slate-700">Tanggal</th>
-                    <th class="text-left p-4 font-medium text-slate-700">Kategori</th>
-                    <th class="text-left p-4 font-medium text-slate-700">Periode</th>
-                    <th class="text-left p-4 font-medium text-slate-700">Dompet</th>
-                    <th class="text-right p-4 font-medium text-slate-700">Jumlah</th>
-                    <th class="text-left p-4 font-medium text-slate-700">Keterangan</th>
-                    <th class="text-center p-4 font-medium text-slate-700">Aksi</th>
+                    <th scope="col" class="text-left p-4 font-medium text-slate-700">Tanggal</th>
+                    <th scope="col" class="text-left p-4 font-medium text-slate-700">Kategori</th>
+                    <th scope="col" class="text-left p-4 font-medium text-slate-700">Periode</th>
+                    <th scope="col" class="text-left p-4 font-medium text-slate-700">Dompet</th>
+                    <th scope="col" class="text-right p-4 font-medium text-slate-700">Jumlah</th>
+                    <th scope="col" class="text-left p-4 font-medium text-slate-700">Keterangan</th>
+                    <th scope="col" class="text-center p-4 font-medium text-slate-700">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-200">
@@ -37,7 +37,7 @@
     </div>
 
     <div class="px-4 py-3 border-t border-slate-200" x-show="transactions.length > 0">
-        <nav class="flex items-center justify-between">
+        <nav aria-label="Navigasi halaman transaksi" class="flex items-center justify-between">
             <span class="text-sm text-slate-600" x-text="'Menampilkan ' + transactions.length + ' dari ' + pagination.total + ' transaksi'"></span>
             <div class="flex items-center gap-2">
                 <button @click="loadTransactions(pagination.current_page - 1)" :disabled="pagination.current_page <= 1" class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Sebelumnya</button>

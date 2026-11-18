@@ -115,8 +115,18 @@ Alpine.store('toast', {
     }
 });
 
-window.categoryPage = function () {
+window.categoryPage = function (auth = { isAdmin: false, scopeKey: null, byFamily: false }) {
     return {
+        auth,
+
+        canManage(category) {
+            if (this.auth.isAdmin) return true;
+
+            return this.auth.byFamily
+                ? category.family_id === this.auth.scopeKey
+                : category.user_id === this.auth.scopeKey;
+        },
+
         modal: {
             show: false,
             mode: 'create',
@@ -271,233 +281,6 @@ async deleteCategory() {
                 budget_limit: 0,
             };
             this.modal.errors = {};
-        }
-    }
-};
-
-window.transactionPage = function () {
-    return {
-        modal: {
-            show: false,
-            mode: 'create',
-            loading: false,
-            errors: {},
-            form: {
-                id: null,
-                period_id: '',
-                category_id: '',
-                type: 'income',
-                amount: '',
-                note: '',
-                date: nowDateTime(),
-            }
-        },
-
-        deleteModal: {
-            show: false,
-            loading: false,
-            transaction: null
-        },
-
-        transactions: [],
-        categories: [],
-        periods: [],
-        currentType: 'all',
-        pagination: {
-            current_page: 1,
-            last_page: 1,
-            total: 0
-        },
-
-        async init() {
-            const el = this.$el;
-            this.categories = JSON.parse(el.dataset.categories || '[]');
-            this.periods = JSON.parse(el.dataset.periods || '[]');
-            this.currentType = el.dataset.type || 'all';
-            await this.loadTransactions();
-        },
-
-        async loadTransactions(page = 1) {
-            const params = new URLSearchParams({
-                page,
-                ajax: 'true'
-            });
-
-            if (this.currentType && this.currentType !== 'all') {
-                params.append('type', this.currentType);
-            }
-
-            try {
-                const response = await fetch(`${route('transactions.index')}?${params}`, {
-                    credentials: 'same-origin',
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                });
-
-                const data = await response.json();
-                this.transactions = data.data;
-                this.pagination = data.pagination;
-            } catch (error) {
-                console.error('Failed to load transactions:', error);
-            }
-        },
-
-        create(type = 'income') {
-            this.resetForm();
-            this.modal.mode = 'create';
-            this.modal.form.type = type;
-            this.modal.form.date = nowDateTime();
-            this.modal.show = true;
-        },
-
-        edit(transaction) {
-            this.resetForm();
-            this.modal.mode = 'edit';
-            this.modal.form = {
-                id: transaction.id,
-                period_id: transaction.period_id,
-                category_id: transaction.category_id,
-                account_id: transaction.account_id,
-                type: transaction.type,
-                amount: transaction.amount,
-                note: transaction.note || '',
-                date: transaction.date ? transaction.date.replace(' ', 'T') : nowDateTime()
-            };
-            this.modal.show = true;
-        },
-
-        confirmDelete(transaction) {
-            this.deleteModal.transaction = transaction;
-            this.deleteModal.show = true;
-        },
-
-        async submit() {
-            this.modal.loading = true;
-            this.modal.errors = {};
-
-            try {
-                const url = this.modal.mode === 'create'
-                    ? route('transactions.store')
-                    : route('transactions.update', this.modal.form.id);
-
-                const method = this.modal.mode === 'create' ? 'POST' : 'PUT';
-
-                const response = await fetch(url, {
-                    method,
-                    credentials: 'same-origin',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify(this.modal.form)
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    if (response.status === 422 && data.errors) {
-                        this.modal.errors = data.errors;
-                        this.$toast.error('Validasi gagal', 'Error');
-                    } else {
-                        throw new Error(data.message || 'Terjadi kesalahan');
-                    }
-                    return;
-                }
-
-                this.modal.show = false;
-                this.$toast.success(data.message);
-                await this.loadTransactions(this.pagination.current_page);
-            } catch (error) {
-                this.$toast.error(error.message);
-            } finally {
-                this.modal.loading = false;
-            }
-        },
-
-        async deleteTransaction() {
-            this.deleteModal.loading = true;
-
-            try {
-                const response = await fetch(route('transactions.destroy', this.deleteModal.transaction.id), {
-                    method: 'DELETE',
-                    credentials: 'same-origin',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.message || 'Gagal menghapus transaksi');
-                }
-
-                this.deleteModal.show = false;
-                this.$toast.success(data.message);
-                this.transactions = this.transactions.filter(t => t.id !== this.deleteModal.transaction.id);
-            } catch (error) {
-                this.$toast.error(error.message);
-            } finally {
-                this.deleteModal.loading = false;
-            }
-        },
-
-        resetForm() {
-            this.modal.form = {
-                id: null,
-                period_id: '',
-                category_id: '',
-                account_id: '',
-                type: 'income',
-                amount: '',
-                note: '',
-                date: nowDateTime(),
-            };
-            this.modal.errors = {};
-        },
-
-        formatDate(dateStr) {
-            return formatDate(dateStr);
-        },
-
-        formatDateTime(dateStr) {
-            return formatDateTime(dateStr);
-        },
-
-        formatCurrency(amount) {
-            return new Intl.NumberFormat('id-ID', {
-                style: 'currency',
-                currency: 'IDR',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0
-            }).format(Math.abs(amount));
-        },
-
-        getTypeBadgeClass(type) {
-            const classes = {
-                income: 'bg-emerald-100 text-emerald-800',
-                expense: 'bg-red-100 text-red-800',
-                mutation: 'bg-blue-100 text-blue-800',
-                adjustment: 'bg-amber-100 text-amber-800'
-            };
-            return classes[type] || 'bg-slate-100 text-slate-800';
-        },
-
-        getTypeLabel(type) {
-            const labels = {
-                income: 'Pemasukan',
-                expense: 'Pengeluaran',
-                mutation: 'Mutasi',
-                adjustment: 'Penyesuaian'
-            };
-            return labels[type] || type;
         }
     }
 };

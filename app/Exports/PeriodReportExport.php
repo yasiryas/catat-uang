@@ -23,6 +23,7 @@ class PeriodReportExport implements FromCollection, WithHeadings, WithStyles
     {
         $transactions = Transaction::where('period_id', $this->period->id)
             ->where('user_id', $this->period->user_id)
+            ->whereIn('type', ['income', 'expense'])
             ->with(['category', 'account'])
             ->orderBy('date')
             ->get();
@@ -32,19 +33,19 @@ class PeriodReportExport implements FromCollection, WithHeadings, WithStyles
 
         $rows = collect();
         $rows->push(['', '', '', '', '', '']);
-        $rows->push(['Laporan Periode: ' . $this->period->name, '', '', '', '', '']);
+        $rows->push(['Laporan Periode: '.$this->period->name, '', '', '', '', '']);
         $rows->push([
-            'Tanggal: ' . $this->period->start_date . ' s/d ' . $this->period->end_date,
+            'Tanggal: '.$this->period->start_date.' s/d '.$this->period->end_date,
             '', '', '', '', '',
         ]);
-        $rows->push(['Status: ' . ($this->period->is_closed ? 'Closed' : 'Open'), '', '', '', '', '']);
+        $rows->push(['Status: '.($this->period->is_closed ? 'Closed' : 'Open'), '', '', '', '', '']);
         $rows->push(['', '', '', '', '', '']);
         $rows->push(['Tanggal', 'Tipe', 'Kategori', 'Dompet', 'Jumlah', 'Catatan']);
 
         foreach ($transactions as $tx) {
             $rows->push([
                 $tx->date,
-                $tx->type === 'income' ? 'Pemasukan' : ($tx->type === 'expense' ? 'Pengeluaran' : ucfirst($tx->type)),
+                $tx->type === 'income' ? 'Pemasukan' : 'Pengeluaran',
                 $tx->category?->name ?? '-',
                 $tx->account?->name ?? '-',
                 $tx->type === 'income' ? $tx->amount : -$tx->amount,

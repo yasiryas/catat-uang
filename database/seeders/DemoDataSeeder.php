@@ -3,7 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\Account;
+use App\Models\AdjustmentLog;
 use App\Models\Category;
+use App\Models\Mutation;
 use App\Models\Period;
 use App\Models\Transaction;
 use App\Models\User;
@@ -17,6 +19,8 @@ class DemoDataSeeder extends Seeder
         $user = User::firstOrFail();
 
         // Bersihkan data lama
+        AdjustmentLog::where('user_id', $user->id)->delete();
+        Mutation::where('user_id', $user->id)->delete();
         Transaction::where('user_id', $user->id)->delete();
         Account::where('user_id', $user->id)->delete();
         Period::where('user_id', $user->id)->delete();
@@ -62,15 +66,15 @@ class DemoDataSeeder extends Seeder
             $monthName = Carbon::parse($start)->locale('id')->isoFormat('MMMM');
 
             $periods->push(Period::create([
-                'user_id'         => $user->id,
-                'name'            => "{$monthName} {$year}",
-                'start_date'      => $start,
-                'end_date'        => $end,
-                'year'            => $year,
-                'month'           => $m,
+                'user_id' => $user->id,
+                'name' => "{$monthName} {$year}",
+                'start_date' => $start,
+                'end_date' => $end,
+                'year' => $year,
+                'month' => $m,
                 'opening_balance' => $m === 1 ? 5000000 : 0,
                 'closing_balance' => 0,
-                'is_closed'       => $m < 7,
+                'is_closed' => $m < 7,
             ]));
         }
 
@@ -107,21 +111,21 @@ class DemoDataSeeder extends Seeder
             $acc = $accounts->get($accountMap[$tx['cat']] ?? 'Tunai');
 
             Transaction::create([
-                'user_id'     => $user->id,
-                'period_id'   => $period->id,
+                'user_id' => $user->id,
+                'period_id' => $period->id,
                 'category_id' => $cat->id,
-                'account_id'  => $acc->id,
-                'type'        => $tx['type'],
-                'amount'      => $tx['amount'],
-                'date'        => $tx['date'],
-                'note'        => $tx['note'],
+                'account_id' => $acc->id,
+                'type' => $tx['type'],
+                'amount' => $tx['amount'],
+                'date' => $tx['date'],
+                'note' => $tx['note'],
             ]);
         }
 
         // ─── Hitung closing balance ──────────────────────────────
         $runningBalance = 0;
         foreach ($periods as $p) {
-            $incomeTotal  = Transaction::where('period_id', $p->id)->where('type', 'income')->sum('amount');
+            $incomeTotal = Transaction::where('period_id', $p->id)->where('type', 'income')->sum('amount');
             $expenseTotal = Transaction::where('period_id', $p->id)->where('type', 'expense')->sum('amount');
 
             if ($p->month === 1) {
