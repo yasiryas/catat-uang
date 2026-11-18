@@ -30,6 +30,25 @@ class TransactionController extends Controller
         return Period::forUser(auth()->user())->latest()->get();
     }
 
+    public function receipt(Transaction $transaction)
+    {
+        abort_if(! $transaction->inSameScope(auth()->user()), 403);
+        abort_unless($transaction->receipt_image, 404);
+
+        $path = $transaction->receipt_image;
+
+        abort_unless(Storage::disk('local')->exists($path), 404);
+
+        return Storage::disk('local')->response(
+            $path,
+            'struk-'.$transaction->id.'.'.pathinfo($path, PATHINFO_EXTENSION),
+            [
+                'Cache-Control' => 'no-store, private',
+                'X-Content-Type-Options' => 'nosniff',
+            ]
+        );
+    }
+
     // INCOME
     public function income(Request $request)
     {
@@ -187,7 +206,7 @@ class TransactionController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('receipt_image')) {
-            $data['receipt_image'] = $request->file('receipt_image')->store('receipts', 'public');
+            $data['receipt_image'] = $request->file('receipt_image')->store('receipts', 'local');
         }
 
         $transaction = Transaction::create($data + [
@@ -215,14 +234,14 @@ class TransactionController extends Controller
 
         if ($request->hasFile('receipt_image')) {
             if ($transaction->receipt_image) {
-                Storage::disk('public')->delete($transaction->receipt_image);
+                Storage::disk('local')->delete($transaction->receipt_image);
             }
-            $data['receipt_image'] = $request->file('receipt_image')->store('receipts', 'public');
+            $data['receipt_image'] = $request->file('receipt_image')->store('receipts', 'local');
         }
 
         if ($request->has('remove_receipt') && $request->remove_receipt) {
             if ($transaction->receipt_image) {
-                Storage::disk('public')->delete($transaction->receipt_image);
+                Storage::disk('local')->delete($transaction->receipt_image);
             }
             $data['receipt_image'] = null;
         }
@@ -245,7 +264,7 @@ class TransactionController extends Controller
         abort_if(! $transaction->inSameScope(auth()->user()), 403);
 
         if ($transaction->receipt_image) {
-            Storage::disk('public')->delete($transaction->receipt_image);
+            Storage::disk('local')->delete($transaction->receipt_image);
         }
 
         $transaction->delete();

@@ -73,6 +73,8 @@ Route::middleware('auth')->group(function () {
         Route::get('adjustment/{transaction}/edit', [TransactionController::class, 'editAdjustment'])->name('adjustment.edit');
         Route::put('adjustment/{transaction}', [TransactionController::class, 'updateAdjustment'])->name('adjustment.update');
         Route::delete('adjustment/{transaction}', [TransactionController::class, 'destroyAdjustment'])->name('adjustment.destroy');
+
+        Route::get('{transaction}/receipt', [TransactionController::class, 'receipt'])->middleware('signed')->name('receipt');
     });
 
     Route::resource('mutations', MutationController::class)->only(['index', 'store', 'update', 'destroy']);

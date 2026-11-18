@@ -2,11 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Concerns\HasScopedValidation;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class StoreGoalRequest extends FormRequest
 {
+    use HasScopedValidation;
+
     public function authorize(): bool
     {
         return true;
@@ -26,7 +29,7 @@ class StoreGoalRequest extends FormRequest
             ],
             'category_id' => [
                 'nullable', 'integer',
-                Rule::exists('categories', 'id'),
+                Rule::exists('categories', 'id')->where($this->categoryClause()),
                 Rule::requiredIf($type === 'category'),
             ],
             'account_id' => [
@@ -38,13 +41,5 @@ class StoreGoalRequest extends FormRequest
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
             'is_active' => ['sometimes', 'boolean'],
         ];
-    }
-
-    protected function scopedClause(): \Closure
-    {
-        return function ($query): void {
-            $user = $this->user();
-            $query->where($user->belongsToFamily() ? 'family_id' : 'user_id', $user->scopeKey());
-        };
     }
 }

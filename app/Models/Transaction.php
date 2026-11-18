@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Concerns\BelongsToUserScope;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\URL;
 
 class Transaction extends Model
 {
@@ -35,7 +36,9 @@ class Transaction extends Model
             return null;
         }
 
-        return asset('storage/'.$this->receipt_image);
+        return URL::temporarySignedRoute('transactions.receipt', now()->addMinutes(5), [
+            'transaction' => $this,
+        ]);
     }
 
     public function period()
