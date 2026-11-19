@@ -1,4 +1,4 @@
-const CACHE_NAME = 'keuanganapp-v2';
+const CACHE_NAME = 'keuanganapp-v3';
 const APP_SHELL = [
     '/manifest.webmanifest',
     '/icon-192.png',
@@ -7,7 +7,7 @@ const APP_SHELL = [
     '/favicon.svg',
     '/offline',
 ];
-const CACHEABLE_ASSET = /^\/build\/assets\/[^/]+\.(js|css)$/;
+const CACHEABLE_ASSET = /^\/(?:build\/assets\/[^/]+\.(?:js|css|woff2)|images\/[^/]+\.(?:jpg|png|webp|svg))$/;
 
 self.addEventListener('install', (event) => {
     event.waitUntil(

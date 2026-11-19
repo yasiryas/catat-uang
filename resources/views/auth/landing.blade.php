@@ -9,7 +9,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased min-h-screen"
-      style="background-image: url('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=1920&auto=format&fit=crop'); background-size: cover; background-position: center; background-attachment: fixed;">
+       style="background-image: url('/images/landing-background.jpg'); background-size: cover; background-position: center; background-attachment: fixed;">
     <div class="fixed inset-0 bg-slate-900/70" aria-hidden="true"></div>
     <main class="relative min-h-screen flex items-center justify-center px-4 py-12">
         <div class="w-full max-w-5xl">
