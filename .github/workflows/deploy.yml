@@ -32,3 +32,25 @@ jobs:
             docker compose exec -T catat-uang-app chmod -R 775 storage bootstrap/cache
             docker compose exec -T catat-uang-app php artisan optimize:clear
             docker image prune -f
+
+      - name: Send Telegram Notification
+        if: always()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            STATUS="✅ DEPLOY BERHASIL"
+          else
+            STATUS="❌ DEPLOY GAGAL"
+          fi
+
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${STATUS}
+
+          📦 Repo: ${{ github.repository }}
+          🌿 Branch: ${{ github.ref_name }}
+          👤 Author: ${{ github.actor }}
+          📝 Commit: ${{ github.event.head_commit.message }}
+          🔗 Link: https://keuangan.yasyes.id"
