@@ -24,4 +24,8 @@ jobs:
             cd /srv/apps/catat-uang
             git pull origin main
             docker compose up -d --build
+            docker compose exec -T catat-uang-app php artisan migrate
+            docker compose exec -T catat-uang-app chown -R www-data:www-data storage bootstrap/cache
+            docker compose exec -T catat-uang-app chmod -R 775 storage bootstrap/cache
+            docker compose exec -T catat-uang-app php artisan optimize:clear
             docker image prune -f
