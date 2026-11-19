@@ -22,10 +22,13 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             cd /srv/apps/catat-uang
-            git pull origin main
+            git fetch origin main
+            git reset --hard origin/main
+            docker run --rm -v $(pwd):/app -w /app node:22-alpine sh -c "npm ci && npm run build"
             docker compose up -d --build
-            docker compose exec -T catat-uang-app php artisan migrate
-            docker compose exec -T catat-uang-app chown -R www-data:www-data storage bootstrap/cache
+            docker compose exec -T catat-uang-app composer install --no-dev --optimize-autoloader
+            docker compose exec -T catat-uang-app php artisan migrate --force
+            docker compose exec -T catat-uang-app chown -R www-data:www-data storage bootstrap/cache public/build
             docker compose exec -T catat-uang-app chmod -R 775 storage bootstrap/cache
             docker compose exec -T catat-uang-app php artisan optimize:clear
             docker image prune -f
