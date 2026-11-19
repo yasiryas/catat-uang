@@ -28,7 +28,7 @@
                     <h2 class="text-xl font-bold text-green-600 mt-1">{{ rupiah($totalIncome) }}</h2>
                 </div>
                 <div class="bg-green-100 p-2.5 rounded-lg">
-                    <svg aria-hidden="true" class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    <x-ledger-icon name="income" class="w-6 h-6 text-green-600" />
                 </div>
             </div>
         </div>
@@ -40,7 +40,7 @@
                     <h2 class="text-xl font-bold text-red-600 mt-1">{{ rupiah($totalExpense) }}</h2>
                 </div>
                 <div class="bg-red-100 p-2.5 rounded-lg">
-                    <svg aria-hidden="true" class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+                    <x-ledger-icon name="expense" class="w-6 h-6 text-red-600" />
                 </div>
             </div>
         </div>
@@ -52,7 +52,7 @@
                     <h2 class="text-xl font-bold text-blue-600 mt-1">{{ rupiah($netBalance) }}</h2>
                 </div>
                 <div class="bg-blue-100 p-2.5 rounded-lg">
-                    <svg aria-hidden="true" class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
+                    <x-ledger-icon name="chart" class="w-6 h-6 text-blue-600" />
                 </div>
             </div>
         </div>
@@ -64,7 +64,7 @@
                     <h2 class="text-xl font-bold text-amber-600 mt-1">{{ $totalTransactions }}</h2>
                 </div>
                 <div class="bg-amber-100 p-2.5 rounded-lg">
-                    <svg aria-hidden="true" class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                    <x-ledger-icon name="receipt" class="w-6 h-6 text-amber-600" />
                 </div>
             </div>
         </div>
@@ -149,11 +149,11 @@
                     <div class="flex justify-between">
                         <span class="flex items-center gap-2">
                             @if ($account->type === 'bank')
-                                <svg aria-hidden="true" class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                                <x-ledger-icon name="bank" class="w-4 h-4 text-blue-500" />
                             @elseif ($account->type === 'cash')
-                                <svg aria-hidden="true" class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                <x-ledger-icon name="cash" class="w-4 h-4 text-emerald-500" />
                             @else
-                                <svg aria-hidden="true" class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                <x-ledger-icon name="ewallet" class="w-4 h-4 text-purple-500" />
                             @endif
                             {{ $account->name }}
                         </span>
@@ -267,53 +267,95 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         const ctx = document.getElementById('chartKeuangan').getContext('2d');
+        const fontFamily = 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        const currency = new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            maximumFractionDigits: 0,
+        });
 
         new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: @json($chartMonths),
-            datasets: [
-                {
-                    label: 'Pemasukan',
-                    data: @json($chartIncome),
-                    backgroundColor: 'rgba(16, 185, 129, 0.7)',
-                    borderColor: 'rgba(16, 185, 129, 1)',
-                    borderWidth: 1,
-                    borderRadius: 4,
-                },
-                {
-                    label: 'Pengeluaran',
-                    data: @json($chartExpense),
-                    backgroundColor: 'rgba(239, 68, 68, 0.7)',
-                    borderColor: 'rgba(239, 68, 68, 1)',
-                    borderWidth: 1,
-                    borderRadius: 4,
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top',
-                    labels: { usePointStyle: true, padding: 16 }
-                }
+            type: 'bar',
+            data: {
+                labels: @json($chartMonths),
+                datasets: [
+                    {
+                        label: 'Pemasukan',
+                        data: @json($chartIncome),
+                        backgroundColor: 'rgba(16, 185, 129, 0.85)',
+                        borderColor: '#10b981',
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        borderSkipped: false,
+                        maxBarThickness: 28,
+                    },
+                    {
+                        label: 'Pengeluaran',
+                        data: @json($chartExpense),
+                        backgroundColor: 'rgba(239, 68, 68, 0.85)',
+                        borderColor: '#ef4444',
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        borderSkipped: false,
+                        maxBarThickness: 28,
+                    },
+                ],
             },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function (value) {
-                            if (value >= 1000000) return 'Rp' + (value / 1000000).toFixed(0) + 'jt';
-                            if (value >= 1000) return 'Rp' + (value / 1000).toFixed(0) + 'rb';
-                            return 'Rp' + value;
-                        }
-                    }
-                }
-            }
-        }
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                animation: { duration: 500, easing: 'easeOutQuart' },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        align: 'end',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            boxWidth: 6,
+                            boxHeight: 6,
+                            padding: 16,
+                            color: '#64748b',
+                            font: { size: 12, family: fontFamily },
+                        },
+                    },
+                    tooltip: {
+                        backgroundColor: '#0f172a',
+                        titleColor: '#f8fafc',
+                        bodyColor: '#e2e8f0',
+                        padding: 12,
+                        cornerRadius: 8,
+                        boxPadding: 6,
+                        usePointStyle: true,
+                        callbacks: {
+                            label: (context) => `${context.dataset.label}: ${currency.format(context.parsed.y)}`,
+                        },
+                    },
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#94a3b8', font: { size: 12, family: fontFamily } },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        border: { display: false },
+                        grid: { color: 'rgba(148, 163, 184, 0.18)', drawTicks: false },
+                        ticks: {
+                            padding: 8,
+                            color: '#94a3b8',
+                            font: { size: 12, family: fontFamily },
+                            callback: function (value) {
+                                if (value >= 1000000) return 'Rp' + (value / 1000000).toFixed(0) + 'jt';
+                                if (value >= 1000) return 'Rp' + (value / 1000).toFixed(0) + 'rb';
+                                return 'Rp' + value;
+                            },
+                        },
+                    },
+                },
+            },
+        });
     });
-});
 </script>
 @endpush

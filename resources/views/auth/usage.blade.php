@@ -256,11 +256,6 @@
                 @endif
             </div>
         </div>
-
-        <p class="mt-10 text-center text-xs text-slate-400">
-            &copy; {{ date('Y') }} {{ config('app.name', 'KeuanganApp') }} &middot;
-            <a href="{{ url('/') }}" class="hover:text-slate-600">Beranda</a>
-        </p>
     </main>
 </body>
 </html>

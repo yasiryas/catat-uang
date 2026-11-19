@@ -100,10 +100,6 @@
                     </section>
                 </div>
             </div>
-
-            <footer class="mt-6 text-center text-xs text-gray-400">
-                &copy; {{ now()->year }} {{ config('app.name', 'KeuanganApp') }}
-            </footer>
         </div>
     </main>
 </body>

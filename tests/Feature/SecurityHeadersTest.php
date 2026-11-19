@@ -37,6 +37,9 @@ class SecurityHeadersTest extends TestCase
             ->assertOk()
             ->assertHeader('X-Content-Type-Options', 'nosniff')
             ->assertHeader('X-Frame-Options', 'DENY')
-            ->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+            ->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
+            ->assertHeader('Cache-Control', 'no-store, private')
+            ->assertSee('updateViaCache', false)
+            ->assertSee('/sw.js?v=', false);
     }
 }

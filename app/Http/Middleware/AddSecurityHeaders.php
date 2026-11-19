@@ -26,7 +26,7 @@ final class AddSecurityHeaders
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
         }
 
-        if ($this->isSensitive($request)) {
+        if ($this->isSensitive($request) || str_contains((string) $response->headers->get('Content-Type'), 'text/html')) {
             $response->headers->set('Cache-Control', 'no-store, private');
         }
 

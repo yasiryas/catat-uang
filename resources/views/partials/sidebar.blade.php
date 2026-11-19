@@ -29,7 +29,7 @@
         <x-keuangan-logo class="w-6 h-6 shrink-0" />
         <p :class="collapse ? 'md:hidden' : ''" class="text-base font-bold tracking-tight text-white whitespace-nowrap">KeuanganApp</p>
         <button type="button" @click="sidebar = false" aria-label="Tutup navigasi" class="ml-auto md:hidden p-1.5 rounded-lg hover:bg-white/10">
-            <svg aria-hidden="true" class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            <x-ledger-icon name="close" class="w-5 h-5 text-white" />
         </button>
     </div>
 
@@ -41,7 +41,7 @@
             :aria-label="collapse ? 'Dashboard' : null"
             class="flex items-center gap-3 px-4 py-3 md:py-2.5 text-sm font-medium rounded-lg transition-colors {{ $menu['dashboard'] ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}"
             :class="collapse ? 'md:justify-center md:px-0' : ''">
-            <x-heroicon-o-home class="w-5 h-5 shrink-0" />
+            <x-ledger-icon name="dashboard" class="w-5 h-5 shrink-0" />
             <span :class="collapse ? 'md:hidden' : ''">Dashboard</span>
         </a>
 
@@ -52,7 +52,7 @@
             :aria-label="collapse ? 'Kategori' : null"
             class="flex items-center gap-3 px-4 py-3 md:py-2.5 text-sm font-medium rounded-lg transition-colors {{ $menu['category'] ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}"
             :class="collapse ? 'md:justify-center md:px-0' : ''">
-            <x-heroicon-o-folder class="w-5 h-5 shrink-0 {{ $menu['category'] ? 'text-white' : 'text-blue-200' }}" />
+            <x-ledger-icon name="category" class="w-5 h-5 shrink-0 {{ $menu['category'] ? 'text-white' : 'text-blue-200' }}" />
             <span :class="collapse ? 'md:hidden' : ''">Kategori</span>
         </a>
 
@@ -63,7 +63,7 @@
             :aria-label="collapse ? 'Dompet' : null"
             class="flex items-center gap-3 px-4 py-3 md:py-2.5 text-sm font-medium rounded-lg transition-colors {{ $menu['account'] ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}"
             :class="collapse ? 'md:justify-center md:px-0' : ''">
-            <x-heroicon-o-wallet class="w-5 h-5 shrink-0 {{ $menu['account'] ? 'text-white' : 'text-blue-200' }}" />
+            <x-ledger-icon name="wallet" class="w-5 h-5 shrink-0 {{ $menu['account'] ? 'text-white' : 'text-blue-200' }}" />
             <span :class="collapse ? 'md:hidden' : ''">Dompet</span>
         </a>
 
@@ -77,7 +77,7 @@
             :aria-label="collapse ? 'Pemasukan' : null"
             class="flex items-center gap-3 px-4 py-3 md:py-2.5 text-sm font-medium rounded-lg transition-colors {{ $menu['income'] ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}"
             :class="collapse ? 'md:justify-center md:px-0' : ''">
-            <x-heroicon-o-arrow-down-circle class="w-5 h-5 shrink-0 {{ $menu['income'] ? 'text-white' : 'text-blue-200' }}" />
+            <x-ledger-icon name="income" class="w-5 h-5 shrink-0 {{ $menu['income'] ? 'text-white' : 'text-blue-200' }}" />
             <span :class="collapse ? 'md:hidden' : ''">Pemasukan</span>
         </a>
 
@@ -88,7 +88,7 @@
             :aria-label="collapse ? 'Pengeluaran' : null"
             class="flex items-center gap-3 px-4 py-3 md:py-2.5 text-sm font-medium rounded-lg transition-colors {{ $menu['expense'] ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}"
             :class="collapse ? 'md:justify-center md:px-0' : ''">
-            <x-heroicon-o-arrow-up-circle class="w-5 h-5 shrink-0 {{ $menu['expense'] ? 'text-white' : 'text-blue-200' }}" />
+            <x-ledger-icon name="expense" class="w-5 h-5 shrink-0 {{ $menu['expense'] ? 'text-white' : 'text-blue-200' }}" />
             <span :class="collapse ? 'md:hidden' : ''">Pengeluaran</span>
         </a>
 
@@ -99,7 +99,7 @@
             :aria-label="collapse ? 'Target & Capaian' : null"
             class="flex items-center gap-3 px-4 py-3 md:py-2.5 text-sm font-medium rounded-lg transition-colors {{ $menu['goal'] ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}"
             :class="collapse ? 'md:justify-center md:px-0' : ''">
-            <x-heroicon-o-arrow-trending-up class="w-5 h-5 shrink-0 {{ $menu['goal'] ? 'text-white' : 'text-blue-200' }}" />
+            <x-ledger-icon name="goal" class="w-5 h-5 shrink-0 {{ $menu['goal'] ? 'text-white' : 'text-blue-200' }}" />
             <span :class="collapse ? 'md:hidden' : ''">Target & Capaian</span>
         </a>
 
@@ -110,7 +110,7 @@
             :aria-label="collapse ? 'Mutasi' : null"
             class="flex items-center gap-3 px-4 py-3 md:py-2.5 text-sm font-medium rounded-lg transition-colors {{ $menu['mutation'] ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}"
             :class="collapse ? 'md:justify-center md:px-0' : ''">
-            <x-heroicon-o-arrows-right-left class="w-5 h-5 shrink-0 {{ $menu['mutation'] ? 'text-white' : 'text-blue-200' }}" />
+            <x-ledger-icon name="mutation" class="w-5 h-5 shrink-0 {{ $menu['mutation'] ? 'text-white' : 'text-blue-200' }}" />
             <span :class="collapse ? 'md:hidden' : ''">Mutasi</span>
         </a>
 
@@ -124,7 +124,7 @@
             :aria-label="collapse ? 'Periode' : null"
             class="flex items-center gap-3 px-4 py-3 md:py-2.5 text-sm font-medium rounded-lg transition-colors {{ $menu['period'] ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}"
             :class="collapse ? 'md:justify-center md:px-0' : ''">
-            <x-heroicon-o-calendar-days class="w-5 h-5 shrink-0 {{ $menu['period'] ? 'text-white' : 'text-blue-200' }}" />
+            <x-ledger-icon name="period" class="w-5 h-5 shrink-0 {{ $menu['period'] ? 'text-white' : 'text-blue-200' }}" />
             <span :class="collapse ? 'md:hidden' : ''">Periode</span>
         </a>
 
@@ -135,7 +135,7 @@
             :aria-label="collapse ? 'Adjustment' : null"
             class="flex items-center gap-3 px-4 py-3 md:py-2.5 text-sm font-medium rounded-lg transition-colors {{ $menu['adjustment'] ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}"
             :class="collapse ? 'md:justify-center md:px-0' : ''">
-            <x-heroicon-o-adjustments-horizontal class="w-5 h-5 shrink-0 {{ $menu['adjustment'] ? 'text-white' : 'text-blue-200' }}" />
+            <x-ledger-icon name="adjustment" class="w-5 h-5 shrink-0 {{ $menu['adjustment'] ? 'text-white' : 'text-blue-200' }}" />
             <span :class="collapse ? 'md:hidden' : ''">Adjustment</span>
         </a>
 
@@ -146,7 +146,7 @@
             :aria-label="collapse ? 'Keluarga' : null"
             class="flex items-center gap-3 px-4 py-3 md:py-2.5 text-sm font-medium rounded-lg transition-colors {{ $menu['family'] ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}"
             :class="collapse ? 'md:justify-center md:px-0' : ''">
-            <x-heroicon-o-user-group class="w-5 h-5 shrink-0 {{ $menu['family'] ? 'text-white' : 'text-blue-200' }}" />
+            <x-ledger-icon name="family" class="w-5 h-5 shrink-0 {{ $menu['family'] ? 'text-white' : 'text-blue-200' }}" />
             <span :class="collapse ? 'md:hidden' : ''">Keluarga</span>
         </a>
 
@@ -161,7 +161,7 @@
                 :aria-label="collapse ? 'Pengguna' : null"
                 class="flex items-center gap-3 px-4 py-3 md:py-2.5 text-sm font-medium rounded-lg transition-colors {{ $menu['user'] ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}"
                 :class="collapse ? 'md:justify-center md:px-0' : ''">
-                <x-heroicon-o-user-circle class="w-5 h-5 shrink-0 {{ $menu['user'] ? 'text-white' : 'text-blue-200' }}" />
+                <x-ledger-icon name="user" class="w-5 h-5 shrink-0 {{ $menu['user'] ? 'text-white' : 'text-blue-200' }}" />
                 <span :class="collapse ? 'md:hidden' : ''">Pengguna</span>
             </a>
         @endif
@@ -174,7 +174,7 @@
             :aria-label="collapse ? 'Keluar' : null"
             class="flex items-center gap-3 px-4 py-3 md:py-2.5 text-sm font-medium rounded-lg transition-colors text-blue-100 hover:bg-white/10 hover:text-white w-full text-left"
             :class="collapse ? 'md:justify-center md:px-0' : ''">
-            <x-heroicon-o-arrow-right-on-rectangle class="w-5 h-5 shrink-0 text-blue-200" />
+            <x-ledger-icon name="logout" class="w-5 h-5 shrink-0 text-blue-200" />
             <span :class="collapse ? 'md:hidden' : ''">Keluar</span>
         </button>
     </div>

@@ -28,7 +28,7 @@
 
     <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js'));
+            window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js?v={{ filemtime(public_path('sw.js')) }}', { updateViaCache: 'none' }));
         }
     </script>
 </head>
